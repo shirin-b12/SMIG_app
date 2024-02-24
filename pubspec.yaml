@@ -39,6 +39,9 @@ dependencies:
   flutter_svg: ^0.22.0
   cached_network_image: ^3.0.0
   flutter_secure_storage: ^4.0.0
+  shared_preferences: ^2.0.5
+  lottie: ^2.7.0
+  animated_text_kit: ^4.2.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -67,6 +70,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/map.zip
+    - assets/data.json
+    - assets/images/img_1.png
+    - assets/images/img_0.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

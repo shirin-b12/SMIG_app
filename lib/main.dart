@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'views/home_page.dart';
+import 'package:smig_app/views/page/login_page.dart';
+import 'package:smig_app/views/page/signup_page.dart';
+import 'package:smig_app/views/screen/splash_screen.dart';
+import 'views/page/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,7 +13,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SMIG App',
-      home: HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashScreen(), // Changement ici pour utiliser SplashScreen
+        '/login': (context) => LoginPage(),
+        '/signup': (context) => SignUpPage(),
+      },
     );
   }
 }
+
+
