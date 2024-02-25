@@ -71,10 +71,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/map.zip
-    - assets/data.json
-    - assets/images/img_1.png
-    - assets/images/img_0.png
+    - assets/animations/splashScreen/data.json
+    - assets/animations/splashScreen/images/img_0.png
+    - assets/animations/splashScreen/images/img_1.png
+    - assets/gouv/marianne.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

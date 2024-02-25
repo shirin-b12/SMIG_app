@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import '../../services/auth_service.dart';
 import '../page/home_page.dart';
 import '../page/login_page.dart';
@@ -9,16 +10,27 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _rotationController;
+
   @override
   void initState() {
     super.initState();
+    _rotationController = AnimationController(
+      duration: const Duration(seconds: 10),
+      vsync: this,
+    )..repeat();
     _checkAuthentication();
   }
 
-  void _checkAuthentication() async {
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
 
-    await Future.delayed(Duration(seconds: 20));
+  void _checkAuthentication() async {
+    await Future.delayed(Duration(seconds: 80));
     bool isLoggedIn = await AuthService.isLoggedIn();
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
@@ -29,16 +41,226 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double offsetX = 45;
+    final double offsetY = -40;
+
     return Scaffold(
       body: Center(
-
-        child: SizedBox(
-          width: 400, // Définissez la largeur souhaitée
-          height: 400, // Définissez la hauteur souhaitée
-          child: Lottie.asset('assets/data.json'),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Transform.translate(
+              offset: Offset(offsetX, offsetY),
+              child: SizedBox(
+                width: 400,
+                height: 400,
+                child: Lottie.asset('assets/animations/splashScreen/data.json'),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(40,25),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: AnimatedBuilder(
+                  animation: _rotationController,
+                  child: CustomPaint(
+                    size: Size(250, 250),
+                    painter: DashedCirclePainter(lineColor: Color(0xFF03989E)),
+                  ),
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationController.value * 2 * math.pi,
+                      child: child,
+                    );
+                  },
+                ),
+            ),
+            ),
+            Transform.translate(
+              offset: Offset(-125,-5),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: AnimatedBuilder(
+                  animation: _rotationController,
+                  child: CustomPaint(
+                    size: Size(250, 250),
+                    painter: DashedCirclePainter(lineColor: Color(0xFFFFBD59)),
+                  ),
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationController.value * 2 * math.pi,
+                      child: child,
+                    );
+                  },
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(-150,-350),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: AnimatedBuilder(
+                  animation: _rotationController,
+                  child: CustomPaint(
+                    size: Size(450, 450),
+                    painter: DashedCirclePainter(lineColor: Color(0xFFFFBD59)),
+                  ),
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationController.value * 2 * math.pi,
+                      child: child,
+                    );
+                  },
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(150,-450),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                    width: 650,
+                    height: 650,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Color(0xFFFFBD59),
+                        width: 3.5,
+                      ),
+                    ),
+                  ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(150,50),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Color(0xFF03989E),
+                      width: 3.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(60,135),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: AnimatedBuilder(
+                  animation: _rotationController,
+                  child: CustomPaint(
+                    size: Size(200, 200),
+                    painter: DashedCirclePainter(lineColor: Color(0xFF03989E)),
+                  ),
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationController.value * 2 * math.pi,
+                      child: child,
+                    );
+                  },
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(20, 50),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFBD59),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 90,
+                      height: 90,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF03989E),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(-100, -25),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF03989E),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Color(0xFFFFBD59),
+                        width: 5,
+                      ),
+                    ),
+                  ),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/gouv/marianne.png'),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
+}
+
+class DashedCirclePainter extends CustomPainter {
+  final Color lineColor;
+
+  DashedCirclePainter({this.lineColor = Colors.blue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    double dashWidth = 10.0;
+    double dashSpace = 5.0;
+    double startPoint = 0.0;
+    final circlePath = Path()..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2));
+    final pathMetric = circlePath.computeMetrics().first;
+
+    while (startPoint < pathMetric.length) {
+      final endPoint = startPoint + dashWidth;
+      final dashPath = pathMetric.extractPath(startPoint, endPoint);
+      canvas.drawPath(dashPath, paint);
+      startPoint = endPoint + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
