@@ -27,11 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // Boutons à gauche
                   Row(mainAxisSize: MainAxisSize.min, children: leftActions ?? []),
                   // Logo au centre
-                  Expanded(
-                    child: Center(
-                      child: logo ?? Image.asset('assets/images/logo/logo.png', fit: BoxFit.contain),
-                    ),
-                  ),
+
                   Row(mainAxisSize: MainAxisSize.min, children: rightActions ?? [
                     IconButton(icon: Icon(Icons.login, color: Colors.black54), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))),
                     IconButton(icon: Icon(Icons.app_registration, color: Colors.black54), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()))),

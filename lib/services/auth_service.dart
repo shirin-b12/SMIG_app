@@ -54,31 +54,5 @@ class AuthService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description, DateTime date_de_creation) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/ressources'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, Object>{
-        "idCat": 1,
-        "idType": 1,
-        "idTag": 1,
-        "idCreateur": 2,
-        "titre": titre,
-        "description": description,
-        "visibilite": 1,
-        "dateDeCreation": date_de_creation.toString(),
-      }),
-    );
 
-    if (response.statusCode == 200) {
-      return Ressource.fromJson(json.decode(response.body));
-    }
-    else{
-      print(response.statusCode);
-      print(response.reasonPhrase);
-    }
-    return null;
-  }
 }

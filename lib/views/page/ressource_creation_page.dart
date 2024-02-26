@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import '../../services/auth_service.dart';
 import 'login_page.dart';
@@ -27,10 +28,9 @@ class RessourceCreationPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                final ressource = await AuthService().createRessource(
+                final ressource = await ApiService().createRessource(
                   titleController.text,
-                  descriptionController.text,
-                  creationDateController,
+                  descriptionController.text
                 );
                 if (ressource != null) {
                   print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");

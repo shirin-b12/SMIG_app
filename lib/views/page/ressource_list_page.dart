@@ -22,10 +22,6 @@ class RessourceListPage extends StatelessWidget {
             child: Text('Bouton 2', style: TextStyle(color: Colors.black54)),
           ),
         ],
-        logo: FittedBox(
-          fit: BoxFit.fitHeight,
-          child: Image.asset('assets/smig/logo.png'),
-        ),
       ),
       body: Column(
         children: <Widget>[
