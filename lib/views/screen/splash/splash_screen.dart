@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(40,25),
+              offset: Offset(42.5,25),
               child: Align(
                 alignment: Alignment.topRight,
                 child: AnimatedBuilder(

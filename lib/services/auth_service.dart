@@ -33,7 +33,7 @@ class AuthService {
     await prefs.remove('userToken');
   }
 
-  Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {
+  Future<bool> createAccount(String nom, String prenom, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -43,13 +43,14 @@ class AuthService {
         'nom': nom,
         'prenom': prenom,
         'email': email,
-        'mot_de_passe': password,
+        'mot_de_passe': password
       }),
     );
 
     if (response.statusCode == 200) {
-      return Utilisateur.fromJson(json.decode(response.body));
+      return true;
+    } else {
+      return false;
     }
-    return null;
   }
 }
