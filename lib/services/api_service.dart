@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:smig_app/models/ressource.dart';
 import 'dart:convert';
 import '../models/utilisateur.dart';
 
@@ -15,6 +16,18 @@ class ApiService {
       return jsonResponse.map((u) => Utilisateur.fromJson(u)).toList();
     } else {
       throw Exception('Failed to load users from API');
+    }
+  }
+
+  //recup la liste des ressources
+  Future<List<Ressource>> fetchRessources() async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/all'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load ressources from API');
     }
   }
 

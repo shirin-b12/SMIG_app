@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'dart:math' as math;
 import '../../../services/auth_service.dart';
 import '../../page/home_page.dart';
@@ -38,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
     }
   }
 
@@ -61,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(40,25),
+              offset: Offset(42.5,25),
               child: Align(
                 alignment: Alignment.topRight,
                 child: AnimatedBuilder(

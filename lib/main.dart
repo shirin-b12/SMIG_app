@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/login_page.dart';
+import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/signup_page.dart';
 import 'package:smig_app/views/screen/splash/splash_screen.dart';
 import 'views/page/home_page.dart';
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignUpPage(),
+        '/ressource_list': (context) => RessourceListPage(),
+        '/ressource_creation': (context) => RessourceCreationPage()
       },
     );
   }
