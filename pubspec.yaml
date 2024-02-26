@@ -75,6 +75,8 @@ flutter:
     - assets/animations/splashScreen/images/img_0.png
     - assets/animations/splashScreen/images/img_1.png
     - assets/gouv/marianne.png
+    - assets/gouv/ministere.png
+    - assets/smig/logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
         ],
         logo: FittedBox(
           fit: BoxFit.fitHeight,
-          child: Image.asset('assets/images/logo/logo.png'),
+          child: Image.asset('assets/smig/logo.png'),
         ),
       ),
       body: Column(

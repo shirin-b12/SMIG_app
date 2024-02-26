@@ -4,11 +4,11 @@ import '../models/utilisateur.dart';
 
 class ApiService {
 
-  final String baseUrl = 'http://192.168.1.171:8081';
+  final String baseUrl = 'http://localhost:8081';
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    final response = await http.get(Uri.parse('http://localhost:8081/utilisateur'));
+    final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -28,14 +28,14 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      return response.body; // Gérer selon la réponse de votre API
+      return response.body;
     } else {
       throw Exception('Échec de la création de compte');
     }
   }
 
   //fonction de connexion
-  Future<String?> login(String email, String password) async {
+  /*Future<String?> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur/login'),
       headers: <String, String>{
@@ -49,7 +49,7 @@ class ApiService {
     } else {
       return null;
     }
-  }
+  }*/
 
   //creation compte
   Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {

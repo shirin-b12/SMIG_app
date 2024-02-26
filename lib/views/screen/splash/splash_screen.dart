@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../../services/auth_service.dart';
-import '../page/home_page.dart';
-import '../page/login_page.dart';
+import '../../../services/auth_service.dart';
+import '../../page/home_page.dart';
+import '../../page/login_page.dart';
 import 'package:lottie/lottie.dart';
+
+import '../DashedCirclePainter.dart';
+import '../signup_or_login/signup_or_login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -30,12 +33,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _checkAuthentication() async {
-    await Future.delayed(Duration(seconds: 80));
+    await Future.delayed(Duration(seconds: 4));
     bool isLoggedIn = await AuthService.isLoggedIn();
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
     }
   }
 
@@ -234,33 +237,4 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
   }
 
-}
-
-class DashedCirclePainter extends CustomPainter {
-  final Color lineColor;
-
-  DashedCirclePainter({this.lineColor = Colors.blue});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    double dashWidth = 10.0;
-    double dashSpace = 5.0;
-    double startPoint = 0.0;
-    final circlePath = Path()..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2));
-    final pathMetric = circlePath.computeMetrics().first;
-
-    while (startPoint < pathMetric.length) {
-      final endPoint = startPoint + dashWidth;
-      final dashPath = pathMetric.extractPath(startPoint, endPoint);
-      canvas.drawPath(dashPath, paint);
-      startPoint = endPoint + dashSpace;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
