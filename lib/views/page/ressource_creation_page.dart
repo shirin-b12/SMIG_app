@@ -15,7 +15,7 @@ class RessourceCreationPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Créer une ressource')),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
             TextField(
@@ -26,21 +26,24 @@ class RessourceCreationPage extends StatelessWidget {
               controller: descriptionController,
               decoration: InputDecoration(labelText: 'Description'),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final ressource = await ApiService().createRessource(
-                  titleController.text,
-                  descriptionController.text
-                );
-                if (ressource != null) {
-                  print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
-                } else {
-                  // Afficher une erreur
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Échec de la création de la ressource")));
-                }
-              },
-              child: Text('Créer une ressource'),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final ressource = await ApiService().createRessource(
+                      titleController.text,
+                      descriptionController.text
+                  );
+                  if (ressource != null) {
+                    print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
+                  } else {
+                    // Afficher une erreur
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Échec de la création de la ressource")));
+                  }
+                },
+                child: Text('Créer une ressource'),
+              ),
             ),
           ],
         ),

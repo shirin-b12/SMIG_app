@@ -15,11 +15,21 @@ class RessourceListPage extends StatelessWidget {
         leftActions: <Widget>[
           TextButton(
             onPressed: () {},
-            child: Text('Bouton 1', style: TextStyle(color: Colors.black54)),
+            child: Text(
+                'Bouton 1',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold),
+            ),
           ),
           TextButton(
             onPressed: () {},
-            child: Text('Bouton 2', style: TextStyle(color: Colors.black54)),
+            child: Text(
+              'Bouton 2',
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
