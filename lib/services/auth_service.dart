@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/utilisateur.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:8081';
+  static String baseUrl = 'http://localhost:8081';
 
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
@@ -21,11 +21,15 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
+      final String token = response.body;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userToken', token);
       return true;
     } else {
       return false;
     }
   }
+
 
 
   Future<void> logout() async {
@@ -53,4 +57,5 @@ class AuthService {
       return false;
     }
   }
+
 }

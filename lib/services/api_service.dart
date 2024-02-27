@@ -8,7 +8,7 @@ class ApiService {
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse('$baseUrl/utilisateur'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import '../views/page/login_page.dart';
 import '../views/page/signup_page.dart';
 
@@ -29,11 +30,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // Logo au centre
                   Expanded(
                     child: Center(
-                      child: logo ?? Image.asset('assets/images/logo/logo.png', fit: BoxFit.contain),
+                      child: logo ?? Image.asset('assets/smig/logo.png', fit: BoxFit.contain),
                     ),
                   ),
                   Row(mainAxisSize: MainAxisSize.min, children: rightActions ?? [
-                    IconButton(icon: Icon(Icons.login, color: Colors.black54), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))),
+                    IconButton(
+                      icon: Icon(Icons.login, color: Colors.black54),
+                      onPressed: () async {
+                        await AuthService().logout();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+                      },
+                    ),
                     IconButton(icon: Icon(Icons.app_registration, color: Colors.black54), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()))),
                   ]),
                 ],

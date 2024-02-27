@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import '../screen/signup_or_login/signup_or_login.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,12 +19,17 @@ class _LoginPageState extends State<LoginPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-        Align(
-          alignment: Alignment.topLeft,
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () async {
+                bool isLoggedIn = await AuthService.isLoggedIn();
+                if (isLoggedIn) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+                }
               },
             ),
           ),
