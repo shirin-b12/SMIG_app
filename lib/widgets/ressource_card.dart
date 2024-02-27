@@ -10,10 +10,16 @@ class RessourceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
       child: ListTile(
         title: Text(
           ressource.titre,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF007FFF),
+          ),
         ),
         subtitle: Column(
           children: [
@@ -21,7 +27,14 @@ class RessourceCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(0, 10.0, 0, 5),
               child: Row(
                 children: [
-                  Text(ressource.description),
+                  Container(
+                    width: 300,
+                    child: Text(
+                      ressource.description,
+                      overflow: TextOverflow.ellipsis,
+
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -29,7 +42,13 @@ class RessourceCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
               child: Row(
                 children: [
-                  Text(ressource.date_de_creation),
+                  Text(
+                    ressource.getDateWithoutSeconds(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF549837),
+                    ),
+                  ),
                 ],
               ),
             ),

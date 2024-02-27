@@ -18,4 +18,14 @@ class Ressource {
       date_de_creation: formattedDate,
     );
   }
+
+  String getDateWithoutSeconds(){
+    String i = "";
+
+    for(int p = 0; p <= (date_de_creation.length - 4); p++){
+      i += date_de_creation[p];
+    }
+
+    return i;
+  }
 }

@@ -31,13 +31,18 @@ class RessourceCreationPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   final ressource = await ApiService().createRessource(
-                      titleController.text,
-                      descriptionController.text
+                    titleController.text,
+                    descriptionController.text
                   );
+
                   if (ressource != null) {
                     print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
                     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
-                  } else {
+                  }
+                  else if (titleController.text == "" || descriptionController.text == ""){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Veuillez remplir tout les champs nécessaires")));
+                  }
+                  else {
                     // Afficher une erreur
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Échec de la création de la ressource")));
                   }
