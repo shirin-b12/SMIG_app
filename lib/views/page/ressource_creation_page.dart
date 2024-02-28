@@ -10,56 +10,10 @@ class RessourceCreationPage extends StatefulWidget {
 }
 
 class _RessourceCreationPageState extends State<RessourceCreationPage> {
-  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
-  /*final DateTime creationDateController = DateTime.now();
-  final TextEditingController viewController = TextEditingController();*/
-
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Créer une ressource')),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: 'Titre'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final ressource = await ApiService().createRessource(
-                    titleController.text,
-                    descriptionController.text
-                  );
-
-                  if (ressource != null) {
-                    print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
-                  }
-                  else if (titleController.text == "" || descriptionController.text == ""){
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Veuillez remplir tout les champs nécessaires")));
-                  }
-                  else {
-                    // Afficher une erreur
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Échec de la création de la ressource")));
-                  }
-                },
-                child: Text('Créer une ressource'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }*/
+  final TextEditingController descriptionController = TextEditingController();
+  /*final Image imageController = */
+  final TextEditingController visibiliteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +34,19 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   },
                 ),
               ),
-              SizedBox(height: 100),
+              const SizedBox(height: 50),
+              _buildTextFieldWithShadow(
+                controller: titleController,
+                icon: Icons.abc_rounded,
+                label: 'Titre',
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: descriptionController,
+                icon: Icons.abc_rounded,
+                label: 'Description',
+              ),
+              const SizedBox(height: 16),
               Container(
                 width: 120,
                 height: 120,
@@ -125,17 +91,11 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 50),
-              _buildTextFieldWithShadow(
-                controller: titleController,
-                icon: Icons.account_circle,
-                label: 'Titre',
-              ),
               const SizedBox(height: 16),
               _buildTextFieldWithShadow(
-                controller: descriptionController,
-                icon: Icons.account_circle,
-                label: 'Description',
+                controller: visibiliteController,
+                icon: Icons.numbers_outlined,
+                label: 'Visibilité',
               ),
               const SizedBox(height: 50),
               _buildRoundedButton(

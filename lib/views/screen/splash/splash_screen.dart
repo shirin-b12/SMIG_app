@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import '../../../services/auth_service.dart';
 import '../../page/home_page.dart';
 import 'package:lottie/lottie.dart';
+import '../../page/ressource_list_page.dart';
 import '../DashedCirclePainter.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
     }
   }
 

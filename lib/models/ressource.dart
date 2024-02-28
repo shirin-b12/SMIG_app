@@ -1,12 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Ressource {
 
   final String titre;
   final String description;
+  final Image image;
+  final int vue;
   final String date_de_creation;
+  final int visibilite;
 
-  Ressource({required this.titre, required this.description, required this.date_de_creation});
+  Ressource({required this.titre, required this.description, required this.image, required this.vue, required this.date_de_creation,required this.visibilite});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -15,7 +19,13 @@ class Ressource {
     return Ressource(
       titre: json['titre'],
       description: json['description'],
+      image: Image.network(
+        'https://cdn.discordapp.com/attachments/1158675146912038953/1212416670493052928/xythf1yzyc471.png?ex=65f1c203&is=65df4d03&hm=71b1dad53a2c5f46db92f20fa6cb449db6ddff9e93591aff50c2d696d9301688&',
+        width: 300,
+      ),
+      vue: 666,
       date_de_creation: formattedDate,
+      visibilite: 0,
     );
   }
 
