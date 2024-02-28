@@ -12,6 +12,7 @@ class Ressource {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
     String formattedDate = DateFormat("dd/MM/yyyy HH:mm:ss").format(dateTime);
 
+
     return Ressource(
       titre: json['titre'],
       description: json['description'],
