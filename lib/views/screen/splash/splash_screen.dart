@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../../services/auth_service.dart';
 import '../../page/home_page.dart';
-import '../../page/login_page.dart';
 import 'package:lottie/lottie.dart';
 
 import '../DashedCirclePainter.dart';

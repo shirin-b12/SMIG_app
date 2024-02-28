@@ -20,7 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Container(
-          height: MediaQuery.of(context).size.height, // Définir la hauteur du conteneur pour qu'elle corresponde à la hauteur de l'écran
+          height: MediaQuery.of(context).size.height,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
