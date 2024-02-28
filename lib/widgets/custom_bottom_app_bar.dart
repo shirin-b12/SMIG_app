@@ -5,13 +5,8 @@ import '../services/auth_service.dart';
 import '../views/page/login_page.dart';
 
 class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final List<Widget>? leftActions;
-  final Widget? logo;
-  final List<Widget>? rightActions;
 
-  const CustomBottomAppBar(
-      {this.leftActions, this.logo, this.rightActions, Key? key})
-      : super(key: key);
+  const CustomBottomAppBar({Key? key}) : super(key: key);
 
   @override
   _CustomBottomAppBarState createState() => _CustomBottomAppBarState();
@@ -74,14 +69,16 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
             ),
        // SizedBox(width: 30),
             GestureDetector(
-              onTap: () {
+              onTap: () async{
                 _controller
                   ..reset()
                   ..forward();
+                await AuthService().logout();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/stats.json',
+                  'assets/appBar/search.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
@@ -112,16 +109,14 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
             ),
            // Spacer(flex: 1),
             GestureDetector(
-              onTap: () async{
+              onTap: () {
                 _controller
                   ..reset()
                   ..forward();
-                  await AuthService().logout();
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/fav.json',
+                  'assets/appBar/stats.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
