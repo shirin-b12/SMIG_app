@@ -11,22 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        leftActions: <Widget>[
-          TextButton(
-            onPressed: () {},
-            child: Text('Bouton 1', style: TextStyle(color: Colors.black54)),
-          ),
-          TextButton(
-            onPressed: () {},
-            child: Text('Bouton 2', style: TextStyle(color: Colors.black54)),
-          ),
-        ],
-        logo: FittedBox(
-          fit: BoxFit.fitHeight,
-          child: Image.asset('assets/smig/logo.png'),
-        ),
-      ),
+      appBar: CustomAppBar(),
       body: Column(
         children: <Widget>[
           FutureBuilder(

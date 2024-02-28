@@ -17,6 +17,7 @@ class RessourceCard extends StatelessWidget {
         title: Text(
           ressource.titre,
           style: TextStyle(
+            fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Color(0xFF007FFF),
           ),
