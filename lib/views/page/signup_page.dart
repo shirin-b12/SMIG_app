@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/verif_numSecu.dart';
 import '../../services/auth_service.dart';
 import 'login_page.dart';
 
@@ -49,6 +50,13 @@ class SignUpPage extends StatelessWidget {
                 }
               },
               child: Text('Créer un compte'),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerificationPage()));
+              },
+              child: Text('Vérification'),
             ),
           ],
         ),
