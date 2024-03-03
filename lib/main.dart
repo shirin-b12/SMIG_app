@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/login_page.dart';
-import 'package:smig_app/views/page/ressource_creation_page.dart';
-import 'package:smig_app/views/page/ressource_list_page.dart';
+import 'package:smig_app/views/page/resource_creation_page.dart';
+import 'package:smig_app/views/page/resource_list_page.dart';
 import 'package:smig_app/views/page/signup_page.dart';
 import 'package:smig_app/views/page/verif_numSecu.dart';
 import 'package:smig_app/views/screen/splash/splash_screen.dart';
@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignUpPage(),
         '/verification': (context) => VerificationPage(),
-        '/ressource_list': (context) => RessourceListPage(),
-        '/ressource_creation': (context) => RessourceCreationPage()
+        '/resource_list': (context) => ResourceListPage(),
+        '/resource_creation': (context) => ResourceCreationPage()
       },
     );
   }

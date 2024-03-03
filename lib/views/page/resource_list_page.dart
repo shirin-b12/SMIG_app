@@ -5,8 +5,10 @@ import '../../widgets/ressource_card.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'login_page.dart';
 
-class RessourceListPage extends StatelessWidget {
+class ResourceListPage extends StatelessWidget {
   final ApiService api = ApiService();
+
+  ResourceListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

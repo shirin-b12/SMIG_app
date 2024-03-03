@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
-import 'package:smig_app/views/page/ressource_list_page.dart';
+import 'package:smig_app/views/page/resource_list_page.dart';
 import '../../services/auth_service.dart';
 import 'login_page.dart';
 
-class RessourceCreationPage extends StatelessWidget {
+class ResourceCreationPage extends StatelessWidget {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final DateTime creationDateController = DateTime.now();
@@ -30,14 +30,14 @@ class RessourceCreationPage extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  final ressource = await ApiService().createRessource(
+                  final resource = await ApiService().createRessource(
                     titleController.text,
                     descriptionController.text
                   );
 
-                  if (ressource != null) {
+                  if (resource != null) {
                     print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ResourceListPage()));
                   }
                   else if (titleController.text == "" || descriptionController.text == ""){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Veuillez remplir tout les champs nécessaires")));
