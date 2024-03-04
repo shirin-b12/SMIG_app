@@ -32,17 +32,17 @@ class ApiService {
     }
   }
 
-  //recup la liste des ressources
-  Future<Iterable<Ressource>> fetchRessource() async {
-    final response = await http.get(Uri.parse('$baseUrl/ressources/1'));
+  Future<Ressource> getRessource(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((u) => Ressource.fromJson(u));
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return Ressource.fromJson(jsonResponse);
     } else {
-      throw Exception('Failed to load ressources from API');
+      throw Exception('Failed to load resource from API');
     }
   }
+
 
   Future<String?> signup(Utilisateur utilisateur) async {
     final response = await http.post(
