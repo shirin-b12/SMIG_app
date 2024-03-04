@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
     Color borderColor = Color(0xFF03989E);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 120.0),
+      margin: EdgeInsets.symmetric(horizontal: 50.0),
       child: TextField(
         controller: controller,
         cursorColor: cursorColor,

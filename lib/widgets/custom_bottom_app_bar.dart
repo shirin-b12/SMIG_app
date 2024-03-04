@@ -12,7 +12,7 @@ class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
   _CustomBottomAppBarState createState() => _CustomBottomAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(50.0);
+  Size get preferredSize => Size.fromHeight(35.0);
 }
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProviderStateMixin {
