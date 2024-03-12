@@ -78,6 +78,7 @@ flutter:
     - assets/gouv/marianne.png
     - assets/gouv/ministere.png
     - assets/smig/logo.png
+    - assets/other/keanu-reeves-johnny-silverhand.gif
 
   # To add assets to your application, add an assets section, like this:
   # assets:

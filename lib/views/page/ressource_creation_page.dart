@@ -91,12 +91,12 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              /*const SizedBox(height: 16),
               _buildTextFieldWithShadow(
                 controller: visibiliteController,
                 icon: Icons.numbers_outlined,
                 label: 'Visibilité',
-              ),
+              ),*/
               const SizedBox(height: 50),
               _buildRoundedButton(
                 context: context,

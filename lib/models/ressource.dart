@@ -19,8 +19,8 @@ class Ressource {
     return Ressource(
       titre: json['titre'],
       description: json['description'],
-      image: Image.network(
-        'https://cdn.discordapp.com/attachments/1158675146912038953/1212416670493052928/xythf1yzyc471.png?ex=65f1c203&is=65df4d03&hm=71b1dad53a2c5f46db92f20fa6cb449db6ddff9e93591aff50c2d696d9301688&',
+      image: Image.asset(
+        'assets/other/keanu-reeves-johnny-silverhand.gif',
         width: 300,
       ),
       vue: 666,

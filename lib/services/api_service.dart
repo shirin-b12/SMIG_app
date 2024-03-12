@@ -28,7 +28,7 @@ class ApiService {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
     } else {
-      throw Exception('Failed to load ressources from API');
+      throw Exception('Failed to load ressource from API');
     }
   }
 
@@ -39,7 +39,7 @@ class ApiService {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
       return Ressource.fromJson(jsonResponse);
     } else {
-      throw Exception('Failed to load resource from API');
+      throw Exception('Failed to load ressource from API');
     }
   }
 
@@ -110,10 +110,9 @@ class ApiService {
         "idCat": 1,
         "idType": 1,
         "idTag": 1,
-        "idCreateur": 2,
+        "idCreateur": 5,
         "titre": titre,
         "description": description,
-        "visibilite": 1,
         "dateDeCreation": formattedDate,
       }),
     );
@@ -122,6 +121,38 @@ class ApiService {
       return Ressource.fromJson(json.decode(response.body));
     } else {
       print('Failed to create resource: ${response.statusCode}');
+      print('Reason: ${response.body.toString()}');
+      return null;
+    }
+  }
+
+  deleteRessource(int ressourceId) async {
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
+    );
+
+    if(response.statusCode == 200){
+      return response.body;
+    }
+    else{
+      print('Failed to delete resource: ${response.statusCode}');
+      print('Reason: ${response.body}');
+      return null;
+    }
+  }
+
+  deleteUtilisateur(int userId) async {
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
+    );
+
+    if(response.statusCode == 200){
+      return response.body;
+    }
+    else{
+      print('Failed to delete utilisateur: ${response.statusCode}');
       print('Reason: ${response.body}');
       return null;
     }
