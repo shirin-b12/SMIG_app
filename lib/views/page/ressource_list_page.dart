@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/ressource_search_page.dart';
 import 'package:smig_app/views/page/signup_page.dart';
 import 'package:flutter/rendering.dart';
 import '../../services/api_service.dart';
@@ -8,6 +9,7 @@ import '../../widgets/custom_app_bar.dart';
 import 'login_page.dart';
 
 class RessourceListPage extends StatelessWidget {
+  final searchController = TextEditingController();
   final ApiService api = ApiService();
 
   @override
@@ -15,6 +17,27 @@ class RessourceListPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: <Widget>[
+          ElevatedButton(
+            onPressed: () => {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceSearchPage()))
+            },
+            child: Text("Recherche Ressource", style: TextStyle(fontSize: 16)),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(16,16,16,16),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Titre',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: const BorderSide(color: Colors.blueAccent)
+                ),
+              ),
+              onChanged: searchTitle,
+            ),
+          ),
           FutureBuilder(
             future: api.fetchRessources(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -35,6 +58,12 @@ class RessourceListPage extends StatelessWidget {
       ),
     );
   }
+}
+
+
+
+void searchTitle(String query){
+  //final suggestions = ;
 }
 
 class RessourceSimplifiedCard extends StatelessWidget {

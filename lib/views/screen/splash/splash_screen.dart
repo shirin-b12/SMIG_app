@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/ressource_modification_page.dart';
 import 'dart:math' as math;
+import '../../../models/ressource.dart';
 import '../../../services/auth_service.dart';
 import '../../page/home_page.dart';
 import 'package:lottie/lottie.dart';
 import '../../page/ressource_list_page.dart';
 import '../../page/ressource_page.dart';
+import '../../page/ressource_search_page.dart';
+import '../../page/signup_page.dart';
 import '../DashedCirclePainter.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,8 +41,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     bool isLoggedIn = await AuthService.isLoggedIn();
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-    } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
+    } else {                      /*RessourceModificationPage(ressource: new Ressource(id: 30, titre: "Poire", description: "jioera", image: Image.network("https://images0.persgroep.net/rcs/p6YJmTLTSolKLpb1gH6RJMHtGqs/diocontent/100662158/_fitwidth/694/?appId=21791a8992982cd8da851550a453bd7f&quality=0.8"), visibilite: 0, vue: 0, date_de_creation: "2024-03-12 17:58:51")*/
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpPage()));
     }
   }
 

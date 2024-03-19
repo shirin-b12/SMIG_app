@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/signup_page.dart';
 import '../../services/api_service.dart';
 import '../../widgets/utilisateur_card.dart';
@@ -29,6 +30,12 @@ class HomePage extends StatelessWidget {
               }
               return CircularProgressIndicator();
             },
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()))
+            },
+            child: Text("Liste Ressources", style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
