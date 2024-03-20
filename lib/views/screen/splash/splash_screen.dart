@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
+import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 import 'dart:math' as math;
 import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
@@ -44,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
       var user = await api.getUtilisateur(5);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserModificationPage(user: user)));    }
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()/*UserModificationPage(user: user)*/));    }
   }
 
   @override
@@ -229,13 +230,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.asset('assets/gouv/marianne.png'),
-                ),
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Image.asset('assets/gouv/marianne.png'),
               ),
+            ),
           ],
         ),
       ),
