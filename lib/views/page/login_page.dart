@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import '../screen/signup_or_login/signup_or_login.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,52 +16,82 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Image.asset(
-                'assets/smig/logo.png',
-                height: 120,
-              ),
-              SizedBox(height: 100),
-              _buildTextFieldWithShadow(
-                controller: emailController,
-                icon: Icons.person_outline,
-                label: 'E-mail',
-              ),
-              SizedBox(height: 16),
-              _buildTextFieldWithShadow(
-                controller: passwordController,
-                icon: Icons.lock,
-                label: 'Mot de passe',
-                isPassword: true,
-              ),
-              SizedBox(height: 100),
-              _buildRoundedButton(
-                context: context,
-                buttonColor: const Color(0xFF000091),
-                textColor: Colors.white,
-                buttonText: 'Connexion',
-                onPressed: () async {
-                  print(emailController.text+ " bdhebhd " + passwordController.text);
-                  final bool isLoggedIn = await AuthService().login(emailController.text, passwordController.text);
-                  if (isLoggedIn) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Échec de la connexion")));
-                  }
-                },
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.asset('assets/gouv/marianne.png'),
-                ),
-              ),
-            ],
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () async {
+                bool isLoggedIn = await AuthService.isLoggedIn();
+                if (isLoggedIn) {
+                  Navigator.pop(context);
+                } else {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+                }
+              },
+            ),
           ),
+          Flexible(
+            flex: 3,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(height: 100),
+                  Image.asset(
+                      'assets/smig/logo.png',
+                      height: 120,
+                  ),
+                  const SizedBox(height: 100),
+                  _buildTextFieldWithShadow(
+                    controller: emailController,
+                    icon: Icons.person_outline,
+                    label: 'E-mail',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextFieldWithShadow(
+                    controller: passwordController,
+                    icon: Icons.lock,
+                    label: 'Mot de passe',
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: 80),
+                  _buildRoundedButton(
+                    context: context,
+                    buttonColor: const Color(0xFF000091),
+                    textColor: Colors.white,
+                    buttonText: 'Connexion',
+                    onPressed: () async {
+                      final bool isLoggedIn = await AuthService().login(emailController.text, passwordController.text);
+                      if (isLoggedIn) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Échec de la connexion"),
+                                backgroundColor: Color(0xFFFFBD59),
+                                duration: const Duration(seconds: 2),
+                                shape: StadiumBorder(),
+                                behavior: SnackBarBehavior.floating)
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+                child: Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -75,16 +106,7 @@ class _LoginPageState extends State<LoginPage> {
     Color borderColor = Color(0xFF03989E);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 120.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 25,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      margin: EdgeInsets.symmetric(horizontal: 50.0),
       child: TextField(
         controller: controller,
         cursorColor: cursorColor,

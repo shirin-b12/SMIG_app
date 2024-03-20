@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/signup_page.dart';
+import 'package:smig_app/widgets/custom_top_app_bar.dart';
 import '../../services/api_service.dart';
 import '../../widgets/utilisateur_card.dart';
-import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_bottom_app_bar.dart';
 import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,7 +12,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      backgroundColor: Colors.white,
+      appBar: CustomTopAppBar(),
+      bottomNavigationBar: CustomBottomAppBar(),
       body: Column(
         children: <Widget>[
           FutureBuilder(

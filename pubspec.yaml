@@ -78,6 +78,14 @@ flutter:
     - assets/gouv/marianne.png
     - assets/gouv/ministere.png
     - assets/smig/logo.png
+    - assets/appBar/add.json
+    - assets/appBar/fav.json
+    - assets/appBar/home.json
+    - assets/appBar/user.json
+    - assets/appBar/stats.json
+    - assets/appBar/search.json
+    - assets/appBar/RE.svg
+    - assets/appBar/RE.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

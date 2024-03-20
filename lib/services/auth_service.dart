@@ -5,7 +5,7 @@ import 'package:smig_app/models/ressource.dart';
 import '../models/utilisateur.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:8081';
+  static String baseUrl = 'http://localhost:8081';
 
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,19 +22,21 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
+      final String token = response.body;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userToken', token);
       return true;
     } else {
       return false;
     }
   }
 
-
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userToken');
   }
 
-  Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {
+  Future<bool> createAccount(String nom, String prenom, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -44,15 +46,17 @@ class AuthService {
         'nom': nom,
         'prenom': prenom,
         'email': email,
-        'mot_de_passe': password,
+        'mot_de_passe': password
       }),
     );
 
     if (response.statusCode == 200) {
-      return Utilisateur.fromJson(json.decode(response.body));
+      return true;
+    } else {
+      return false;
     }
-    return null;
   }
+
 
 
 }
