@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _checkAuthentication() async {
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 4));
     bool isLoggedIn = await AuthService.isLoggedIn();
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
