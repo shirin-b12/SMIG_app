@@ -72,4 +72,31 @@ class ApiService {
     return null;
   }
 
+  Future<bool> updateUser(int id, String nom, String prenom, String email) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/utilisateur/update/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'nom': nom,
+        'prenom': prenom,
+        'email': email,
+      }),
+    );
+
+    return response.statusCode == 200;
+  }
+
+  Future<Utilisateur> getUtilisateur(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/utilisateur/$id'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return Utilisateur.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to load user from API');
+    }
+  }
+
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'dart:math' as math;
+import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
 import '../../page/home_page.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../page/utilisateur_search_page.dart';
 import '../DashedCirclePainter.dart';
 import '../signup_or_login/signup_or_login.dart';
 
@@ -14,6 +17,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
+  final ApiService api = ApiService();
 
   @override
   void initState() {
@@ -37,8 +41,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
-    }
+      var user = await api.getUtilisateur(5);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserModificationPage(user: user)));    }
   }
 
   @override
@@ -76,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     );
                   },
                 ),
-            ),
+              ),
             ),
             Transform.translate(
               offset: Offset(-125,-5),
@@ -117,24 +121,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(150,-450),
+              offset: const Offset(150,-450),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                    width: 650,
-                    height: 650,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Color(0xFFFFBD59),
-                        width: 3.5,
-                      ),
+                  width: 650,
+                  height: 650,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFFBD59),
+                      width: 3.5,
                     ),
                   ),
+                ),
               ),
             ),
             Transform.translate(
-              offset: Offset(150,50),
+              offset: const Offset(150,50),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
@@ -143,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Color(0xFF03989E),
+                      color: const Color(0xFF03989E),
                       width: 3.5,
                     ),
                   ),
@@ -151,13 +155,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(60,135),
+              offset: const Offset(60,135),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: AnimatedBuilder(
                   animation: _rotationController,
                   child: CustomPaint(
-                    size: Size(200, 200),
+                    size: const Size(200, 200),
                     painter: DashedCirclePainter(lineColor: Color(0xFF03989E)),
                   ),
                   builder: (context, child) {
@@ -170,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(20, 50),
+              offset: const Offset(20, 50),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Container(
@@ -195,7 +199,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             Transform.translate(
-              offset: Offset(-100, -25),
+              offset: const Offset(-100, -25),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Container(
@@ -210,14 +214,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     child: Container(
                     width: 100,
                     height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Color(0xFFFFBD59),
-                        width: 5,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFFFBD59),
+                          width: 5,
+                        ),
                       ),
                     ),
-                  ),
                   ),
                 ),
               ),
