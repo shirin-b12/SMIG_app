@@ -126,6 +126,67 @@ class ApiService {
       return null;
     }
   }
+
+  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    final response = await http.put(
+      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "idCat": 1,
+        "idType": 1,
+        "idTag": 1,
+        "idCreateur": 5,
+        "titre": titre,
+        "description": description,
+        "dateDeCreation": formattedDate,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to update resource: ${response.statusCode}');
+      print('Reason: ${response.body.toString()}');
+      return false;
+    }
+  }
+
+  deleteRessource(int ressourceId) async {
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
+    );
+
+    if(response.statusCode == 200){
+      return response.body;
+    }
+    else{
+      print('Failed to delete resource: ${response.statusCode}');
+      print('Reason: ${response.body}');
+      return null;
+    }
+  }
+
+  deleteUtilisateur(int userId) async {
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
+    );
+
+    if(response.statusCode == 200){
+      return response.body;
+    }
+    else{
+      print('Failed to delete utilisateur: ${response.statusCode}');
+      print('Reason: ${response.body}');
+      return null;
+    }
+  }
+
   Future<bool> updateUser(int id, String nom, String prenom, String email) async {
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/update/$id'),

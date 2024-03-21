@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (isLoggedIn) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      var user = await api.getUtilisateur(5);
+      //var user = await api.getUtilisateur(5);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()/*UserModificationPage(user: user)*/));    }
   }
 

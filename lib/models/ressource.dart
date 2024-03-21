@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 class Ressource {
 
+  final int id;
   final String titre;
   final String description;
   final Image image;
@@ -10,13 +11,14 @@ class Ressource {
   final String date_de_creation;
   final int visibilite;
 
-  Ressource({required this.titre, required this.description, required this.image, required this.vue, required this.date_de_creation,required this.visibilite});
+  Ressource({required this.id, required this.titre, required this.description, required this.image, required this.vue, required this.date_de_creation,required this.visibilite});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
     String formattedDate = DateFormat("dd/MM/yyyy HH:mm:ss").format(dateTime);
 
     return Ressource(
+      id: json['id_ressource'],
       titre: json['titre'],
       description: json['description'],
       image: Image.network(
