@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                     label: 'Mot de passe',
                     isPassword: true,
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 60),
                   _buildRoundedButton(
                     context: context,
                     buttonColor: const Color(0xFF000091),

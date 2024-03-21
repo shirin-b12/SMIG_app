@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 
 import '../services/auth_service.dart';
 import '../views/page/login_page.dart';
+import '../views/page/user_profile.dart';
 
 class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
@@ -132,6 +133,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserProfile()));
               },
               child: SizedBox(
                 child: Lottie.asset(
