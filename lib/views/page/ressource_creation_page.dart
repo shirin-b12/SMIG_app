@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import '../../services/auth_service.dart';
+import '../../widgets/custom_bottom_app_bar.dart';
+import '../../widgets/custom_top_app_bar.dart';
 import 'login_page.dart';
 
 class RessourceCreationPage extends StatefulWidget {
@@ -18,6 +20,9 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomTopAppBar(),
+      bottomNavigationBar: CustomBottomAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Container(
@@ -35,18 +40,6 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                 ),
               ),
               const SizedBox(height: 50),
-              _buildTextFieldWithShadow(
-                controller: titleController,
-                icon: Icons.abc_rounded,
-                label: 'Titre',
-              ),
-              const SizedBox(height: 16),
-              _buildTextFieldWithShadow(
-                controller: descriptionController,
-                icon: Icons.abc_rounded,
-                label: 'Description',
-              ),
-              const SizedBox(height: 16),
               Container(
                 width: 120,
                 height: 120,
@@ -90,6 +83,18 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: titleController,
+                icon: Icons.abc_rounded,
+                label: 'Titre',
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: descriptionController,
+                icon: Icons.abc_rounded,
+                label: 'Description',
               ),
               const SizedBox(height: 16),
               _buildTextFieldWithShadow(

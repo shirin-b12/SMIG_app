@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
 
+import '../../widgets/custom_bottom_app_bar.dart';
+import '../../widgets/custom_top_app_bar.dart';
+
 class UserSearchPage extends StatefulWidget {
   @override
   _UserSearchPageState createState() => _UserSearchPageState();
@@ -46,7 +49,9 @@ class _UserSearchPageState extends State<UserSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Recherche...")),
+      backgroundColor: Colors.white,
+      appBar: CustomTopAppBar(),
+      bottomNavigationBar: CustomBottomAppBar(),
       body: Column(
         children: [
           Padding(

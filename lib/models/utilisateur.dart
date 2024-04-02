@@ -3,8 +3,16 @@ class Utilisateur {
   final String nom;
   final String prenom;
   final String email;
+  final int? pic;
 
-  Utilisateur({required this.id, required this.nom, required this.prenom, required this.email});
+  Utilisateur(
+      {
+        required this.id,
+        required this.nom,
+        required this.prenom,
+        required this.email,
+        required this.pic
+      });
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
     return Utilisateur(
@@ -12,6 +20,7 @@ class Utilisateur {
       nom: json['nom'],
       prenom: json['prenom'],
       email: json['email'],
+      pic : json['id_image_profil']
     );
   }
 }

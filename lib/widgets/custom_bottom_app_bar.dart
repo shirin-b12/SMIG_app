@@ -3,11 +3,15 @@ import 'package:lottie/lottie.dart';
 import 'package:smig_app/views/page/home_page.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/ressource_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
+import 'package:smig_app/views/page/utilisateur_profile.dart';
 import 'package:smig_app/views/page/utilisateur_search_page.dart';
 
 import '../services/auth_service.dart';
+import '../views/page/commentaire_page.dart';
 import '../views/page/login_page.dart';
+import '../views/screen/transition_page.dart';
 
 class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
@@ -46,7 +50,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
         decoration: BoxDecoration(
           color: Colors.transparent,
           border: Border.all(
-            color: Color(0xFF000091),
+            color: Color(0xFF03989E),
             width: 3,
           ),
           borderRadius: BorderRadius.all(Radius.circular(60)),
@@ -59,11 +63,15 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ));
+
+
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/home.json',
+                  'assets/appBar/home_green.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
@@ -80,11 +88,14 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                   ..reset()
                   ..forward();
                 //await AuthService().logout();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserSearchPage()));
+                Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                  builder: (context) => UserSearchPage(),
+                ));
+
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/search.json',
+                  'assets/appBar/search_green.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
@@ -100,11 +111,14 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
+                Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                  builder: (context) => RessourceCreationPage(),
+                ));
+
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/add.json',
+                  'assets/appBar/add_green.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
@@ -120,11 +134,14 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                  builder: (context) => CommentsPage(ressourceId: 28),
+                ));
+
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/stats.json',
+                  'assets/appBar/stats_green.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller
@@ -140,11 +157,13 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()/*UserModificationPage(user)*/));
+                Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                  builder: (context) => UserProfile(),
+                ));
               },
               child: SizedBox(
                 child: Lottie.asset(
-                  'assets/appBar/user.json',
+                  'assets/appBar/user_green.json',
                   controller: _controller,
                   onLoaded: (composition) {
                     _controller

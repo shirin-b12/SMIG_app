@@ -1,8 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:smig_app/models/ressource.dart';
 import '../models/utilisateur.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class AuthService {
   static String baseUrl = 'http://localhost:8081';
@@ -57,6 +57,44 @@ class AuthService {
     }
   }
 
+  Future<int> getCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    String tokenData = prefs.getString('userToken') ?? '';
 
+    if (tokenData.isNotEmpty) {
+      Map<String, dynamic> tokenObj = jsonDecode(tokenData);
+
+      String accessToken = tokenObj['accessToken'];
+
+      if (accessToken.isNotEmpty) {
+        Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+        int userId = int.parse(payload['upn']);
+        print("L'ID de l'utilisateur est : $userId");
+        return userId;
+      } else {
+        print("AccessToken est vide");
+        return 0;
+      }
+    } else {
+      print("Aucun utilisateur connecté ou token non trouvé.");
+      return 0;
+    }
+  }
+
+  Future<String?> signup(Utilisateur utilisateur) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/utilisateur'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(utilisateur),
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Échec de la création de compte');
+    }
+  }
 
 }

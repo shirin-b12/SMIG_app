@@ -1,7 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/ressource.dart';
+import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
+import '../models/commentaire.dart';
 import '../models/utilisateur.dart';
 
 class ApiService {
@@ -43,40 +45,6 @@ class ApiService {
     }
   }
 
-
-  Future<String?> signup(Utilisateur utilisateur) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/utilisateur'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(utilisateur),
-    );
-
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Échec de la création de compte');
-    }
-  }
-
-  //fonction de connexion
-  /*Future<String?> login(String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/utilisateur/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'email': email, 'mot_de_passe': password}),
-    );
-
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      return null;
-    }
-  }*/
-
   //creation compte
   Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {
     final response = await http.post(
@@ -110,7 +78,7 @@ class ApiService {
         "idCat": 1,
         "idType": 1,
         "idTag": 1,
-        "idCreateur": 2,
+        "idCreateur": AuthService().getCurrentUser(),
         "titre": titre,
         "description": description,
         "visibilite": 1,
@@ -211,6 +179,34 @@ class ApiService {
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
+    }
+  }
+
+  Future<List<Commentaire>> fetchComments(int ressourceId) async {
+    final response = await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((c) => Commentaire.fromJson(c)).toList();
+    } else {
+      throw Exception('Failed to load comments from API');
+    }
+  }
+
+
+  Future<Commentaire?> createComment(Commentaire comment) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/commentaire'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(comment),
+    );
+
+    if (response.statusCode == 200) {
+      return Commentaire.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to post comment');
     }
   }
 

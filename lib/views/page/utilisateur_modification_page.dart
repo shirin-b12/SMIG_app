@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
 
+import '../../widgets/custom_bottom_app_bar.dart';
+import '../../widgets/custom_top_app_bar.dart';
+
 class UserModificationPage extends StatefulWidget {
   final Utilisateur user;
 
@@ -40,9 +43,10 @@ class _UserModificationPageState extends State<UserModificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Modifier l'utilisateur"),
-      ),
+
+      backgroundColor: Colors.white,
+      appBar: CustomTopAppBar(),
+      bottomNavigationBar: CustomBottomAppBar(),
       body: Form(
         key: _formKey,
         child: ListView(

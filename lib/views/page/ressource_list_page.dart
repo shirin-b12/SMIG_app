@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/signup_page.dart';
 import 'package:flutter/rendering.dart';
 import '../../services/api_service.dart';
+import '../../widgets/custom_bottom_app_bar.dart';
+import '../../widgets/custom_top_app_bar.dart';
 import '../../widgets/ressource_card.dart';
 import '../../models/ressource.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -10,9 +12,15 @@ import 'login_page.dart';
 class RessourceListPage extends StatelessWidget {
   final ApiService api = ApiService();
 
+  RessourceListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      backgroundColor: Colors.white,
+      appBar: const CustomTopAppBar(),
+      bottomNavigationBar: const CustomBottomAppBar(),
       body: Column(
         children: <Widget>[
           FutureBuilder(

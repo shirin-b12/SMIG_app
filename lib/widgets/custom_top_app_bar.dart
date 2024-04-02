@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smig_app/services/auth_service.dart';
+import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
 class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
 
@@ -37,17 +39,8 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
                 children: <Widget>[
                   Container(
                     margin: const EdgeInsets.only(bottom: 3, left: 3, right: 3, top: 3),
-                    child: Image.asset(
-                      'assets/gouv/marianne.png',
-                      width : 50,
-                      height: 50
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 3, left: 3, right: 3, top: 3),
                     child: Lottie.asset(
-                      'assets/appBar/RE.json',
+                      'assets/appBar/RE_green.json',
                       repeat: false,
                     ),
                   ),
@@ -59,10 +52,13 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
                         _controller
                           ..reset()
                           ..forward();
+                        AuthService().logout();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+
                       },
                       child: SizedBox(
                         child: Lottie.asset(
-                          'assets/appBar/fav.json',
+                          'assets/appBar/fav_green.json',
                           controller: _controller,
                           onLoaded: (composition) {
                             _controller
