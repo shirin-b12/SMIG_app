@@ -1,9 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
+import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
+import '../models/tag.dart';
 import '../models/utilisateur.dart';
 
 class ApiService {
@@ -31,6 +34,39 @@ class ApiService {
       return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
     } else {
       throw Exception('Failed to load ressources from API');
+    }
+  }
+
+  Future<List<Categorie>> fetchCategories() async {
+    final response = await http.get(Uri.parse('$baseUrl/categories/all'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Categorie.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load categories from API');
+    }
+  }
+
+  Future<List<Type>> fetchTypes() async {
+    final response = await http.get(Uri.parse('$baseUrl/types/all'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Type.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load categories from API');
+    }
+  }
+
+  Future<List<Tag>> fetchTags() async {
+    final response = await http.get(Uri.parse('$baseUrl/tags/all'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Tag.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load categories from API');
     }
   }
 
@@ -66,28 +102,32 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description) async {
+  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+    print('first');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    int idCreateur = await AuthService().getCurrentUser();
     final response = await http.post(
       Uri.parse('$baseUrl/ressources'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        "idCat": 1,
-        "idType": 1,
-        "idTag": 1,
-        "idCreateur": AuthService().getCurrentUser(),
+        "idCat": idCat,
+        "idType": idType,
+        "idTag": idTag,
+        "idCreateur": idCreateur,
         "titre": titre,
         "description": description,
         "visibilite": 1,
         "dateDeCreation": formattedDate,
       }),
     );
+    print ('here');
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
+      print('ok');
     } else {
       print('Failed to create resource: ${response.statusCode}');
       print('Reason: ${response.body}');
@@ -194,19 +234,102 @@ class ApiService {
   }
 
 
-  Future<Commentaire?> createComment(Commentaire comment) async {
+  Future<Commentaire?> createComment(String texteCommentaire, int idUtilisateur, int idRessource) async{
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    print(texteCommentaire);
+    print(idRessource);
+    print(idUtilisateur);
     final response = await http.post(
       Uri.parse('$baseUrl/commentaire'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(comment),
+      body: jsonEncode({
+        'commentaire': texteCommentaire,
+        'id_utilisateur_redacteur': idUtilisateur,
+        'id_ressource': idRessource,
+        'date_de_creation': formattedDate
+      }),
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null) {
+          return Commentaire.fromJson(data);
+        } else {
+          throw Exception('Le corps de la réponse est null.');
+        }
+      } else {
+        throw Exception('Failed to post comment. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erreur lors de la conversion de la réponse en Commentaire: $e');
+      return null;
+    }
+  }
+
+
+
+  Future<Categorie?> createCat(String nom) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/categories'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'nom_cat': nom,
+      }),
     );
 
     if (response.statusCode == 200) {
-      return Commentaire.fromJson(json.decode(response.body));
+      return Categorie.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to post comment');
+      print('Error status code: ${response.statusCode}');
+      print('Error body: ${response.body}');
+      return null;
+    }
+  }
+
+
+  Future<Tag?> createTag(String nom) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/tags'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'nom_tag': nom,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return Tag.fromJson(json.decode(response.body));
+    } else {
+      print('Error status code: ${response.statusCode}');
+      print('Error body: ${response.body}');
+      return null;
+    }
+  }
+
+  Future<Type?> createType(String nom) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/types'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'nom_type': nom,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return Type.fromJson(json.decode(response.body));
+    } else {
+      print('Error status code: ${response.statusCode}');
+      print('Error body: ${response.body}');
+      return null;
     }
   }
 

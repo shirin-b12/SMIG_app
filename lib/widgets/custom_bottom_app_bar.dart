@@ -10,6 +10,7 @@ import 'package:smig_app/views/page/utilisateur_search_page.dart';
 
 import '../services/auth_service.dart';
 import '../views/page/commentaire_page.dart';
+import '../views/page/create_tag_cat_type.dart';
 import '../views/page/login_page.dart';
 import '../views/screen/transition_page.dart';
 
@@ -66,8 +67,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
                   builder: (context) => HomePage(),
                 ));
-
-
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -81,7 +80,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ),
               ),
             ),
-       // SizedBox(width: 30),
             GestureDetector(
               onTap: () async{
                 _controller
@@ -91,7 +89,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
                   builder: (context) => UserSearchPage(),
                 ));
-
               },
               child: SizedBox(
                 child: Lottie.asset(

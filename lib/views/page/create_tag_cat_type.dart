@@ -1,40 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:smig_app/models/categorie.dart';
-import 'package:smig_app/models/tag.dart';
-import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
+import 'login_page.dart';
 
-class RessourceCreationPage extends StatefulWidget {
+class CatCreationPage extends StatefulWidget {
   @override
-  _RessourceCreationPageState createState() => _RessourceCreationPageState();
+  _CatCreationPageState createState() => _CatCreationPageState();
 }
 
-class _RessourceCreationPageState extends State<RessourceCreationPage> {
+class _CatCreationPageState extends State<CatCreationPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  /*final Image imageController = */
   final TextEditingController visibiliteController = TextEditingController();
-  int? selectedTypeId;
-  int? selectedTagId;
-  int? selectedCatId;
-  List<Type>? types = [];
-  List<Tag>? tags = [];
-  List<Categorie>? categories = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchMetadata();
-  }
-
-  _fetchMetadata() async {
-    types = await ApiService().fetchTypes();
-    tags = await ApiService().fetchTags();
-    categories = await ApiService().fetchCategories();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,90 +26,98 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Container(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
               const SizedBox(height: 50),
-              _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
-              const SizedBox(height: 16),
-              _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
-              const SizedBox(height: 16),
-              _buildDropdown<Type>(
-                label: 'Types',
-                selectedValue: selectedTypeId,
-                items: types,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTypeId = newValue;
-                  });
-                },
-                getId: (type) => type.id,
-                getName: (type) => type.nom,
+              Container(
+                width: 120,
+                height: 120,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF03989E),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.photo,
+                      size: 35.0,
+                      color: Colors.white,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: GestureDetector(
+                        onTap: ()=>{
+                          print("kljkljkl")
+                        },
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Color(0xFFFFBD59),
+                              width: 3,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Color(0xFF03989E),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              _buildDropdown<Tag>(
-                label: 'Tags',
-                selectedValue: selectedTagId,
-                items: tags,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTagId = newValue;
-                  });
-                },
-                getId: (tag) => tag.id,
-                getName: (tag) => tag.nom,
-              ),
-              _buildDropdown<Categorie>(
-                label: 'Catégories',
-                selectedValue: selectedCatId,
-                items: categories,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCatId = newValue;
-                  });
-                },
-                getId: (category) => category.id,
-                getName: (category) => category.nom,
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: titleController,
+                icon: Icons.abc_rounded,
+                label: 'Nom',
               ),
               const SizedBox(height: 50),
               _buildRoundedButton(
                 context: context,
                 buttonColor: Color(0xFF000091),
                 textColor: Colors.white,
-                buttonText: 'Créer une ressource',
+                buttonText: 'Créer',
                 onPressed: () async {
-                  if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
+                  String title = titleController.text.trim();
+                  if (title.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Tous les champs sont obligatoires"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
+                      const SnackBar(
+                        content: Text("Le nom de la catégorie est obligatoire"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
                     return;
                   }
                   try {
-                    final ressource = await ApiService().createRessource(
+                    final ressource = await ApiService().createType(
                       titleController.text.trim(),
-                      descriptionController.text.trim(),
-                      selectedCatId ?? 1,
-                      selectedTypeId ?? 1,
-                      selectedTagId ?? 1,
                     );
-                    if (ressource != null) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
-                    } else {
+                    if (ressource == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text("Échec lors de la création de la ressource"),
+                              content: Text("Échec lors de la création ee"),
                               backgroundColor: Color(0xFFFFBD59),
                               duration: Duration(seconds: 2),
                               shape: StadiumBorder(),
@@ -139,7 +128,7 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text("Échec lors de la création de la ressource"),
+                            content: Text("Échec lors de la création"),
                             backgroundColor: Color(0xFFFFBD59),
                             duration: Duration(seconds: 2),
                             shape: StadiumBorder(),
@@ -149,13 +138,21 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   }
                 },
               ),
+              Spacer(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/gouv/marianne.png'),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
 
   Widget _buildTextFieldWithShadow({
     required TextEditingController controller,
@@ -221,30 +218,5 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       child: Text(buttonText, style: TextStyle(fontSize: 16)),
     );
   }
-
-  Widget _buildDropdown<T>({
-    required String label,
-    required int? selectedValue,
-    required List<T>? items,
-    required ValueChanged<int?> onChanged,
-    required int Function(T) getId,
-    required String Function(T) getName,
-  }) {
-    return DropdownButtonFormField<int>(
-      decoration: InputDecoration(
-        labelText: label,
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-      ),
-      value: selectedValue,
-      onChanged: onChanged,
-      items: items?.map((item) {
-        return DropdownMenuItem<int>(
-          value: getId(item),
-          child: Text(getName(item)),
-        );
-      }).toList(),
-    );
-  }
-
 }
+

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:smig_app/views/page/signup_page.dart';
+import 'package:smig_app/models/ressource.dart';
+import 'package:smig_app/services/api_service.dart';
+import 'package:smig_app/views/page/ressource_page.dart';
+import 'package:smig_app/widgets/custom_bottom_app_bar.dart';
 import 'package:smig_app/widgets/custom_top_app_bar.dart';
 import 'package:smig_app/widgets/ressource_card.dart';
-import '../../services/api_service.dart';
-import '../../widgets/utilisateur_card.dart';
-import '../../widgets/custom_bottom_app_bar.dart';
-import 'login_page.dart';
+
+import '../screen/transition_page.dart';
 
 class HomePage extends StatelessWidget {
   final ApiService api = ApiService();
+
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,24 +21,38 @@ class HomePage extends StatelessWidget {
       bottomNavigationBar: CustomBottomAppBar(),
       body: Column(
         children: <Widget>[
-          FutureBuilder(
-            future: api.fetchRessources(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return Expanded(
-                  child: ListView.builder(
+          Expanded(
+            child: FutureBuilder(
+              future: api.fetchRessources(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                } else if (snapshot.hasData) {
+                  return ListView.builder(
                     itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) => RessourceCard(ressource: snapshot.data[index]),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return CircularProgressIndicator();
-            },
+                    itemBuilder: (context, index) {
+                      Ressource ressource = snapshot.data[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
+                            builder: (context) => RessourcePage(resourceId: ressource.id),
+                          ));
+                        },
+                        child: RessourceCard(ressource: ressource),
+                      );
+                    },
+                  );
+
+                } else {
+                  return Text("Aucune donnée disponible");
+                }
+              },
+            ),
           ),
         ],
-      ),
+      )
     );
   }
 }
