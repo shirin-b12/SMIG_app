@@ -10,7 +10,6 @@ import '../models/tag.dart';
 import '../models/utilisateur.dart';
 
 class ApiService {
-
   final String baseUrl = 'http://localhost:8081';
 
   //recup la liste des utilsateurs
@@ -28,6 +27,17 @@ class ApiService {
   //recup la liste des ressources
   Future<List<Ressource>> fetchRessources() async {
     final response = await http.get(Uri.parse('$baseUrl/ressources/all'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load ressources from API');
+    }
+  }
+
+  Future<List<Ressource>> fetchFavorie(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -82,7 +92,8 @@ class ApiService {
   }
 
   //creation compte
-  Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {
+  Future<Utilisateur?> createAccount(
+      String nom, String prenom, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -102,7 +113,8 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+  Future<Ressource?> createRessource(String titre, String description,
+      int idCat, int idType, int idTag) async {
     print('first');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
@@ -123,7 +135,7 @@ class ApiService {
         "dateDeCreation": formattedDate,
       }),
     );
-    print ('here');
+    print('here');
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
@@ -135,7 +147,8 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+  Future<bool> updateRessource(
+      int ressourceId, String titre, String description) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     final response = await http.put(
@@ -164,15 +177,13 @@ class ApiService {
   }
 
   deleteRessource(int ressourceId) async {
-
     final response = await http.delete(
       Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return response.body;
-    }
-    else{
+    } else {
       print('Failed to delete resource: ${response.statusCode}');
       print('Reason: ${response.body}');
       return null;
@@ -180,22 +191,21 @@ class ApiService {
   }
 
   deleteUtilisateur(int userId) async {
-
     final response = await http.delete(
       Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return response.body;
-    }
-    else{
+    } else {
       print('Failed to delete utilisateur: ${response.statusCode}');
       print('Reason: ${response.body}');
       return null;
     }
   }
 
-  Future<bool> updateUser(int id, String nom, String prenom, String email) async {
+  Future<bool> updateUser(
+      int id, String nom, String prenom, String email) async {
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/update/$id'),
       headers: <String, String>{
@@ -223,7 +233,8 @@ class ApiService {
   }
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
-    final response = await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -233,8 +244,8 @@ class ApiService {
     }
   }
 
-
-  Future<Commentaire?> createComment(String texteCommentaire, int idUtilisateur, int idRessource) async{
+  Future<Commentaire?> createComment(
+      String texteCommentaire, int idUtilisateur, int idRessource) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     print(texteCommentaire);
@@ -262,15 +273,14 @@ class ApiService {
           throw Exception('Le corps de la réponse est null.');
         }
       } else {
-        throw Exception('Failed to post comment. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to post comment. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Erreur lors de la conversion de la réponse en Commentaire: $e');
       return null;
     }
   }
-
-
 
   Future<Categorie?> createCat(String nom) async {
     final response = await http.post(
@@ -291,7 +301,6 @@ class ApiService {
       return null;
     }
   }
-
 
   Future<Tag?> createTag(String nom) async {
     final response = await http.post(
@@ -332,5 +341,4 @@ class ApiService {
       return null;
     }
   }
-
 }
