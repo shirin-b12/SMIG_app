@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import '../../services/api_service.dart';
 import '../models/ressource.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
-
+  final ApiService api = ApiService();
   RessourceCard({required this.ressource});
 
   @override
@@ -15,20 +16,42 @@ class RessourceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(25)),
-        border: Border.all(
-          color: Color(0xFFFFBD59),
-          width: 0.5,
-        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey[200],
-                backgroundImage: ressource.createur.pic != null ? NetworkImage(ressource.createur.pic as String) : null,
-                child: ressource.createur.pic == null ? const Icon(Icons.image, color : Color(0xFF03989E)) : null,
+              FutureBuilder(
+                future: this.ressource.createur.pic != null
+                    ? api.fetchImage(this.ressource.createur.pic as String)
+                    : null,
+                builder:
+                    (BuildContext context, AsyncSnapshot<Image?> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error);
+                  } else {
+                    return CircleAvatar(
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: snapshot.data != null
+                          ? snapshot.data!.image as ImageProvider
+                          : null,
+                      child: snapshot.data == null
+                          ? const Icon(Icons.image, color: Color(0xFF03989E))
+                          : null,
+                    );
+                  }
+                },
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -46,7 +69,7 @@ class RessourceCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Center(
-            child : Text(
+            child: Text(
               ressource.titre,
               style: const TextStyle(
                 fontSize: 22,
@@ -56,18 +79,19 @@ class RessourceCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-        Center(
-          child :
-            ClipRRect(
+          Center(
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Container(
                 height: 70.0,
                 width: 70.0,
                 color: Color(0xFF03989E),
-                child: ressource.image == null ? const Icon(Icons.image, color : Color(0xFFFFFFFF)) : null,
+                child: ressource.image == null
+                    ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
+                    : null,
               ),
             ),
-        ),
+          ),
           Text(
             ressource.description,
             style: const TextStyle(
@@ -79,7 +103,4 @@ class RessourceCard extends StatelessWidget {
       ),
     );
   }
-
-
-
 }
