@@ -29,8 +29,9 @@ class _FavorisListPageState extends State<FavorisListPage> {
       appBar: const CustomTopAppBar(),
       bottomNavigationBar: const CustomBottomAppBar(),
       body: FutureBuilder<List<Ressource>>(
-        future: ApiService().fetchRessources(),
-        builder: (BuildContext context, AsyncSnapshot<List<Ressource>> snapshot) {
+        future: ApiService().fetchFavorie(userIdFuture as int),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Ressource>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -43,7 +44,8 @@ class _FavorisListPageState extends State<FavorisListPage> {
                 return GestureDetector(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => RessourcePage(resourceId: ressource.id),
+                      builder: (context) =>
+                          RessourcePage(resourceId: ressource.id),
                     ),
                   ),
                   child: Card(
