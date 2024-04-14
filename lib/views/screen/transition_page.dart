@@ -18,3 +18,4 @@ class CustomMaterialPageRoute<T> extends MaterialPageRoute<T> {
   @override
   Duration get transitionDuration => transitionDurationCustom;
 }
+//TODO : utiliser cette classe pour les transition mais faire en sorte qu'il n'y ai pas de bouton retour
