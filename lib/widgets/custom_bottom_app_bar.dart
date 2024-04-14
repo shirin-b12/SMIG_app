@@ -48,7 +48,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
       child: Container(
         height: widget.preferredSize.height,
         decoration: const BoxDecoration(
-          color: Color(0xFF03989E)
+            color: Color(0xFF03989E)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -92,7 +92,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ),
               ),
             ),
-           // Spacer(flex: 1),
+            // Spacer(flex: 1),
             GestureDetector(
               onTap: () {
                 _controller
@@ -104,22 +104,22 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 alignment: Alignment.center,
                 children: [
                   // TODO : affichage du bouton avec les cercle autour en gardant un alignement des icons
-                 /*Container(
-                    width: 150.0,
-                    height: 150.0,
-                    decoration: BoxDecoration(
+                  Container(
+                    width: 30.0,
+                    height: 30.0,
+                    decoration: const BoxDecoration(
                       color: Color(0xFF03989E),
                       shape: BoxShape.circle,
                     ),
                   ),
                   Container(
-                    width: 100.0,
-                    height: 100.0,
-                    decoration: BoxDecoration(
+                    width: 30.0,
+                    height: 30.0,
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-                  ),*/
+                  ),
                   SizedBox(
                     child: Lottie.asset(
                       'assets/appBar/add_green.json',
@@ -134,7 +134,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ],
               ),
             ),
-           // Spacer(flex: 1),
+            // Spacer(flex: 1),
             GestureDetector(
               onTap: () {
                 _controller
@@ -154,7 +154,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ),
               ),
             ),
-           // SizedBox(width: 10),
+            // SizedBox(width: 10),
             GestureDetector(
               onTap: () {
                 _controller

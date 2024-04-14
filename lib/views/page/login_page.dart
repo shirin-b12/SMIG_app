@@ -64,10 +64,11 @@ class _LoginPageState extends State<LoginPage> {
                     textColor: Colors.white,
                     buttonText: 'Connexion',
                     onPressed: () async {
-                      final bool isLoggedIn = await AuthService().login(emailController.text, passwordController.text);
-                      if (isLoggedIn) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-                      } else {
+                      final bool isLoggedIn = await AuthService().login(emailController.text, passwordController.text);  if (isLoggedIn) {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => HomePage())
+                        );
+                      }  else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                                 content: Text("Échec de la connexion"),
