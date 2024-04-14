@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
+import 'package:expandable_text/expandable_text.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
@@ -25,106 +26,121 @@ class RessourceCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(38.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FutureBuilder(
-                  future: this.ressource.createur.pic != null
-                      ? api.fetchImage(this.ressource.createur.pic as String)
-                      : null,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Image?> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Icon(Icons.error);
-                    } else {
-                      return CircleAvatar(
-                        backgroundColor: Colors.grey[200],
-                        backgroundImage: snapshot.data != null
-                            ? snapshot.data!.image as ImageProvider
-                            : null,
-                        child: snapshot.data == null
-                            ? const Icon(Icons.image, color: Color(0xFF03989E))
-                            : null,
-                      );
-                    }
-                  },
+      child: Column(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FutureBuilder(
+                future: this.ressource.createur.pic != null
+                    ? api.fetchImage(this.ressource.createur.pic as String)
+                    : null,
+                builder:
+                    (BuildContext context, AsyncSnapshot<Image?> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error);
+                  } else {
+                    return CircleAvatar(
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: snapshot.data != null
+                          ? snapshot.data!.image as ImageProvider
+                          : null,
+                      child: snapshot.data == null
+                          ? const Icon(Icons.image, color: Color(0xFF03989E))
+                          : null,
+                    );
+                  }
+                },
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '${ressource.createur.nom} ${ressource.createur.prenom}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF015E62),
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Center(
                   child: Text(
-                    '${ressource.createur.nom} ${ressource.createur.prenom}',
+                    ressource.titre,
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF015E62),
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Catégorie: ${ressource.category.nom}",
+                      style: const TextStyle(
+                        color: Color(0xFF015E62),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      "Type: ${ressource.type.nom}",
+                      style: const TextStyle(
+                        color: Color(0xFF015E62),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: Container(
+                      height: 70.0,
+                      width: 70.0,
+                      color: Color(0xFF03989E),
+                      child: ressource.image == null
+                          ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
+                          : null,
+                    ),
+                  ),
+                ),
+                Text(
+                  ressource.description,
+                  style: const TextStyle(
+                    color: Colors.black54,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Center(
-              child: Text(
-                ressource.titre,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF015E62),
-                ),
-              ),
+          ),
+          ExpandableText(
+            ressource.description,
+            expandText: 'plus',
+            collapseText: 'moins',
+            maxLines: 1,
+            linkColor: Colors.blue,
+            style: const TextStyle(
+              color: Colors.black54,
             ),
-            const SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Catégorie: ${ressource.category.nom}",
-                  style: const TextStyle(
-                    color: Color(0xFF015E62),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                Text(
-                  "Type: ${ressource.type.nom}",
-                  style: const TextStyle(
-                    color: Color(0xFF015E62),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Container(
-                  height: 70.0,
-                  width: 70.0,
-                  color: Color(0xFF03989E),
-                  child: ressource.image == null
-                      ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
-                      : null,
-                ),
-              ),
-            ),
-            Text(
-              ressource.description,
-              style: const TextStyle(
-                color: Colors.black54,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+            collapseOnTextTap: true,
+          ),
+        ],
       ),
     );
   }
