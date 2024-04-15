@@ -135,13 +135,6 @@ class RessourceCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
-                  ressource.description,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
