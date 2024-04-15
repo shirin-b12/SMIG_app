@@ -16,6 +16,7 @@ class Ressource {
   final Utilisateur createur;
   final Categorie category;
   final Type type;
+  final Tag tags;
 
   Ressource(
       {required this.id,
@@ -27,7 +28,8 @@ class Ressource {
       required this.visibilite,
       required this.createur,
       required this.category,
-      required this.type});
+      required this.type,
+      required this.tags});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -48,7 +50,10 @@ class Ressource {
             : Categorie(id: 0, nom: "Aucune catégorie"),
         type: json['type'] != null
             ? Type.fromJson(json['type'] as Map<String, dynamic>)
-            : Type(id: 0, nom: "Aucun type"));
+            : Type(id: 0, nom: "Aucun type"),
+        tags: json['tag'] != null
+            ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
+            : Tag(id: 0, nom: "Aucun tag"));
   }
 
   String getDateWithoutSeconds() {
