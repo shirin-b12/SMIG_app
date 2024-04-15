@@ -136,14 +136,14 @@ class RessourceCard extends StatelessWidget {
                   ),
                 ),
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: ExpandableText(
                       ressource.description,
                       expandText: 'plus',
                       collapseText: 'moins',
-                      maxLines: 3,
+                      maxLines: 10,
                       linkColor: Colors.blue,
                       style: const TextStyle(
                         color: Colors.black54,
