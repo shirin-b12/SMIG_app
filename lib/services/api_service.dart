@@ -7,6 +7,9 @@ import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/auth_service.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import '../models/commentaire.dart';
@@ -351,5 +354,20 @@ class ApiService {
       print('Failed to load image: $e');
       return null;
     }
+  }
+
+  Future<Uint8List> compressImage(Uint8List data) async {
+    var result = await FlutterImageCompress.compressWithList(
+      data,
+      minWidth: 1000,
+      minHeight: 1000,
+      quality: 88,
+    );
+    return result;
+  }
+
+  Future<Uint8List> convertToFile(Future<File> fileFuture) async {
+    File file = await fileFuture;
+    return file.readAsBytes();
   }
 }

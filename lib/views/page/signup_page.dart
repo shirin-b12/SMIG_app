@@ -21,41 +21,39 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: EdgeInsets.all(8.0),
         child: Container(
           height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                SizedBox(height: 100),
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF03989E),
-                    shape: BoxShape.circle,
-                  ),
+              ),
+              SizedBox(height: 100),
+              Container(
+                width: 120,
+                height: 120,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF03989E),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Stack(
                   alignment: Alignment.center,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Icon(
-                        Icons.photo,
-                        size: 35.0,
-                        color: Colors.white,
-                      ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: GestureDetector(
-                        onTap: ()=>{
-                          print("kljkljkl")
-                        },
+                  children: [
+                    Icon(
+                      Icons.photo,
+                      size: 35.0,
+                      color: Colors.white,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: GestureDetector(
+                        onTap: () => {print("kljkljkl")},
                         child: Container(
                           width: 50,
                           height: 50,
@@ -74,99 +72,94 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 50),
-                _buildTextFieldWithShadow(
-                  controller: nameController,
-                  icon: Icons.account_circle,
-                  label: 'Nom',
-                ),
-                const SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                  controller: surnameController,
-                  icon: Icons.account_circle,
-                  label: 'Prénom',
-                ),
-                const SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                  controller: emailController,
-                  icon: Icons.email,
-                  label: 'Email',
-                ),
-                const SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                  controller: passwordController,
-                  icon: Icons.lock,
-                  label: 'Mot de passe',
-                  isPassword: true,
-                ),
-                const SizedBox(height: 50),
-                _buildRoundedButton(
-                  context: context,
-                  buttonColor: Color(0xFF000091),
-                  textColor: Colors.white,
-                  buttonText: 'Créer un compte',
-                  onPressed: () async {
-                    if (nameController.text.trim().isEmpty || surnameController.text.trim().isEmpty || emailController.text.trim().isEmpty || passwordController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Tous les champs sont obligatoires"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
-                      return;
+              ),
+              const SizedBox(height: 50),
+              _buildTextFieldWithShadow(
+                controller: nameController,
+                icon: Icons.account_circle,
+                label: 'Nom',
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: surnameController,
+                icon: Icons.account_circle,
+                label: 'Prénom',
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: emailController,
+                icon: Icons.email,
+                label: 'Email',
+              ),
+              const SizedBox(height: 16),
+              _buildTextFieldWithShadow(
+                controller: passwordController,
+                icon: Icons.lock,
+                label: 'Mot de passe',
+                isPassword: true,
+              ),
+              const SizedBox(height: 50),
+              _buildRoundedButton(
+                context: context,
+                buttonColor: Color(0xFF000091),
+                textColor: Colors.white,
+                buttonText: 'Créer un compte',
+                onPressed: () async {
+                  if (nameController.text.trim().isEmpty ||
+                      surnameController.text.trim().isEmpty ||
+                      emailController.text.trim().isEmpty ||
+                      passwordController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Tous les champs sont obligatoires"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating));
+                    return;
+                  }
+                  try {
+                    final utilisateur = await AuthService().createAccount(
+                      nameController.text.trim(),
+                      surnameController.text.trim(),
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+                    if (utilisateur) {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Échec lors de la création de compte"),
+                          backgroundColor: Color(0xFFFFBD59),
+                          duration: Duration(seconds: 2),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating));
                     }
-                    try {
-                      final utilisateur = await AuthService().createAccount(
-                        nameController.text.trim(),
-                        surnameController.text.trim(),
-                        emailController.text.trim(),
-                        passwordController.text.trim(),
-                      );
-                      if (utilisateur) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Échec lors de la création de compte"),
-                                backgroundColor: Color(0xFFFFBD59),
-                                duration: Duration(seconds: 2),
-                                shape: StadiumBorder(),
-                                behavior: SnackBarBehavior.floating
-                            )
-                        );
-                      }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Échec lors de la création de compte"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
-                    }
-                  },
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Échec lors de la création de compte"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating));
+                  }
+                },
+              ),
+              Spacer(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/gouv/marianne.png'),
                 ),
-                Spacer(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image.asset('assets/gouv/marianne.png'),
-                  ),
-                ),
-          ],
+              ),
+            ],
+          ),
         ),
-       ),
       ),
     );
   }
@@ -212,16 +205,16 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           suffixIcon: isPassword
               ? IconButton(
-            icon: Icon(
-              _passwordVisible ? Icons.visibility : Icons.visibility_off,
-              color: labelColor,
-            ),
-            onPressed: () {
-              setState(() {
-                _passwordVisible = !_passwordVisible;
-              });
-            },
-          )
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: labelColor,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                )
               : null,
         ),
         obscureText: isPassword && !_passwordVisible,
@@ -238,8 +231,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),

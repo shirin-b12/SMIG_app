@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
@@ -124,14 +127,26 @@ class RessourceCard extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
-                      child: Container(
-                        height: 70.0,
-                        width: 70.0,
-                        color: Color(0xFF03989E),
-                        child: ressource.image == null
-                            ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
-                            : null,
-                      ),
+                      child: ressource.images.fichier == null
+                          ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
+                          : FutureBuilder<Uint8List>(
+                              future: api.compressImage(
+                                  api.convertToFile(ressource.images.fichier)),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Uint8List> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Icon(Icons.error);
+                                } else {
+                                  return Image.memory(
+                                    snapshot.data!,
+                                    fit: BoxFit.cover,
+                                  );
+                                }
+                              },
+                            ),
                     ),
                   ),
                 ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
+import 'package:smig_app/models/image.dart';
 import 'package:smig_app/models/tag.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/models/utilisateur.dart';
+import 'dart:typed_data';
 
 class Ressource {
   final int id;
@@ -17,6 +19,7 @@ class Ressource {
   final Categorie category;
   final Type type;
   final Tag tags;
+  final Images images;
 
   Ressource(
       {required this.id,
@@ -29,7 +32,8 @@ class Ressource {
       required this.createur,
       required this.category,
       required this.type,
-      required this.tags});
+      required this.tags,
+      required this.images});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -53,7 +57,10 @@ class Ressource {
             : Type(id: 0, nom: "Aucun type"),
         tags: json['tag'] != null
             ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
-            : Tag(id: 0, nom: "Aucun tag"));
+            : Tag(id: 0, nom: "Aucun tag"),
+        images: json['images'] != null
+            ? Images.fromJson(json['images'] as Map<String, dynamic>)
+            : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"));
   }
 
   String getDateWithoutSeconds() {
