@@ -3,12 +3,18 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import '../../services/auth_service.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
   final ApiService api = ApiService();
+  Future<int> fetchUserId() async {
+    int? userId = await AuthService().getCurrentUser();
+    return userId ?? 0; // return 0 or a default user ID if userId is null
+  }
+
   RessourceCard({required this.ressource});
 
   @override
@@ -58,10 +64,30 @@ class RessourceCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.star),
-                onPressed: () {
-                  // Handle button press here
+              FutureBuilder<int>(
+                future: fetchUserId(),
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    return IconButton(
+                      icon: FutureBuilder<bool>(
+                        future: api.isFavorite(
+                            ressource.id.toString(), snapshot.data.toString()),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshot) {
+                          if (snapshot.hasData && snapshot.data == true) {
+                            return Icon(Icons.star);
+                          } else {
+                            return Icon(Icons.star_border);
+                          }
+                        },
+                      ),
+                      onPressed: () {
+                        // Handle button press here
+                      },
+                    );
+                  } else {
+                    return CircularProgressIndicator(); // Show a loading spinner while waiting for fetchUserId to complete
+                  }
                 },
               )
             ],

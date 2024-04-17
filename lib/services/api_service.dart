@@ -366,12 +366,6 @@ class ApiService {
       List<Ressource> favorites = (json.decode(response.body) as List)
           .map((data) => Ressource.fromJson(data))
           .toList();
-
-      // Mettre à jour 'isFavorite' pour chaque ressource favorite
-      for (Ressource ressource in favorites) {
-        ressource.isFavori = true;
-      }
-
       return favorites;
     } else {
       throw Exception('Failed to load favorites');
@@ -410,5 +404,19 @@ class ApiService {
       throw Exception(
           'Failed to load resources for creator ID $createurId from API');
     }
+  }
+
+  Future<bool> isFavorite(String ressourceId, String userId) async {
+    List<Ressource> favorites = await fetchFavoritesByUser(
+        userId); // Replace 'userId' with the actual user ID
+    print(favorites);
+    for (Ressource ressource in favorites) {
+      if (ressource.id == ressourceId) {
+        print("la ressource est favorie");
+        return true;
+      }
+    }
+
+    return false;
   }
 }

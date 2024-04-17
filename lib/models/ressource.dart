@@ -20,7 +20,6 @@ class Ressource {
   final Type type;
   final Tag tags;
   final Images images;
-  bool isFavori;
 
   Ressource(
       {required this.id,
@@ -34,36 +33,34 @@ class Ressource {
       required this.category,
       required this.type,
       required this.tags,
-      required this.images,
-      required this.isFavori});
+      required this.images});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
     String formattedDate = DateFormat("dd/MM/yyyy HH:mm:ss").format(dateTime);
 
     return Ressource(
-      id: json['id_ressource'],
-      createur: Utilisateur.fromJson(json['createur'] as Map<String, dynamic>),
-      titre: json['titre'],
-      description: json['description'],
-      image: json['image'],
-      vue: json['vue'],
-      date_de_creation: formattedDate,
-      visibilite: json['visibilite'],
-      category: json['categorie'] != null
-          ? Categorie.fromJson(json['categorie'] as Map<String, dynamic>)
-          : Categorie(id: 0, nom: "Aucune catégorie"),
-      type: json['type'] != null
-          ? Type.fromJson(json['type'] as Map<String, dynamic>)
-          : Type(id: 0, nom: "Aucun type"),
-      tags: json['tag'] != null
-          ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
-          : Tag(id: 0, nom: "Aucun tag"),
-      images: json['images'] != null
-          ? Images.fromJson(json['images'] as Map<String, dynamic>)
-          : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"),
-      isFavori: json['isFavori'] ?? false,
-    ); // Use the value from JSON, if it exists, otherwise default to false);
+        id: json['id_ressource'],
+        createur:
+            Utilisateur.fromJson(json['createur'] as Map<String, dynamic>),
+        titre: json['titre'],
+        description: json['description'],
+        image: json['image'],
+        vue: json['vue'],
+        date_de_creation: formattedDate,
+        visibilite: json['visibilite'],
+        category: json['categorie'] != null
+            ? Categorie.fromJson(json['categorie'] as Map<String, dynamic>)
+            : Categorie(id: 0, nom: "Aucune catégorie"),
+        type: json['type'] != null
+            ? Type.fromJson(json['type'] as Map<String, dynamic>)
+            : Type(id: 0, nom: "Aucun type"),
+        tags: json['tag'] != null
+            ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
+            : Tag(id: 0, nom: "Aucun tag"),
+        images: json['images'] != null
+            ? Images.fromJson(json['images'] as Map<String, dynamic>)
+            : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"));
   }
 
   String getDateWithoutSeconds() {
@@ -74,9 +71,5 @@ class Ressource {
     }
 
     return i;
-  }
-
-  bool getisFavori() {
-    return isFavori;
   }
 }
