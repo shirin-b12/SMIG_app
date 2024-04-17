@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/auth_service.dart';
+import 'package:smig_app/views/page/ressource_modification_page.dart';
 import '../../models/commentaire.dart';
 import '../../models/ressource.dart';
 import '../../services/api_service.dart';
@@ -9,9 +10,11 @@ import '../../widgets/ressource_card.dart';
 
 class RessourcePage extends StatelessWidget {
   final ApiService api = ApiService();
-  final int resourceId;
+  final int ressourceId;
 
-  RessourcePage({required this.resourceId});
+  RessourcePage({required this.ressourceId});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +42,9 @@ class RessourcePage extends StatelessWidget {
                       onPressed: () async {
                         int userId = await AuthService().getCurrentUser();
                         print(userId);
-                        print(resourceId);
+                        print(ressourceId);
                         print(commentController.text);
-                        await api.createComment(commentController.text, userId, resourceId);
+                        await api.createComment(commentController.text, userId, ressourceId);
                         Navigator.pop(context);
                       },
                     ),
@@ -57,7 +60,7 @@ class RessourcePage extends StatelessWidget {
         children: [
           Expanded(
             child: FutureBuilder<Ressource>(
-              future: api.getRessource(resourceId),
+              future: api.getRessource(ressourceId),
               builder: (context, snapshotRessource) {
                 if (snapshotRessource.connectionState == ConnectionState.done) {
                   if (snapshotRessource.hasData) {
@@ -65,7 +68,7 @@ class RessourcePage extends StatelessWidget {
                       children: <Widget>[
                         RessourceCard(ressource: snapshotRessource.data!),
                         FutureBuilder<List<Commentaire>>(
-                          future: api.fetchComments(resourceId),
+                          future: api.fetchComments(ressourceId),
                           builder: (context, snapshotComments) {
                             if (snapshotComments.connectionState == ConnectionState.done) {
                               if (snapshotComments.hasData) {
@@ -94,6 +97,7 @@ class RessourcePage extends StatelessWidget {
                             return Center(child: CircularProgressIndicator());
                           },
                         ),
+                        _buildModifyButton(context, snapshotRessource.data!),
                       ],
                     );
                   } else if (snapshotRessource.hasError) {
@@ -107,5 +111,20 @@ class RessourcePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildModifyButton(BuildContext context, Ressource ressource) {
+
+    return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RessourceUpdatePage(ressource: ressource),
+            ),
+          );
+        },
+        child: Text('Modifier la ressource'),
+      );
   }
 }
