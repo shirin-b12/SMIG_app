@@ -4,7 +4,6 @@ import '../../page/signup_page.dart';
 import '../DashedCirclePainter.dart';
 
 class SignUpOrLogin extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +51,7 @@ class SignUpOrLogin extends StatelessWidget {
               Transform.translate(
                 offset: Offset(50, 100),
                 child: Align(
-                alignment: Alignment.topRight,
+                  alignment: Alignment.topRight,
                   child: CustomPaint(
                     size: Size(150, 150),
                     painter: DashedCirclePainter(lineColor: Color(0xFFFFBD59)),
@@ -88,7 +87,8 @@ class SignUpOrLogin extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Image.asset('assets/smig/logo.png',
+                    Image.asset(
+                      'assets/smig/logo.png',
                       width: 200,
                       height: 200,
                     ),
@@ -99,7 +99,10 @@ class SignUpOrLogin extends StatelessWidget {
                       textColor: Colors.white,
                       buttonText: 'Connexion',
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
                       },
                     ),
                     const SizedBox(height: 20),
@@ -118,7 +121,10 @@ class SignUpOrLogin extends StatelessWidget {
                       textColor: Colors.white,
                       buttonText: 'Inscription',
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpPage()));
                       },
                     ),
                   ],
@@ -140,8 +146,8 @@ class SignUpOrLogin extends StatelessWidget {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
