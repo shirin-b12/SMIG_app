@@ -159,19 +159,21 @@ class ApiService {
   }
 
   Future<bool> updateRessource(
-      int ressourceId, String titre, String description) async {
+      int ressourceId, String titre, String description,
+      int idCat, int idType, int idTag) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    int idCreateur = await AuthService().getCurrentUser();
     final response = await http.put(
       Uri.parse('$baseUrl/ressources/update/$ressourceId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        "idCat": 1,
-        "idType": 1,
-        "idTag": 1,
-        "idCreateur": 5,
+        "idCat": idCat,
+        "idType": idType,
+        "idTag": idTag,
+        "idCreateur": idCreateur,
         "titre": titre,
         "description": description,
         "dateDeCreation": formattedDate,
@@ -237,7 +239,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
-      print(jsonResponse);
+      //print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');

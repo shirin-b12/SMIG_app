@@ -35,9 +35,9 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     titleController.text = widget.ressource.titre;
     descriptionController.text = widget.ressource.description;
 
-    selectedTypeId = widget.ressource.type.id; // Remplacez typeId par l'attribut correct de votre modèle
-    selectedTagId = widget.ressource.tags.id; // Remplacez tagId par l'attribut correct de votre modèle
-    selectedCatId = widget.ressource.category.id; // Remplacez categorieId par l'attribut correct de votre modèle
+    selectedTypeId = widget.ressource.type.id;
+    selectedTagId = widget.ressource.tags.id;
+    selectedCatId = widget.ressource.category.id;
 
     _fetchMetadata();
   }
@@ -57,89 +57,99 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
       bottomNavigationBar: CustomBottomAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
-        child: Container(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              const SizedBox(height: 50),
-              _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
-              const SizedBox(height: 16),
-              _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
-              const SizedBox(height: 16),
-              _buildDropdown<Type>(
-                label: 'Types',
-                selectedValue: selectedTypeId,
-                items: types,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTypeId = newValue;
-                  });
-                },
-                getId: (type) => type.id,
-                getName: (type) => type.nom,
-              ),
-              _buildDropdown<Tag>(
-                label: 'Tags',
-                selectedValue: selectedTagId,
-                items: tags,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTagId = newValue;
-                  });
-                },
-                getId: (tag) => tag.id,
-                getName: (tag) => tag.nom,
-              ),
-              _buildDropdown<Categorie>(
-                label: 'Catégories',
-                selectedValue: selectedCatId,
-                items: categories,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCatId = newValue;
-                  });
-                },
-                getId: (category) => category.id,
-                getName: (category) => category.nom,
-              ),
-              const SizedBox(height: 50),
-              _buildRoundedButton(
-                context: context,
-                buttonColor: Color(0xFF000091),
-                textColor: Colors.white,
-                buttonText: 'Modifier la ressource',
-                onPressed: () async {
-                  if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Tous les champs sont obligatoires"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
-                    );
-                    return;
-                  }
-                  try {
-                    final bool = await ApiService().updateRessource(
-                      widget.ressource.id,
-                      titleController.text.trim(),
-                      descriptionController.text.trim(),
-                      selectedCatId ?? 1,
-                      selectedTypeId ?? 1,
-                      selectedTagId ?? 1,
-                    );
-                    if (bool) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
-                    } else {
+        child: Center(
+          child: Container(
+            width: 300,
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 50),
+                _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
+                SizedBox(height: 16),
+                _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
+                SizedBox(height: 16),
+                _buildDropdown<Type>(
+                  label: 'Types',
+                  selectedValue: selectedTypeId,
+                  items: types,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTypeId = newValue;
+                    });
+                  },
+                  getId: (type) => type.id,
+                  getName: (type) => type.nom,
+                ),
+                SizedBox(height: 16),
+                _buildDropdown<Tag>(
+                  label: 'Tags',
+                  selectedValue: selectedTagId,
+                  items: tags,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTagId = newValue;
+                    });
+                  },
+                  getId: (tag) => tag.id,
+                  getName: (tag) => tag.nom,
+                ),
+                SizedBox(height: 16),
+                _buildDropdown<Categorie>(
+                  label: 'Catégories',
+                  selectedValue: selectedCatId,
+                  items: categories,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedCatId = newValue;
+                    });
+                  },
+                  getId: (category) => category.id,
+                  getName: (category) => category.nom,
+                ),
+                SizedBox(height: 50),
+                _buildRoundedButton(
+                  context: context,
+                  buttonColor: Color(0xFF000091),
+                  textColor: Colors.white,
+                  buttonText: 'Modifier la ressource',
+                  iconData: Icons.mode,
+                  onPressed: () async {
+                    if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Tous les champs sont obligatoires"),
+                              backgroundColor: Color(0xFFFFBD59),
+                              duration: Duration(seconds: 2),
+                              shape: StadiumBorder(),
+                              behavior: SnackBarBehavior.floating
+                          )
+                      );
+                      return;
+                    }
+                    try {
+                      final bool = await ApiService().updateRessource(
+                        widget.ressource.id,
+                        titleController.text.trim(),
+                        descriptionController.text.trim(),
+                        selectedCatId ?? 1,
+                        selectedTypeId ?? 1,
+                        selectedTagId ?? 1,
+                      );
+                      if (bool) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Échec lors de la création de la ressource"),
+                                backgroundColor: Color(0xFFFFBD59),
+                                duration: Duration(seconds: 2),
+                                shape: StadiumBorder(),
+                                behavior: SnackBarBehavior.floating
+                            )
+                        );
+                      }
+                    } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text("Échec lors de la création de la ressource"),
@@ -150,26 +160,15 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
                           )
                       );
                     }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Échec lors de la création de la ressource"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
-                    );
-                  }
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
 
   Widget _buildTextFieldWithShadow({
     required TextEditingController controller,
@@ -181,35 +180,32 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     Color cursorColor = Color(0xFF03989E);
     Color borderColor = Color(0xFF03989E);
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 120.0),
-      child: TextField(
-        controller: controller,
-        cursorColor: cursorColor,
-        style: TextStyle(color: Colors.black54),
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: labelColor),
-          labelText: label,
-          labelStyle: TextStyle(
-            color: labelColor,
-            height: 0.5,
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding: EdgeInsets.only(top: 20.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
-          ),
+    return TextField(
+      controller: controller,
+      cursorColor: cursorColor,
+      style: TextStyle(color: Colors.black54),
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: labelColor),
+        labelText: label,
+        labelStyle: TextStyle(
+          color: labelColor,
+          height: 0.5,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.only(top: 20.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
         ),
       ),
     );
@@ -220,6 +216,7 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     required Color buttonColor,
     required Color textColor,
     required String buttonText,
+    required IconData iconData,
     required VoidCallback onPressed,
   }) {
     return ElevatedButton(
@@ -232,7 +229,14 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
       ),
       onPressed: onPressed,
-      child: Text(buttonText, style: TextStyle(fontSize: 16)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(iconData), // Icône
+          SizedBox(width: 10), // Espace entre l'icône et le texte
+          Text(buttonText, style: TextStyle(fontSize: 16)),
+        ],
+      ),
     );
   }
 
@@ -244,21 +248,26 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     required int Function(T) getId,
     required String Function(T) getName,
   }) {
-    return DropdownButtonFormField<int>(
-      decoration: InputDecoration(
-        labelText: label,
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+    return Container(
+      width: 250,
+      child: DropdownButtonFormField<int>(
+        decoration: InputDecoration(
+          labelText: label,
+          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+        ),
+        value: selectedValue,
+        onChanged: onChanged,
+        items: items?.map((item) {
+          return DropdownMenuItem<int>(
+            value: getId(item),
+            child: Text(
+              getName(item),
+              style: TextStyle(fontSize: 16),
+            ),
+          );
+        }).toList(),
       ),
-      value: selectedValue,
-      onChanged: onChanged,
-      items: items?.map((item) {
-        return DropdownMenuItem<int>(
-          value: getId(item),
-          child: Text(getName(item)),
-        );
-      }).toList(),
     );
   }
-
 }

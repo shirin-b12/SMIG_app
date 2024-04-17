@@ -14,8 +14,6 @@ class RessourcePage extends StatelessWidget {
 
   RessourcePage({required this.ressourceId});
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

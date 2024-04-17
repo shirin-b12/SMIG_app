@@ -51,12 +51,6 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
               const SizedBox(height: 50),
               _buildTextFieldWithShadow(
                   controller: titleController,
