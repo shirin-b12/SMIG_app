@@ -181,6 +181,12 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
+      print(ressourceId);
+      print(titre);
+      print(description);
+      print(idCat);
+      print(idType);
+      print(idTag);
       return true;
     } else {
       print('Failed to update resource: ${response.statusCode}');
