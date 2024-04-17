@@ -27,7 +27,7 @@ class RessourceCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey[200],
-                backgroundImage: ressource.createur.pic != null ? NetworkImage(ressource.createur.pic as String) : null,
+                //backgroundImage: ressource.createur.pic != null ? NetworkImage(ressource.createur.pic as String) : null,
                 child: ressource.createur.pic == null ? const Icon(Icons.image, color : Color(0xFF03989E)) : null,
               ),
               const SizedBox(width: 10),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'package:smig_app/views/page/ressource_page.dart';
+import '../../models/tiny_ressource.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 
@@ -14,12 +14,35 @@ class FavorisListPage extends StatefulWidget {
 }
 
 class _FavorisListPageState extends State<FavorisListPage> {
-  late Future<int> userIdFuture;
+  int? userId;
+  bool isLoading = true;
+  List<TinyRessource>? ressources;
 
   @override
   void initState() {
     super.initState();
-    userIdFuture = AuthService().getCurrentUser();
+    _loadUserProfileAndFavorites();
+  }
+
+  Future<void> _loadUserProfileAndFavorites() async {
+    int? id = await AuthService().getCurrentUser();
+    if (id != null) {
+      List<int> favoriteIds = await ApiService().fetchFavorie(id);
+      List<TinyRessource> fetchedRessources = [];
+      for (var resourceId in favoriteIds) {
+        TinyRessource ressource = await ApiService().fetchTinyRessource(resourceId);
+        fetchedRessources.add(ressource);
+      }
+      setState(() {
+        userId = id;
+        ressources = fetchedRessources;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -28,53 +51,24 @@ class _FavorisListPageState extends State<FavorisListPage> {
       backgroundColor: Colors.white,
       appBar: const CustomTopAppBar(),
       bottomNavigationBar: const CustomBottomAppBar(),
-      body: FutureBuilder<List<Ressource>>(
-        future: ApiService().fetchFavorie(userIdFuture as int),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<Ressource>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text("Erreur : ${snapshot.error}");
-          } else if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Ressource ressource = snapshot.data![index];
-                return GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          RessourcePage(resourceId: ressource.id),
-                    ),
-                  ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        ressource.titre,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF007FFF),
-                        ),
-                      ),
-                      subtitle: Text(
-                        ressource.description,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Center(child: Text("Aucune donnée disponible"));
-          }
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ressources != null && ressources!.isNotEmpty
+          ? ListView.builder(
+        itemCount: ressources!.length,
+        itemBuilder: (context, index) {
+          TinyRessource ressource = ressources![index];
+          return ListTile(
+            title: Text(ressource.titre),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => RessourcePage(resourceId: ressource.id),
+              ),
+            ),
+          );
         },
-      ),
+      )
+          : const Center(child: Text("No favorites available")),
     );
   }
 }

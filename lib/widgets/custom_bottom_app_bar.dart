@@ -7,6 +7,7 @@ import 'package:smig_app/views/page/ressource_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'package:smig_app/views/page/utilisateur_profile.dart';
 import 'package:smig_app/views/page/utilisateur_search_page.dart';
+import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
 import '../services/auth_service.dart';
 import '../views/page/commentaire_page.dart';
@@ -92,7 +93,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ),
               ),
             ),
-           // Spacer(flex: 1),
             GestureDetector(
               onTap: () {
                 _controller
@@ -103,44 +103,33 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // TODO : affichage du bouton avec les cercle autour en gardant un alignement des icons
-                 Container(
-                    width: 30.0,
-                    height: 30.0,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF03989E),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  Container(
-                    width: 30.0,
-                    height: 30.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  SizedBox(
-                    child: Lottie.asset(
-                      'assets/appBar/add_green.json',
-                      controller: _controller,
-                      onLoaded: (composition) {
-                        _controller
-                          ..duration = composition.duration
-                          ..forward();
-                      },
+                  Transform.translate(
+                    offset: Offset(0, -15),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Lottie.asset(
+                        'assets/appBar/add_green.json',
+                        controller: _controller,
+                        onLoaded: (composition) {
+                          _controller
+                            ..duration = composition.duration
+                            ..forward();
+                        },
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-           // Spacer(flex: 1),
             GestureDetector(
               onTap: () {
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CommentsPage(ressourceId: 28)));
+                AuthService().logout();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -154,7 +143,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 ),
               ),
             ),
-           // SizedBox(width: 10),
             GestureDetector(
               onTap: () {
                 _controller

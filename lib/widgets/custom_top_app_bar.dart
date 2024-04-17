@@ -17,7 +17,7 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(40.0);
 }
-  class _CustomTopAppBarState extends State<CustomTopAppBar> with TickerProviderStateMixin {
+class _CustomTopAppBarState extends State<CustomTopAppBar> with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -29,17 +29,18 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(10.0),
+      preferredSize: Size.fromHeight(40.0), // Make sure this matches the AppBar's intended size
       child: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         flexibleSpace: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             return Container(
-              child:  Row(
+              child: Row(
                 children: <Widget>[
                   Container(
-                    margin: const EdgeInsets.only(bottom: 3, left: 3, right: 3, top: 3),
+                    margin: const EdgeInsets.all(3),
                     child: Lottie.asset(
                       'assets/appBar/RE_green.json',
                       repeat: false,
@@ -47,24 +48,19 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
                   ),
                   Spacer(),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 3, left: 3, right: 3, top: 3),
-                    child : GestureDetector(
+                    margin: const EdgeInsets.all(3),
+                    child: GestureDetector(
                       onTap: () {
-                        _controller
-                          ..reset()
-                          ..forward();
-                        //AuthService().logout();
+                        _controller.reset();
+                        _controller.forward();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FavorisListPage()));
-
                       },
                       child: SizedBox(
                         child: Lottie.asset(
                           'assets/appBar/fav_green.json',
                           controller: _controller,
                           onLoaded: (composition) {
-                            _controller
-                              ..duration = composition.duration
-                              ..forward();
+                            _controller.duration = composition.duration;
                           },
                         ),
                       ),
@@ -80,8 +76,8 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   }
 
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
+  void dispose() {
+    _controller.dispose(); // Dispose the controller to prevent memory leaks
+    super.dispose();
   }
 }

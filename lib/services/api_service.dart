@@ -7,6 +7,7 @@ import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
 import '../models/tag.dart';
+import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
 
 class ApiService {
@@ -35,15 +36,25 @@ class ApiService {
       throw Exception('Failed to load ressources from API');
     }
   }
-
-  Future<List<Ressource>> fetchFavorie(int id) async {
+  Future<List<int>> fetchFavorie(int? id) async {
     final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
-
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
+      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      return ids;
     } else {
-      throw Exception('Failed to load ressources from API');
+      throw Exception('Failed to load favorite resource IDs from API');
+    }
+  }
+
+  // Fetch a single resource by its ID
+  Future<TinyRessource> fetchTinyRessource(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      return TinyRessource.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load resource from API');
     }
   }
 
@@ -226,6 +237,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
@@ -341,4 +353,17 @@ class ApiService {
       return null;
     }
   }
+
+  Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => TinyRessource.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load resources for creator ID $createurId from API');
+    }
+  }
+
+
 }
