@@ -1,17 +1,10 @@
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/auth_service.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'dart:convert';
-import 'dart:typed_data';
 import '../models/commentaire.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
@@ -131,7 +124,8 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+  Future<Ressource?> createRessource(String titre, String description,
+      int idCat, int idType, int idTag) async {
     print('first');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
@@ -243,6 +237,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
@@ -251,7 +246,7 @@ class ApiService {
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -359,38 +354,6 @@ class ApiService {
     }
   }
 
-  Future<Image?> fetchImage(String id) async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/images/$id'));
-
-      if (response.statusCode == 200) {
-        Uint8List imageData = response.bodyBytes;
-        print(imageData);
-        return Image.memory(imageData);
-      } else {
-        print('Failed to load image. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Failed to load image: $e');
-      return null;
-    }
-  }
-
- /* Future<Uint8List> compressImage(Uint8List data) async {
-    var result = await FlutterImageCompress.compressWithList(
-      data,
-      minWidth: 1000,
-      minHeight: 1000,
-      quality: 88,
-    );
-    return result;
-  }
-
-  Future<Uint8List> convertToFile(Future<File> fileFuture) async {
-    File file = await fileFuture;
-    return file.readAsBytes();
-  }
   Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
     final response = await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
@@ -400,7 +363,7 @@ class ApiService {
     } else {
       throw Exception('Failed to load resources for creator ID $createurId from API');
     }
-  }*/
+  }
 
 
 }

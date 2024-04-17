@@ -5,8 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
-import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
@@ -109,9 +107,10 @@ class RessourceCard extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
-                      child: ressource.images.fichier == null
-                          ? const Icon(Icons.image, color: Color(0xFFFFFFFF))
-                          : FutureBuilder<Uint8List>(
+                      child: //ressource.images.fichier == null
+                          //?
+                      const Icon(Icons.image, color: Color(0xFFFFFFFF))
+                          /*: FutureBuilder<Uint8List>(
                               future: api.compressImage(
                                   api.convertToFile(ressource.images.fichier)),
                               builder: (BuildContext context,
@@ -128,15 +127,15 @@ class RessourceCard extends StatelessWidget {
                                   );
                                 }
                               },
-                            ),
+                            ),*/
                     ),
                   ),
                 ),
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ExpandableText(
+                    padding: EdgeInsets.all(20.0),
+                    /*child: ExpandableText(
                       ressource.description,
                       expandText: 'plus',
                       collapseText: 'moins',
@@ -146,7 +145,7 @@ class RessourceCard extends StatelessWidget {
                         color: Colors.black54,
                       ),
                       collapseOnTextTap: true,
-                    ),
+                    ),*/
                   ),
                 ),
                 Row(

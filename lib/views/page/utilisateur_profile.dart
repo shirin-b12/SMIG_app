@@ -54,7 +54,7 @@ class _UserProfileState extends State<UserProfile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Changement ici pour aligner les icônes aux bords
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   icon: Icon(Icons.edit, color: Color(0xFF03989E)),
@@ -82,56 +82,26 @@ class _UserProfileState extends State<UserProfile> {
                 ) : null,
               ),
               alignment: Alignment.center,
-              child: Stack(
-                alignment: Alignment.center, // Assurer que tout est centré
-                children: [
-                  if (user?.pic == null)
-                    Icon(
-                      Icons.photo,
-                      size: 35.0,
-                      color: Colors.white,
-                    ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        print("Change photo tapped");
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Color(0xFFFFBD59),
-                            width: 3,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Color(0xFF03989E),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: _buildResourcesList(),
-                  ),
-                ],
-              ),
+              child: user?.pic == null ? Icon(
+                Icons.photo,
+                size: 35.0,
+                color: Colors.white,
+              ) : null,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Nom: ${user?.nom} ', style: TextStyle(color: Color(0xFF03989E))),
-                  Text('Prénom: ${user?.prenom}', style: TextStyle(color: Color(0xFF03989E))),
+                  Text('${user?.nom} ', style: TextStyle(color: Color(0xFF03989E))),
+                  Text('${user?.prenom}', style: TextStyle(color: Color(0xFF03989E))),
                 ],
               ),
             ),
             Text('Email: ${user?.email}'),
+            Expanded(
+              child: _buildResourcesList(),
+            ),
           ],
         ),
       ),
