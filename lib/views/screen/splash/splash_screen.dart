@@ -10,7 +10,7 @@ import 'package:lottie/lottie.dart';
 import '../../page/ressource_list_page.dart';
 import '../../page/ressource_page.dart';
 
-import '../../page/utilisateur_search_page.dart';
+import '../../page/search_page.dart';
 import '../DashedCirclePainter.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:smig_app/views/screen/splash/splash_screen.dart';
 import 'views/page/home_page.dart';
 import 'views/page/commentaire_page.dart';
 import 'views/page/utilisateur_profile.dart';
-import 'views/page/utilisateur_search_page.dart';
+import 'views/page/search_page.dart';
 
 void main() {
   runApp(MyApp());
