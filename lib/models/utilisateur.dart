@@ -5,14 +5,13 @@ class Utilisateur {
   final String email;
   final int? pic;
 
-  Utilisateur(
-      {
-        required this.id,
-        required this.nom,
-        required this.prenom,
-        required this.email,
-        required this.pic
-      });
+  Utilisateur({
+    required this.id,
+    required this.nom,
+    required this.prenom,
+    required this.email,
+    this.pic,
+  });
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
     return Utilisateur(
@@ -20,7 +19,12 @@ class Utilisateur {
       nom: json['nom'],
       prenom: json['prenom'],
       email: json['email'],
-      pic : json['id_image_profil']
+      pic: json['imageProfil'] != null ? json['imageProfil']['id_image'] : null,
     );
+  }
+
+  String getProfileImageUrl() {
+    print(this.pic);
+    return 'http://localhost:8081/images/${this.pic}';
   }
 }

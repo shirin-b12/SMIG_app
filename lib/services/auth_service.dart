@@ -57,26 +57,31 @@ class AuthService {
     }
   }
 
+
   Future<int> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     String tokenData = prefs.getString('userToken') ?? '';
+    tokenData = tokenData.trim();
 
     if (tokenData.isNotEmpty) {
-      Map<String, dynamic> tokenObj = jsonDecode(tokenData);
-
-      String accessToken = tokenObj['accessToken'];
-
-      if (accessToken.isNotEmpty) {
-        Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
-        int userId = int.parse(payload['upn']);
-        print("L'ID de l'utilisateur est : $userId");
-        return userId;
-      } else {
-        print("AccessToken est vide");
+      try {
+        Map<String, dynamic> tokenJson = jsonDecode(tokenData);
+        String accessToken = tokenJson['accessToken'];
+        if (accessToken.isNotEmpty) {
+          Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+          int userId = int.parse(payload['upn']);
+          print("L'ID de l'utilisateur est : $userId");
+          return userId;
+        } else {
+          print("AccessToken is empty or not found.");
+          return 0;
+        }
+      } catch (e) {
+        print("Error parsing token or accessing user ID: $e");
         return 0;
       }
     } else {
-      print("Aucun utilisateur connecté ou token non trouvé.");
+      print("No token found");
       return 0;
     }
   }
@@ -95,6 +100,29 @@ class AuthService {
     } else {
       throw Exception('Échec de la création de compte');
     }
+
+
+  }
+
+  Future<Utilisateur?> getCurrentUserDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    String tokenData = prefs.getString('userToken') ?? '';
+    tokenData = tokenData.trim();
+
+    Map<String, dynamic> tokenJson = jsonDecode(tokenData);
+    String accessToken = tokenJson['accessToken'];
+
+    if (accessToken != null) {
+      Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+      int userId = int.parse(payload['upn']);
+      print(userId);
+      final response = await http.get(Uri.parse('$baseUrl/utilisateur/$userId'));
+      print(response.body);
+      if (response.statusCode == 200) {
+        return Utilisateur.fromJson(json.decode(response.body));
+      }
+    }
+    return null;
   }
 
 }

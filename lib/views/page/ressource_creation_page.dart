@@ -3,6 +3,7 @@ import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/tag.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/api_service.dart';
+import 'package:smig_app/views/page/home_page.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
@@ -45,7 +46,8 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Container(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -56,9 +58,15 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                 },
               ),
               const SizedBox(height: 50),
-              _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
+              _buildTextFieldWithShadow(
+                  controller: titleController,
+                  icon: Icons.title,
+                  label: 'Titre'),
               const SizedBox(height: 16),
-              _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
+              _buildTextFieldWithShadow(
+                  controller: descriptionController,
+                  icon: Icons.description,
+                  label: 'Description'),
               const SizedBox(height: 16),
               _buildDropdown<Type>(
                 label: 'Types',
@@ -103,16 +111,14 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                 textColor: Colors.white,
                 buttonText: 'Créer une ressource',
                 onPressed: () async {
-                  if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Tous les champs sont obligatoires"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
-                    );
+                  if (titleController.text.trim().isEmpty ||
+                      descriptionController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Tous les champs sont obligatoires"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating));
                     return;
                   }
                   try {
@@ -124,28 +130,26 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                       selectedTagId ?? 1,
                     );
                     if (ressource != null) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceListPage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => RessourceListPage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Échec lors de la création de la ressource"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text("Échec lors de la création de la ressource"),
+                          backgroundColor: Color(0xFFFFBD59),
+                          duration: Duration(seconds: 2),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating));
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Échec lors de la création de la ressource"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content:
+                            Text("Échec lors de la création de la ressource"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating));
                   }
                 },
               ),
@@ -155,7 +159,6 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       ),
     );
   }
-
 
   Widget _buildTextFieldWithShadow({
     required TextEditingController controller,
@@ -210,8 +213,8 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -246,5 +249,4 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       }).toList(),
     );
   }
-
 }

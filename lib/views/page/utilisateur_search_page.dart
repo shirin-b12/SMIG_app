@@ -45,7 +45,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     _loadItems();
   }
 
-
   _loadItems() async {
     if (_controller.text.isNotEmpty) {
       return;
@@ -82,7 +81,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     }
   }
 
-
   void _filterItems(String query) {
     if (query.isEmpty) {
       setState(() {
@@ -93,7 +91,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
     List<dynamic> tempFilteredItems = [];
     switch (_selectedCategory) {
-
       case SearchCategory.Users:
         tempFilteredItems = _allUsers.where((user) {
           return user.nom.toLowerCase().contains(query.toLowerCase()) ||
@@ -132,8 +129,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     });
   }
 
-
-
   void _changeSearchCategory(SearchCategory category) {
     setState(() {
       _selectedCategory = category;
@@ -164,12 +159,12 @@ class _UserSearchPageState extends State<UserSearchPage> {
                 suffixIcon: _controller.text.isEmpty
                     ? null
                     : IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _controller.clear();
-                    _filterItems('');
-                  },
-                ),
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _controller.clear();
+                          _filterItems('');
+                        },
+                      ),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -193,7 +188,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
                     width: 2.0,
                   ),
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 20),
               ),
             ),
           ),
@@ -202,85 +198,96 @@ class _UserSearchPageState extends State<UserSearchPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Expanded(child: _buildCategoryButton(SearchCategory.Users, "Utilisateurs")),
-                Expanded(child: _buildCategoryButton(SearchCategory.Resources, "Ressources")),
-                Expanded(child: _buildCategoryButton(SearchCategory.Categories, "Catégories")),
-                Expanded(child: _buildCategoryButton(SearchCategory.Types, "Types")),
-                Expanded(child: _buildCategoryButton(SearchCategory.Tags, "Tags")),
+                Expanded(
+                    child: _buildCategoryButton(
+                        SearchCategory.Users, "Utilisateurs")),
+                Expanded(
+                    child: _buildCategoryButton(
+                        SearchCategory.Resources, "Ressources")),
+                Expanded(
+                    child: _buildCategoryButton(
+                        SearchCategory.Categories, "Catégories")),
+                Expanded(
+                    child: _buildCategoryButton(SearchCategory.Types, "Types")),
+                Expanded(
+                    child: _buildCategoryButton(SearchCategory.Tags, "Tags")),
               ],
             ),
           ),
           _isLoading
               ? const CircularProgressIndicator()
               : Expanded(
-            child: ListView.builder(
-              itemCount: _filteredItems.length,
-              itemBuilder: (context, index) {
-                final item = _filteredItems[index];
+                  child: ListView.builder(
+                    itemCount: _filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = _filteredItems[index];
 
-                switch (_selectedCategory) {
-                  case SearchCategory.Users:
-                  // Afficher un utilisateur
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFFFBD59),
-                          width: 0.8,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: ListTile(
-                        title: Text("${item.nom} ${item.prenom}"),
-                        subtitle: Text(item.email),
-                        onTap: () {},
-                      ),
-                    );
-                  case SearchCategory.Resources:
-                  // Afficher une ressource
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFFFBD59),
-                          width: 0.8,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: ListTile(
-                        title: Text(item.titre),
-                        onTap: () {},
-                      ),
-                    );
-                  case SearchCategory.Categories:
-                  case SearchCategory.Types:
-                  case SearchCategory.Tags:
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFFFBD59),
-                          width: 0.8,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: ListTile(
-                        minLeadingWidth: 10,
-                        title: Text(
-                          item.nom,
-                          style: const TextStyle(
-                            color: Color(0xFF015E62),
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    );
-                  default:
-                    return const SizedBox.shrink();
-                }
-              },
-            ),
-          ),
+                      switch (_selectedCategory) {
+                        case SearchCategory.Users:
+                          // Afficher un utilisateur
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color(0xFFFFBD59),
+                                width: 0.8,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: ListTile(
+                              title: Text("${item.nom} ${item.prenom}"),
+                              subtitle: Text(item.email),
+                              onTap: () {},
+                            ),
+                          );
+                        case SearchCategory.Resources:
+                          // Afficher une ressource
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color(0xFFFFBD59),
+                                width: 0.8,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: ListTile(
+                              title: Text(item.titre),
+                              onTap: () {},
+                            ),
+                          );
+                        case SearchCategory.Categories:
+                        case SearchCategory.Types:
+                        case SearchCategory.Tags:
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color(0xFFFFBD59),
+                                width: 0.8,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: ListTile(
+                              minLeadingWidth: 10,
+                              title: Text(
+                                item.nom,
+                                style: const TextStyle(
+                                  color: Color(0xFF015E62),
+                                ),
+                              ),
+                              onTap: () {},
+                            ),
+                          );
+                        default:
+                          return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                ),
         ],
       ),
     );
@@ -292,8 +299,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
     return ElevatedButton(
       onPressed: () => _changeSearchCategory(category),
       style: ElevatedButton.styleFrom(
-        primary: isSelected ? Color(0xFF8BBFC2) : Colors.white,
-        onPrimary: isSelected ? Colors.white : Color(0xFF03989E),
+        foregroundColor: isSelected ? Colors.white : Color(0xFF03989E),
+        backgroundColor: isSelected ? Color(0xFF8BBFC2) : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(0),
           side: const BorderSide(
@@ -310,7 +317,4 @@ class _UserSearchPageState extends State<UserSearchPage> {
       child: Text(title),
     );
   }
-
-
 }
-

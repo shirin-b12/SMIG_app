@@ -59,9 +59,7 @@ class _CatCreationPageState extends State<CatCreationPage> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: GestureDetector(
-                        onTap: ()=>{
-                          print("kljkljkl")
-                        },
+                        onTap: () => {print("kljkljkl")},
                         child: Container(
                           width: 50,
                           height: 50,
@@ -115,26 +113,20 @@ class _CatCreationPageState extends State<CatCreationPage> {
                       titleController.text.trim(),
                     );
                     if (ressource == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Échec lors de la création ee"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Échec lors de la création ee"),
+                          backgroundColor: Color(0xFFFFBD59),
+                          duration: Duration(seconds: 2),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating));
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Échec lors de la création"),
-                            backgroundColor: Color(0xFFFFBD59),
-                            duration: Duration(seconds: 2),
-                            shape: StadiumBorder(),
-                            behavior: SnackBarBehavior.floating
-                        )
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Échec lors de la création"),
+                        backgroundColor: Color(0xFFFFBD59),
+                        duration: Duration(seconds: 2),
+                        shape: StadiumBorder(),
+                        behavior: SnackBarBehavior.floating));
                   }
                 },
               ),
@@ -207,8 +199,8 @@ class _CatCreationPageState extends State<CatCreationPage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -219,4 +211,3 @@ class _CatCreationPageState extends State<CatCreationPage> {
     );
   }
 }
-

@@ -7,10 +7,10 @@ import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
 import '../models/tag.dart';
+import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
 
 class ApiService {
-
   final String baseUrl = 'http://localhost:8081';
 
   //recup la liste des utilsateurs
@@ -34,6 +34,27 @@ class ApiService {
       return jsonResponse.map((u) => Ressource.fromJson(u)).toList();
     } else {
       throw Exception('Failed to load ressources from API');
+    }
+  }
+  Future<List<int>> fetchFavorie(int? id) async {
+    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      return ids;
+    } else {
+      throw Exception('Failed to load favorite resource IDs from API');
+    }
+  }
+
+  // Fetch a single resource by its ID
+  Future<TinyRessource> fetchTinyRessource(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      return TinyRessource.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load resource from API');
     }
   }
 
@@ -82,7 +103,8 @@ class ApiService {
   }
 
   //creation compte
-  Future<Utilisateur?> createAccount(String nom, String prenom, String email, String password) async {
+  Future<Utilisateur?> createAccount(
+      String nom, String prenom, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -102,7 +124,8 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+  Future<Ressource?> createRessource(String titre, String description,
+      int idCat, int idType, int idTag) async {
     print('first');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
@@ -123,7 +146,7 @@ class ApiService {
         "dateDeCreation": formattedDate,
       }),
     );
-    print ('here');
+    print('here');
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
@@ -135,7 +158,8 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+  Future<bool> updateRessource(
+      int ressourceId, String titre, String description) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     final response = await http.put(
@@ -164,15 +188,13 @@ class ApiService {
   }
 
   deleteRessource(int ressourceId) async {
-
     final response = await http.delete(
       Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return response.body;
-    }
-    else{
+    } else {
       print('Failed to delete resource: ${response.statusCode}');
       print('Reason: ${response.body}');
       return null;
@@ -180,22 +202,21 @@ class ApiService {
   }
 
   deleteUtilisateur(int userId) async {
-
     final response = await http.delete(
       Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return response.body;
-    }
-    else{
+    } else {
       print('Failed to delete utilisateur: ${response.statusCode}');
       print('Reason: ${response.body}');
       return null;
     }
   }
 
-  Future<bool> updateUser(int id, String nom, String prenom, String email) async {
+  Future<bool> updateUser(
+      int id, String nom, String prenom, String email) async {
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/update/$id'),
       headers: <String, String>{
@@ -216,6 +237,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
@@ -223,7 +245,8 @@ class ApiService {
   }
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
-    final response = await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    final response =
+    await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -233,8 +256,8 @@ class ApiService {
     }
   }
 
-
-  Future<Commentaire?> createComment(String texteCommentaire, int idUtilisateur, int idRessource) async{
+  Future<Commentaire?> createComment(
+      String texteCommentaire, int idUtilisateur, int idRessource) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     print(texteCommentaire);
@@ -262,15 +285,14 @@ class ApiService {
           throw Exception('Le corps de la réponse est null.');
         }
       } else {
-        throw Exception('Failed to post comment. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to post comment. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Erreur lors de la conversion de la réponse en Commentaire: $e');
       return null;
     }
   }
-
-
 
   Future<Categorie?> createCat(String nom) async {
     final response = await http.post(
@@ -291,7 +313,6 @@ class ApiService {
       return null;
     }
   }
-
 
   Future<Tag?> createTag(String nom) async {
     final response = await http.post(
@@ -332,5 +353,17 @@ class ApiService {
       return null;
     }
   }
+
+  Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
+    final response = await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => TinyRessource.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load resources for creator ID $createurId from API');
+    }
+  }
+
 
 }
