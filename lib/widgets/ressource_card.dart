@@ -42,7 +42,9 @@ class RessourceCard extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: Colors.grey[200],
                 //backgroundImage: ressource.createur.pic != null ? NetworkImage(ressource.createur.pic as String) : null,
-                child: ressource.createur.pic == null ? const Icon(Icons.image, color : Color(0xFF03989E)) : null,
+                child: ressource.createur.pic == null
+                    ? const Icon(Icons.image, color: Color(0xFF03989E))
+                    : null,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -61,7 +63,7 @@ class RessourceCard extends StatelessWidget {
                 onPressed: () {
                   // Handle button press here
                 },
-              ),
+              )
             ],
           ),
           Padding(
@@ -106,11 +108,11 @@ class RessourceCard extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: //ressource.images.fichier == null
-                          //?
-                      const Icon(Icons.image, color: Color(0xFFFFFFFF))
-                          /*: FutureBuilder<Uint8List>(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: //ressource.images.fichier == null
+                            //?
+                            const Icon(Icons.image, color: Color(0xFFFFFFFF))
+                        /*: FutureBuilder<Uint8List>(
                               future: api.compressImage(
                                   api.convertToFile(ressource.images.fichier)),
                               builder: (BuildContext context,
@@ -128,7 +130,7 @@ class RessourceCard extends StatelessWidget {
                                 }
                               },
                             ),*/
-                    ),
+                        ),
                   ),
                 ),
                 const Align(
@@ -177,7 +179,4 @@ class RessourceCard extends StatelessWidget {
       ),
     );
   }
-
-
-
 }
