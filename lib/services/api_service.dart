@@ -6,6 +6,7 @@ import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
+import '../models/role.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
@@ -36,11 +37,13 @@ class ApiService {
       throw Exception('Failed to load ressources from API');
     }
   }
+
   Future<List<int>> fetchFavorie(int? id) async {
     final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int)
+          .toList();
       return ids;
     } else {
       throw Exception('Failed to load favorite resource IDs from API');
@@ -103,8 +106,8 @@ class ApiService {
   }
 
   //creation compte
-  Future<Utilisateur?> createAccount(
-      String nom, String prenom, String email, String password) async {
+  Future<Utilisateur?> createAccount(String nom, String prenom, String email,
+      String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -158,8 +161,8 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(
-      int ressourceId, String titre, String description,
+  Future<bool> updateRessource(int ressourceId, String titre,
+      String description,
       int idCat, int idType, int idTag) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
@@ -223,8 +226,8 @@ class ApiService {
     }
   }
 
-  Future<bool> updateUser(
-      int id, String nom, String prenom, String email) async {
+  Future<bool> updateUser(int id, String nom, String prenom,
+      String email) async {
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/update/$id'),
       headers: <String, String>{
@@ -264,8 +267,8 @@ class ApiService {
     }
   }
 
-  Future<Commentaire?> createComment(
-      String texteCommentaire, int idUtilisateur, int idRessource) async {
+  Future<Commentaire?> createComment(String texteCommentaire, int idUtilisateur,
+      int idRessource) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     print(texteCommentaire);
@@ -363,15 +366,58 @@ class ApiService {
   }
 
   Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
-    final response = await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+    final response = await http.get(
+        Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => TinyRessource.fromJson(data)).toList();
     } else {
-      throw Exception('Failed to load resources for creator ID $createurId from API');
+      throw Exception(
+          'Failed to load resources for creator ID $createurId from API');
     }
   }
 
+  Future<List<Role>> fetchRoles() async {
+    final response = await http.get(Uri.parse('$baseUrl/roles'));
 
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Role.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load roles from API');
+    }
+  }
+
+  //creation compte
+  Future<bool> creerUtilisateurAvecRole(String nom, String prenom,
+      String email, String password, String tel, Role role) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/utilisateur'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'nom': nom,
+        'prenom': prenom,
+        'email': email,
+        'mot_de_passe': password,
+        'role' : role.toJson(),
+      }),
+    );
+
+    return response.statusCode == 200;
+  }
+
+  /*Future<Role> getRole(int? roleId) async {
+    final response = await http.get(Uri.parse('$baseUrl/roles/$roleId'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      return Role.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to load role from API');
+    }
+  }*/
 }
