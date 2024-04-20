@@ -19,7 +19,6 @@ class RessourceCard extends StatelessWidget {
   Future<String> fetchUserRole() async {
     String? role = await AuthService().getCurrentUserRole();
     return role ?? '';
-    print(role);
   }
 
   RessourceCard({required this.ressource});
