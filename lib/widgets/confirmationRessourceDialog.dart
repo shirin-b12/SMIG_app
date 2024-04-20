@@ -3,29 +3,37 @@ import '../../services/api_service.dart';
 
 class ConfirmationRessourceDialog extends StatelessWidget {
   final int ressourceId;
+  final bool reponce;
   final ApiService api = ApiService();
 
-  ConfirmationRessourceDialog({required this.ressourceId});
+  ConfirmationRessourceDialog(
+      {required this.ressourceId, required this.reponce});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Confirmation'),
-      content: Text('Do you want to validate or refuse?'),
+      title: Text(
+        'Confirmation',
+      ),
+      content: Text(
+        'Etes vous sur?',
+      ),
       actions: <Widget>[
         TextButton(
-          child: Text('Validate'),
+          child: Text(
+            'Valider',
+          ),
           onPressed: () async {
-            // Handle validation here
-            await api.updateValidationRessource(ressourceId, true);
+            print(reponce);
+            await api.updateValidationRessource(ressourceId, reponce);
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: Text('Refuse'),
+          child: Text(
+            'Annuler',
+          ),
           onPressed: () async {
-            // Handle refusal here
-            await api.updateValidationRessource(ressourceId, false);
             Navigator.of(context).pop();
           },
         ),

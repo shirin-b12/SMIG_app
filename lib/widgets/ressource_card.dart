@@ -211,20 +211,33 @@ class RessourceCard extends StatelessWidget {
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.hasData && snapshot.data == 'Modérateur') {
                       return ElevatedButton(
-                        child: Text('Open Dialog'),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            ressource?.validate_ressource ?? false
+                                ? const Color.fromARGB(255, 2, 170, 8)
+                                : const Color.fromARGB(255, 204, 18, 5),
+                          ),
+                        ),
                         onPressed: () {
+                          print(ressource ?? 'Ressource is null');
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return ConfirmationRessourceDialog(
-                                  ressourceId:
-                                      ressource.id); // Use the new widget here
+                                ressourceId: ressource.id,
+                                reponce: !ressource.validate_ressource,
+                              ); // Use the new widget here
                             },
                           );
                         },
+                        child: Text(
+                            ressource?.validate_ressource ?? false
+                                ? 'Valider'
+                                : 'Bloquer',
+                            style: TextStyle(color: Colors.white)),
                       );
                     } else {
-                      return Container(); // Return an empty container if the user is not a 'modo'
+                      return Container(); // Return an empty container if the user is not a 'Modérateur'
                     }
                   },
                 ),

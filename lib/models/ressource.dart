@@ -20,6 +20,7 @@ class Ressource {
   final Type type;
   final Tag tags;
   final Images images;
+  final bool validate_ressource;
 
   Ressource(
       {required this.id,
@@ -33,7 +34,8 @@ class Ressource {
       required this.category,
       required this.type,
       required this.tags,
-      required this.images});
+      required this.images,
+      required this.validate_ressource});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -60,7 +62,8 @@ class Ressource {
             : Tag(id: 0, nom: "Aucun tag"),
         images: json['images'] != null
             ? Images.fromJson(json['images'] as Map<String, dynamic>)
-            : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"));
+            : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"),
+        validate_ressource: json['validate_Ressource'] ?? false);
   }
 
   String getDateWithoutSeconds() {
