@@ -16,7 +16,6 @@ import '../views/page/login_page.dart';
 import '../views/screen/transition_page.dart';
 
 class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
-
   const CustomBottomAppBar({Key? key}) : super(key: key);
 
   @override
@@ -26,7 +25,8 @@ class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(35.0);
 }
 
-class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProviderStateMixin {
+class _CustomBottomAppBarState extends State<CustomBottomAppBar>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -48,9 +48,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
       elevation: 0,
       child: Container(
         height: widget.preferredSize.height,
-        decoration: const BoxDecoration(
-          color: Color(0xFF03989E)
-        ),
+        decoration: const BoxDecoration(color: Color(0xFF03989E)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -59,7 +57,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => HomePage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -74,12 +73,13 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
               ),
             ),
             GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 _controller
                   ..reset()
                   ..forward();
                 //await AuthService().logout();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserSearchPage()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => UserSearchPage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -98,7 +98,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => RessourceCreationPage()));
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -129,7 +130,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                   ..reset()
                   ..forward();
                 AuthService().logout();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -148,7 +150,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserProfile()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => UserProfile()));
               },
               child: SizedBox(
                 child: Lottie.asset(

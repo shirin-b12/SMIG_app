@@ -189,6 +189,24 @@ class ApiService {
     }
   }
 
+  Future<bool> updateValidationRessource(int ressourceId, bool resultat) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{'validate_Ressource': resultat}),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to update resource validation: ${response.statusCode}');
+      print('Reason: ${response.body.toString()}');
+      return false;
+    }
+  }
+
   deleteRessource(int ressourceId) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/ressources/delete/$ressourceId'),

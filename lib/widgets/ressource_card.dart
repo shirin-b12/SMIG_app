@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
+import '../widgets/confirmationRessourceDialog.dart';
 
 class RessourceCard extends StatelessWidget {
   final Ressource ressource;
@@ -13,6 +14,12 @@ class RessourceCard extends StatelessWidget {
   Future<int> fetchUserId() async {
     int? userId = await AuthService().getCurrentUser();
     return userId ?? 0; // return 0 or a default user ID if userId is null
+  }
+
+  Future<String> fetchUserRole() async {
+    String? role = await AuthService().getCurrentUserRole();
+    return role ?? '';
+    print(role);
   }
 
   RessourceCard({required this.ressource});
@@ -197,6 +204,29 @@ class RessourceCard extends StatelessWidget {
                     ),
                     // Replace this with your actual tags widget
                   ],
+                ),
+                FutureBuilder<String>(
+                  future: fetchUserRole(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.hasData && snapshot.data == 'Modérateur') {
+                      return ElevatedButton(
+                        child: Text('Open Dialog'),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmationRessourceDialog(
+                                  ressourceId:
+                                      ressource.id); // Use the new widget here
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return Container(); // Return an empty container if the user is not a 'modo'
+                    }
+                  },
                 ),
               ],
             ),

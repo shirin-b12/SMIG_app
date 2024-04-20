@@ -36,7 +36,8 @@ class AuthService {
     await prefs.remove('userToken');
   }
 
-  Future<bool> createAccount(String nom, String prenom, String email, String password) async {
+  Future<bool> createAccount(
+      String nom, String prenom, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -56,7 +57,6 @@ class AuthService {
       return false;
     }
   }
-
 
   Future<int> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -86,6 +86,40 @@ class AuthService {
     }
   }
 
+  Future<String> getCurrentUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    String tokenData = prefs.getString('userToken') ?? '';
+    tokenData = tokenData.trim();
+
+    if (tokenData.isNotEmpty) {
+      try {
+        Map<String, dynamic> tokenJson = jsonDecode(tokenData);
+        String accessToken = tokenJson['accessToken'];
+        if (accessToken.isNotEmpty) {
+          Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+          List<dynamic> userRoles = payload['groups'];
+          if (userRoles.isNotEmpty) {
+            String userRole = userRoles[0];
+            print("Le rôle de l'utilisateur est : $userRole");
+            return userRole;
+          } else {
+            print("No roles found for the user.");
+            return '';
+          }
+        } else {
+          print("AccessToken is empty or not found.");
+          return '';
+        }
+      } catch (e) {
+        print("Error parsing token or accessing user role: $e");
+        return '';
+      }
+    } else {
+      print("No token found");
+      return '';
+    }
+  }
+
   Future<String?> signup(Utilisateur utilisateur) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
@@ -100,8 +134,6 @@ class AuthService {
     } else {
       throw Exception('Échec de la création de compte');
     }
-
-
   }
 
   Future<Utilisateur?> getCurrentUserDetails() async {
@@ -116,7 +148,8 @@ class AuthService {
       Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
       int userId = int.parse(payload['upn']);
       print(userId);
-      final response = await http.get(Uri.parse('$baseUrl/utilisateur/$userId'));
+      final response =
+          await http.get(Uri.parse('$baseUrl/utilisateur/$userId'));
       print(response.body);
       if (response.statusCode == 200) {
         return Utilisateur.fromJson(json.decode(response.body));
@@ -124,5 +157,4 @@ class AuthService {
     }
     return null;
   }
-
 }
