@@ -16,7 +16,6 @@ import '../views/page/login_page.dart';
 import '../views/screen/transition_page.dart';
 
 class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
-
   const CustomBottomAppBar({Key? key}) : super(key: key);
 
   @override
@@ -49,7 +48,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
       child: Container(
         height: widget.preferredSize.height,
         decoration: const BoxDecoration(
-            color: Color(0xFF03989E)
+          color: Color(0xFF03989E)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

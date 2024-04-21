@@ -9,8 +9,18 @@ import '../models/ressource.dart';
 
 class RessourceCard extends StatefulWidget {
   final Ressource ressource;
+  final ApiService api = ApiService();
+  Future<int> fetchUserId() async {
+    int? userId = await AuthService().getCurrentUser();
+    return userId ?? 0; // return 0 or a default user ID if userId is null
+  }
+
   RessourceCard({required this.ressource});
 
+  Future<String> fetchUserRole() async {
+    String? role = await AuthService().getCurrentUserRole();
+    return role ?? '';
+  }
   @override
   _RessourceCardState createState() => _RessourceCardState();
 }
@@ -20,6 +30,7 @@ class _RessourceCardState extends State<RessourceCard> {
   late int userId;
   bool showMore = false;
   final ApiService api = ApiService();
+
 
   @override
   void initState() {

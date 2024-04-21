@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
@@ -21,6 +19,7 @@ class Ressource {
   final Categorie category;
   final Type type;
   final Tag tags;
+  final bool validate_ressource;
 
   Ressource(
       {required this.id,
@@ -33,7 +32,8 @@ class Ressource {
       required this.createur,
       required this.category,
       required this.type,
-      required this.tags});
+      required this.tags,
+      required this.validate_ressource});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -57,8 +57,8 @@ class Ressource {
             : Type(id: 0, nom: "Aucun type"),
         tags: json['tag'] != null
             ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
-            : Tag(id: 0, nom: "Aucun tag")
-    );
+            : Tag(id: 0, nom: "Aucun tag"),
+        validate_ressource: json['validate_Ressource'] ?? false);
   }
 
   String getDateWithoutSeconds() {

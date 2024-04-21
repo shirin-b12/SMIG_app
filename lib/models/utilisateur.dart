@@ -41,4 +41,8 @@ class Utilisateur {
     print(this.pic);
     return 'http://localhost:8081/images/${this.pic}';
   }
+
+  void updateStatus(Status newStatus) {
+    this.status = newStatus;
+  }
 }
