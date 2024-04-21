@@ -131,11 +131,14 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
   void _changeSearchCategory(SearchCategory category) {
     setState(() {
+      _controller.clear();
       _selectedCategory = category;
       _isLoading = true;
+      _filteredItems = [];
     });
     _loadItems();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -168,24 +171,24 @@ class _UserSearchPageState extends State<UserSearchPage> {
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(
                     color: Color(0xFF03989E),
-                    width: 2.0,
+                    width: 1.0,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(
                     color: Color(0xFF03989E),
-                    width: 2.0,
+                    width: 1.0,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(
                     color: Color(0xFF03989E),
-                    width: 2.0,
+                    width: 1.0,
                   ),
                 ),
                 contentPadding:
@@ -219,73 +222,161 @@ class _UserSearchPageState extends State<UserSearchPage> {
               : Expanded(
                   child: ListView.builder(
                     itemCount: _filteredItems.length,
+                    // À l'intérieur de ListView.builder
                     itemBuilder: (context, index) {
                       final item = _filteredItems[index];
+                      Widget leadingWidget;
+                      String titleText;
 
                       switch (_selectedCategory) {
                         case SearchCategory.Users:
-                          // Afficher un utilisateur
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 4.0, horizontal: 8.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color(0xFFFFBD59),
-                                width: 0.8,
+                          Utilisateur user = item as Utilisateur;
+                          leadingWidget = user.pic != null
+                              ? CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(user.getProfileImageUrl()),
+                          )
+                              : CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Color(0xFF03989E),
+                                    width: 2.0,
+                                  )
                               ),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: ListTile(
-                              title: Text("${item.nom} ${item.prenom}"),
-                              subtitle: Text(item.email),
-                              onTap: () {},
-                            ),
-                          );
-                        case SearchCategory.Resources:
-                          // Afficher une ressource
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 4.0, horizontal: 8.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color(0xFFFFBD59),
-                                width: 0.8,
-                              ),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: ListTile(
-                              title: Text(item.titre),
-                              onTap: () {},
-                            ),
-                          );
-                        case SearchCategory.Categories:
-                        case SearchCategory.Types:
-                        case SearchCategory.Tags:
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 4.0, horizontal: 8.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color(0xFFFFBD59),
-                                width: 0.8,
-                              ),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: ListTile(
-                              minLeadingWidth: 10,
-                              title: Text(
-                                item.nom,
-                                style: const TextStyle(
-                                  color: Color(0xFF015E62),
+                              child: Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Color(0xFF03989E),
+                                  size: 20,
                                 ),
                               ),
-                              onTap: () {},
                             ),
                           );
-                        default:
-                          return const SizedBox.shrink();
+
+                          titleText = "${user.nom} ${user.prenom}";
+                          break;
+                        case SearchCategory.Resources:
+                          Ressource resource = item as Ressource;
+                          leadingWidget = CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Color(0xFF03989E),
+                                    width: 2.0,
+                                  )
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.description_outlined,
+                                  color: Color(0xFF03989E),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          );
+                          titleText = resource.titre;
+                          break;
+                        case SearchCategory.Categories:
+                          Categorie category = item as Categorie;
+                          leadingWidget = CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Color(0xFF03989E),
+                                    width: 2.0,
+                                  )
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.category_outlined,
+                                  color: Color(0xFF03989E),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          );
+                          titleText = category.nom;
+                          break;
+                        case SearchCategory.Types:
+                          Type type = item as Type;
+                          leadingWidget = CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Color(0xFF03989E),
+                                    width: 2.0,
+                                  )
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.type_specimen_outlined,
+                                  color: Color(0xFF03989E),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          );
+                          titleText = type.nom;
+                          break;
+                        case SearchCategory.Tags:
+                          Tag tag = item as Tag;
+                          leadingWidget = CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Color(0xFF03989E),
+                                    width: 2.0,
+                                  )
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.tag,
+                                  color: Color(0xFF03989E),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          );
+                          titleText = tag.nom;
+                          break;
                       }
+
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFFFFBD59), width: 0.8),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          leading: leadingWidget,
+                          title: Text(titleText),
+                          onTap: () {},
+                        ),
+                      );
                     },
+
+
                   ),
                 ),
         ],
@@ -301,20 +392,25 @@ class _UserSearchPageState extends State<UserSearchPage> {
       style: ElevatedButton.styleFrom(
         foregroundColor: isSelected ? Colors.white : Color(0xFF03989E),
         backgroundColor: isSelected ? Color(0xFF8BBFC2) : Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-          side: const BorderSide(
-            color: Color(0xFF03989E),
-            width: 0.1,
-          ),
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
         ),
         elevation: 0,
         textStyle: TextStyle(
+          overflow: TextOverflow.ellipsis,
           color: isSelected ? Colors.white : Color(0xFF03989E),
-          fontSize: 16,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+        ),
+        minimumSize: Size(100, 36),
+        side: BorderSide(
+          color: isSelected ? Color(0xFF03989E) : Colors.white,
+          width: isSelected ? 2 : 1,
         ),
       ),
-      child: Text(title),
+      child: Text(title, maxLines: 1),
     );
   }
+
 }

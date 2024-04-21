@@ -6,7 +6,7 @@ import 'package:smig_app/views/page/ressource_creation_page.dart';
 import 'package:smig_app/views/page/ressource_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'package:smig_app/views/page/utilisateur_profile.dart';
-import 'package:smig_app/views/page/utilisateur_search_page.dart';
+import 'package:smig_app/views/page/search_page.dart';
 import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
 import '../services/auth_service.dart';
@@ -49,7 +49,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
       child: Container(
         height: widget.preferredSize.height,
         decoration: const BoxDecoration(
-          color: Color(0xFF03989E)
+            color: Color(0xFF03989E)
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

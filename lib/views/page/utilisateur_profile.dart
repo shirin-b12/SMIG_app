@@ -82,23 +82,68 @@ class _UserProfileState extends State<UserProfile> {
                 ) : null,
               ),
               alignment: Alignment.center,
-              child: user?.pic == null ? Icon(
-                Icons.photo,
-                size: 35.0,
-                color: Colors.white,
-              ) : null,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (user?.pic == null)
+                    Icon(
+                      Icons.photo,
+                      size: 35.0,
+                      color: Colors.white,
+                    ),
+
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        print("Change photo tapped");
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Color(0xFFFFBD59),
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Color(0xFF03989E),
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${user?.nom} ', style: TextStyle(color: Color(0xFF03989E))),
-                  Text('${user?.prenom}', style: TextStyle(color: Color(0xFF03989E))),
+                  Text(
+                      '${user?.nom} ',
+                      style: const TextStyle(
+                        color: Color(0xFF03989E),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold, // Gras
+                      )
+                  ),
+                  Text(
+                      '${user?.prenom}',
+                      style: const TextStyle(
+                        color: Color(0xFF03989E),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )
+                  ),
                 ],
               ),
             ),
-            Text('Email: ${user?.email}'),
             Expanded(
               child: _buildResourcesList(),
             ),
@@ -110,7 +155,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildResourcesList() {
     if (resources == null || resources!.isEmpty) {
-      return Center(
+      return const Center(
         child: Text('No resources found for this user'),
       );
     } else {
@@ -121,7 +166,6 @@ class _UserProfileState extends State<UserProfile> {
           return ListTile(
             title: Text(ressource.titre),
             onTap: () {
-              // Optionally, add navigation or other interaction
               print('Tapped on resource: ${ressource.titre}');
             },
           );
