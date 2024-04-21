@@ -7,23 +7,44 @@ import '../../services/auth_service.dart';
 import '../../services/api_service.dart';
 import '../models/ressource.dart';
 
-class RessourceCard extends StatelessWidget {
+class RessourceCard extends StatefulWidget {
   final Ressource ressource;
-  final ApiService api = ApiService();
-  Future<int> fetchUserId() async {
-    int? userId = await AuthService().getCurrentUser();
-    return userId ?? 0; // return 0 or a default user ID if userId is null
-  }
-
   RessourceCard({required this.ressource});
 
   @override
-  Widget build(BuildContext context) {
-    String formatShortDate(String date) {
-      final DateTime parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').parse(date);
-      return DateFormat('dd/MM/yyyy').format(parsedDate);
-    }
+  _RessourceCardState createState() => _RessourceCardState();
+}
 
+class _RessourceCardState extends State<RessourceCard> {
+  bool isFavorite = false;
+  late int userId;
+  bool showMore = false;
+  final ApiService api = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
+  void initialize() async {
+    userId = await AuthService().getCurrentUser();
+    bool currentFavorite = await api.isFavorite(widget.ressource.id, userId);
+    if (mounted) {
+      setState(() {
+        isFavorite = currentFavorite;
+      });
+    }
+  }
+
+
+  String formatShortDate(String date) {
+    final DateTime parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').parse(date);
+    return DateFormat('dd/MM/yyyy').format(parsedDate);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       margin: const EdgeInsets.all(10.0),
@@ -41,57 +62,7 @@ class RessourceCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey[200],
-                //backgroundImage: ressource.createur.pic != null ? NetworkImage(ressource.createur.pic as String) : null,
-                child: ressource.createur.pic == null
-                    ? const Icon(Icons.image, color: Color(0xFF03989E))
-                    : null,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  '${ressource.createur.nom} ${ressource.createur.prenom}',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF015E62),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              FutureBuilder<int>(
-                future: fetchUserId(),
-                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.hasData) {
-                    return IconButton(
-                      icon: FutureBuilder<bool>(
-                        future: api.isFavorite(
-                            ressource.id.toString(), snapshot.data.toString()),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<bool> snapshot) {
-                          if (snapshot.hasData && snapshot.data == true) {
-                            return Icon(Icons.star);
-                          } else {
-                            return Icon(Icons.star_border);
-                          }
-                        },
-                      ),
-                      onPressed: () {
-                        // Handle button press here
-                      },
-                    );
-                  } else {
-                    return CircularProgressIndicator(); // Show a loading spinner while waiting for fetchUserId to complete
-                  }
-                },
-              )
-            ],
-          ),
+          buildTopRow(),
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: Column(
@@ -99,7 +70,7 @@ class RessourceCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Center(
                   child: Text(
-                    ressource.titre,
+                    widget.ressource.titre,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -111,98 +82,154 @@ class RessourceCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Catégorie: ${ressource.category.nom}",
-                      style: const TextStyle(
-                        color: Color(0xFF015E62),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                    Expanded(
+                      child: Text(
+                        "Catégorie: ${widget.ressource.category.nom}",
+                        style: const TextStyle(
+                          color: Color(0xFF015E62),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text(
-                      "Type: ${ressource.type.nom}",
-                      style: const TextStyle(
-                        color: Color(0xFF015E62),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                    Expanded(
+                      child: Text(
+                        "Type: ${widget.ressource.type.nom}",
+                        style: const TextStyle(
+                          color: Color(0xFF015E62),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 5),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: //ressource.images.fichier == null
-                            //?
-                            const Icon(Icons.image, color: Color(0xFFFFFFFF))
-                        /*: FutureBuilder<Uint8List>(
-                              future: api.compressImage(
-                                  api.convertToFile(ressource.images.fichier)),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<Uint8List> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Icon(Icons.error);
-                                } else {
-                                  return Image.memory(
-                                    snapshot.data!,
-                                    fit: BoxFit.cover,
-                                  );
-                                }
-                              },
-                            ),*/
-                        ),
-                  ),
-                ),
-                const Align(
+                Align(
                   alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    /*child: ExpandableText(
-                      ressource.description,
-                      expandText: 'plus',
-                      collapseText: 'moins',
-                      maxLines: 10,
-                      linkColor: Colors.blue,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                      ),
-                      collapseOnTextTap: true,
-                    ),*/
-                  ),
+                  child: buildImageContainer(),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Tags: ${ressource.tags.nom}',
-                      style: const TextStyle(
-                        color: Color(0xFF015E62),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    Text(
-                      'Date de publication: ${formatShortDate(ressource.date_de_creation)}',
-                      style: const TextStyle(
-                        color: Color(0xFF015E62),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    // Replace this with your actual tags widget
-                  ],
+                buildToggleMoreButton(),
+                Visibility(
+                  visible: showMore,
+                  child: buildAdditionalDetails(),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+  Widget buildTopRow() {
+    // Similar to your existing code, with Row for the main content
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+
+        CircleAvatar(
+          backgroundColor: Colors.grey[200],
+          // Assuming Ressource.createur.pic is a String or null
+          backgroundImage: widget.ressource.createur.pic != null
+              ? NetworkImage(widget.ressource.createur!.getProfileImageUrl())
+              : null,
+          child: widget.ressource.createur.pic == null
+              ? const Icon(Icons.person, color: Color(0xFF03989E))
+              : null,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            '${widget.ressource.createur.nom} ${widget.ressource.createur.prenom}',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF015E62),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        IconButton(
+          icon: Icon(
+            isFavorite ? Icons.star : Icons.star_border,
+            color: isFavorite ? Color(0xFF03989E) : Colors.grey,
+          ),
+          onPressed: () async {
+            bool success = await api.toggleFavorite(userId, widget.ressource.id);
+            if (success) {
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to update favorite status'))
+              );
+            }
+          },
+        )
+      ],
+    );
+  }
+  Widget buildToggleMoreButton() {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          showMore = !showMore; // Toggle the state to show/hide details
+        });
+      },
+      child: Text(showMore ? "moins..." : "plus...",
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF03989E),
+        ),), // Change text based on state
+    );
+  }
+  Widget buildImageContainer() {
+    if (widget.ressource.image != null) {
+      double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
+
+      return Container(
+        width: screenWidth * 0.8, // 80% of the screen width
+        height: screenHeight * 0.4, // 40% of the screen height
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          image: DecorationImage(
+            image: NetworkImage(widget.ressource.getRessourceImageUrl()),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else {
+      return SizedBox();  // Return an empty box if no image
+    }
+  }
+
+  Widget buildAdditionalDetails() {
+    return Column(
+      children: [
+        Text(
+          'Tags: ${widget.ressource.tags.nom}',
+          style: const TextStyle(
+            color: Color(0xFF015E62),
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+        Text(
+          'Date de publication: ${formatShortDate(widget.ressource.date_de_creation)}',
+          style: const TextStyle(
+            color: Color(0xFF015E62),
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+        // Include other details as needed
+      ],
     );
   }
 }

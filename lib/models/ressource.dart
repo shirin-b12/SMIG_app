@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
@@ -11,7 +13,7 @@ class Ressource {
   final int id;
   final String titre;
   final String description;
-  final Image? image;
+  final int? image;
   final int vue;
   final String date_de_creation;
   final int visibilite;
@@ -19,7 +21,6 @@ class Ressource {
   final Categorie category;
   final Type type;
   final Tag tags;
-  final Images images;
 
   Ressource(
       {required this.id,
@@ -32,8 +33,7 @@ class Ressource {
       required this.createur,
       required this.category,
       required this.type,
-      required this.tags,
-      required this.images});
+      required this.tags});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['date_de_creation']);
@@ -45,7 +45,7 @@ class Ressource {
             Utilisateur.fromJson(json['createur'] as Map<String, dynamic>),
         titre: json['titre'],
         description: json['description'],
-        image: json['image'],
+        image: json['image'] != null ? json['image']['id_image'] : null,
         vue: json['vue'],
         date_de_creation: formattedDate,
         visibilite: json['visibilite'],
@@ -57,10 +57,8 @@ class Ressource {
             : Type(id: 0, nom: "Aucun type"),
         tags: json['tag'] != null
             ? Tag.fromJson(json['tag'] as Map<String, dynamic>)
-            : Tag(id: 0, nom: "Aucun tag"),
-        images: json['images'] != null
-            ? Images.fromJson(json['images'] as Map<String, dynamic>)
-            : Images(id: 0, fichier: Uint8List(0), legende: "Aucune image"));
+            : Tag(id: 0, nom: "Aucun tag")
+    );
   }
 
   String getDateWithoutSeconds() {
@@ -71,5 +69,9 @@ class Ressource {
     }
 
     return i;
+  }
+  String getRessourceImageUrl() {
+    print(this.image);
+    return 'http://localhost:8081/images/${this.image}';
   }
 }

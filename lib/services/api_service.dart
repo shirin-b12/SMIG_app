@@ -15,7 +15,9 @@ class ApiService {
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    final response = await http.get(Uri.parse('$baseUrl'));
+    print("here");
+    final response = await http.get(Uri.parse('$baseUrl/utilisateur'));
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -42,7 +44,7 @@ class ApiService {
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       List<int> ids =
-          jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      jsonResponse.map((u) => u['id_ressource'] as int).toList();
       return ids;
     } else {
       throw Exception('Failed to load favorite resource IDs from API');
@@ -248,7 +250,7 @@ class ApiService {
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -356,19 +358,14 @@ class ApiService {
     }
   }
 
-  Future<List<Ressource>> fetchFavoritesByUser(String userId) async {
-    final response = await http.get(
-      Uri.parse(
-          'https://your-api-url/favorites/$userId'), // Remplacez par l'URL de votre API
-    );
-
+  Future<List<int>> fetchFavoris(int? id) async {
+    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
     if (response.statusCode == 200) {
-      List<Ressource> favorites = (json.decode(response.body) as List)
-          .map((data) => Ressource.fromJson(data))
-          .toList();
-      return favorites;
+      List jsonResponse = json.decode(response.body);
+      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      return ids;
     } else {
-      throw Exception('Failed to load favorites');
+      throw Exception('Failed to load favorite resource IDs from API');
     }
   }
 
@@ -395,7 +392,7 @@ class ApiService {
 
   Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+    await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -406,17 +403,40 @@ class ApiService {
     }
   }
 
-  Future<bool> isFavorite(String ressourceId, String userId) async {
-    List<Ressource> favorites = await fetchFavoritesByUser(
-        userId); // Replace 'userId' with the actual user ID
-    print(favorites);
-    for (Ressource ressource in favorites) {
-      if (ressource.id == ressourceId) {
-        print("la ressource est favorie");
-        return true;
-      }
+  Future<bool> isFavorite(int resourceId, int userId) async {
+    try {
+      List<int> favoriteIds = await fetchFavorie(userId);
+      return favoriteIds.contains(resourceId);
+    } catch (e) {
+      print('Error checking favorite status: $e');
+      return false;
     }
-
-    return false;
   }
+
+  Future<bool> toggleFavorite(int userId, int resourceId) async {
+    bool isCurrentlyFavorite = await isFavorite(resourceId, userId);
+    if (isCurrentlyFavorite) {
+      // If it is currently a favorite, call delete favorite
+      return await deleteFavorite(userId, resourceId);
+    } else {
+      // If it is not a favorite, call create favorite
+      return await createFavorite(userId, resourceId);
+    }
+  }
+
+  Future<bool> deleteFavorite(int userId, int resourceId) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/favori'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id_utilisateur': userId,
+        'id_ressource': resourceId,
+      }),
+    );
+    print(response.statusCode);
+    return response.statusCode == 200;
+  }
+
 }

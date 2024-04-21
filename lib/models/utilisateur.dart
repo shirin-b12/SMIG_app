@@ -4,6 +4,7 @@ class Utilisateur {
   final String prenom;
   final String email;
   final int? pic;
+  final String etat;  // Ajout de l'état de l'utilisateur
 
   Utilisateur({
     required this.id,
@@ -11,6 +12,7 @@ class Utilisateur {
     required this.prenom,
     required this.email,
     this.pic,
+    required this.etat,  // Initialisation de l'état
   });
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
@@ -20,7 +22,19 @@ class Utilisateur {
       prenom: json['prenom'],
       email: json['email'],
       pic: json['imageProfil'] != null ? json['imageProfil']['id_image'] : null,
+      etat: json['etat_utilisateur'],  // Gestion de l'état
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id_utilisateur': id,
+      'nom': nom,
+      'prenom': prenom,
+      'email': email,
+      'imageProfil': pic,
+      'etat_utilisateur': etat,
+    };
   }
 
   String getProfileImageUrl() {

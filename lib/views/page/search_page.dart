@@ -57,9 +57,13 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       switch (_selectedCategory) {
         case SearchCategory.Users:
+          print("before");
           _allUsers = await api.fetchUtilisateurs();
+          print(_allUsers);
+          print("jjjj");
           break;
         case SearchCategory.Resources:
+          print("hhhhh");
           _allRessources = await api.fetchRessources();
           break;
         case SearchCategory.Categories:
@@ -222,7 +226,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
               : Expanded(
                   child: ListView.builder(
                     itemCount: _filteredItems.length,
-                    // À l'intérieur de ListView.builder
                     itemBuilder: (context, index) {
                       final item = _filteredItems[index];
                       Widget leadingWidget;
