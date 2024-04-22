@@ -461,53 +461,80 @@ class _UserSearchPageState extends State<UserSearchPage> {
       child: Text(title, maxLines: 1),
     );
   }
-  // Add this method in your _UserSearchPageState class
+
+
   void _showRelationTypeDialog(int otherUserID) async {
+    TypesRelation? localSelectedRelationType = _selectedRelationType;
+
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Relation Type"),
-          content: Container(
-            width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                DropdownButton<TypesRelation>(
-                  isExpanded: true,
-                  value: _selectedRelationType,
-                  onChanged: (TypesRelation? newValue) {
-                    setState(() {
-                      _selectedRelationType = newValue;
-                    });
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setDialogState) {
+            return AlertDialog(
+              title: const Text("Type de relation"),
+              titleTextStyle: const TextStyle(
+                color: Color(0xFF015E62),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              content: Container(
+                width: double.maxFinite,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    DropdownButton<TypesRelation>(
+                      isExpanded: true,
+                      value: localSelectedRelationType,
+                      onChanged: (TypesRelation? newValue) {
+                        setDialogState(() {
+                          localSelectedRelationType = newValue;
+                        });
+                      },
+                      items: _relationTypes.map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
+                        return DropdownMenuItem<TypesRelation>(
+                          value: value,
+                          child: Text(value.intitule),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)), // Applique des coins arrondis
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
                   },
-                  items: _relationTypes.map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
-                    return DropdownMenuItem<TypesRelation>(
-                      value: value,
-                      child: Text(value.intitule),
-                    );
-                  }).toList(),
+                  child: const Text('Cancel'),
+                  style: TextButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (localSelectedRelationType != null) {
+                      setState(() {
+                        _selectedRelationType = localSelectedRelationType;
+                      });
+                      api.createRelation(currentUserId!, otherUserID, _selectedRelationType!.id);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => super.widget));
+                    }
+                  },
+                  child: const Text('Confirm'),
+                  style: TextButton.styleFrom(
+                    primary: const Color(0xFF03989E),
+                  ),
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Confirm'),
-              onPressed: () {
-                if (_selectedRelationType != null) {
-                  api.createRelation(currentUserId!, otherUserID, _selectedRelationType!.id);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
+            );
+          },
         );
       },
     );
