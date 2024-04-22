@@ -5,6 +5,7 @@ import '../../services/api_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
+import '../../widgets/utilisateur_card.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -14,12 +15,34 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   Utilisateur? user;
   List<TinyRessource>? resources;
+  List<Utilisateur>? allUsers;  // List to store all users
   bool isLoading = true;
+  String? role;
+
+  Future<void> _determineDisplay() async {
+    role = await AuthService().getCurrentUserRole();
+    print(role);
+    if (role != null && role != "Utilisateur" && role != '') {
+      await _loadAllUsers(); // Load all users if the role is admin or mod
+    } else {
+      await _loadUserProfile(); // Load user profile if the role is 'Utilisateur' or none
+    }
+  }
+
+  Future<void> _loadAllUsers() async {
+    try {
+      allUsers = await ApiService().fetchUtilisateurs(); // Assuming such a method exists
+      setState(() => isLoading = false);
+    } catch (e) {
+      print('Error loading all users: $e');
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    _determineDisplay();
   }
 
   Future<void> _loadUserProfile() async {
@@ -45,110 +68,19 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const CustomTopAppBar(),
       bottomNavigationBar: const CustomBottomAppBar(),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xFF03989E)),
-                  onPressed: () {
-                    print("Modif");
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.menu, color: Color(0xFF03989E)),
-                  onPressed: () {
-                    print("param");
-                  },
-                ),
-              ],
-            ),
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Color(0xFF03989E),
-                shape: BoxShape.circle,
-                image: user?.pic != null ? DecorationImage(
-                  image: NetworkImage(user!.getProfileImageUrl()),
-                  fit: BoxFit.cover,
-                ) : null,
-              ),
-              alignment: Alignment.center,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (user?.pic == null)
-                    Icon(
-                      Icons.photo,
-                      size: 35.0,
-                      color: Colors.white,
-                    ),
-
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        print("Change photo tapped");
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Color(0xFFFFBD59),
-                            width: 2,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Color(0xFF03989E),
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                      '${user?.nom} ',
-                      style: const TextStyle(
-                        color: Color(0xFF03989E),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold, // Gras
-                      )
-                  ),
-                  Text(
-                      '${user?.prenom}',
-                      style: const TextStyle(
-                        color: Color(0xFF03989E),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      )
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: _buildResourcesList(),
-            ),
-          ],
-        ),
+        child: role != null && role != "Utilisateur" && role != 'Anonyme'
+            ? _buildUserList()
+            : _buildUserProfile(),
       ),
     );
   }
@@ -173,6 +105,156 @@ class _UserProfileState extends State<UserProfile> {
       );
     }
   }
+
+  Widget _buildUserProfile() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit, color: Color(0xFF03989E)),
+              onPressed: () {
+                print("Modif");
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.menu, color: Color(0xFF03989E)),
+              onPressed: () {
+                print("param");
+              },
+            ),
+          ],
+        ),
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            color: Color(0xFF03989E),
+            shape: BoxShape.circle,
+            image: user?.pic != null ? DecorationImage(
+              image: NetworkImage(user!.getProfileImageUrl()),
+              fit: BoxFit.cover,
+            ) : null,
+          ),
+          alignment: Alignment.center,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (user?.pic == null)
+                Icon(
+                  Icons.photo,
+                  size: 35.0,
+                  color: Colors.white,
+                ),
+
+              Align(
+                alignment: Alignment.bottomRight,
+                child: GestureDetector(
+                  onTap: () {
+                    print("Change photo tapped");
+                  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Color(0xFFFFBD59),
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Color(0xFF03989E),
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  '${user?.nom} ',
+                  style: const TextStyle(
+                    color: Color(0xFF03989E),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold, // Gras
+                  )
+              ),
+              Text(
+                  '${user?.prenom}',
+                  style: const TextStyle(
+                    color: Color(0xFF03989E),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _buildResourcesList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUserList() {
+    if (allUsers == null || allUsers!.isEmpty) {
+      return Center(child: Text('No users found'));
+    }
+
+    return ListView.builder(
+      itemCount: allUsers!.length,
+      itemBuilder: (context, index) {
+        Utilisateur currentUser = allUsers![index];
+        return Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.grey[200],
+              backgroundImage: currentUser.pic != null
+                  ? NetworkImage(currentUser!.getProfileImageUrl())
+                  : null,
+              child: currentUser.pic == null
+                  ? const Icon(Icons.person, color: Color(0xFF03989E))
+                  : null,
+            ),
+            title: Text('${currentUser.nom} ${currentUser.prenom}'),
+            subtitle: Text('${currentUser.role} \n ${currentUser.email} '),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (role == "Modérateur")
+                  IconButton(
+                    icon: Icon(Icons.gavel, color: Colors.orange),
+                    onPressed: () {
+                      print('Moderation action for ${currentUser.nom}');
+                    },
+                  ),
+                if (role == "Administrateur" || role == "SuperAdmin")
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      ApiService().deleteUtilisateur(currentUser.id);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
 
 }

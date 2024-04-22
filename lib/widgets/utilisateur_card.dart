@@ -29,16 +29,15 @@ class _UtilisateurCardState extends State<UtilisateurCard> {
                   widget.utilisateur.nom + " " + widget.utilisateur.prenom),
               subtitle: Text(widget.utilisateur.email),
               trailing: IconButton(
-                icon: Icon(widget.utilisateur.status == Status.bloque
+                icon: Icon(widget.utilisateur.etat == "bloque"
                     ? Icons.check
                     : Icons.block),
                 onPressed: () {
                   setState(() {
-                    widget.utilisateur.status =
-                        widget.utilisateur.status == Status.bloque
-                            ? Status.normal
-                            : Status.bloque;
-                    // Code to update utilisateur status in the backend
+                    widget.utilisateur.etat =
+                        widget.utilisateur.etat == "bloque"
+                            ? "normal"
+                            : "bloque";
                   });
                 },
               ),
@@ -47,8 +46,7 @@ class _UtilisateurCardState extends State<UtilisateurCard> {
         } else {
           return Card(
             child: ListTile(
-              title: Text(
-                  widget.utilisateur.nom + " " + widget.utilisateur.prenom),
+              title: Text(widget.utilisateur.nom + " " + widget.utilisateur.prenom),
               subtitle: Text(widget.utilisateur.email),
             ),
           );

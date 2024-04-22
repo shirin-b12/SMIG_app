@@ -224,7 +224,7 @@ class _RessourceCardState extends State<RessourceCard> {
     return Column(
       children: [
         Text(
-          'Tags: ${widget.ressource.tags.nom}',
+          '${widget.ressource.description}',
           style: const TextStyle(
             color: Color(0xFF015E62),
             fontWeight: FontWeight.bold,
@@ -232,11 +232,19 @@ class _RessourceCardState extends State<RessourceCard> {
           ),
         ),
         Text(
+          'Tags: ${widget.ressource.tags.nom}',
+          style: const TextStyle(
+            color: Color(0xFF015E62),
+            fontWeight: FontWeight.bold,
+            fontSize: 10,
+          ),
+        ),
+        Text(
           'Date de publication: ${formatShortDate(widget.ressource.date_de_creation)}',
           style: const TextStyle(
             color: Color(0xFF015E62),
             fontWeight: FontWeight.bold,
-            fontSize: 15,
+            fontSize: 10,
           ),
         ),
         // Include other details as needed

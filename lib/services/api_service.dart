@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/models/type.dart';
+import 'package:smig_app/models/typesRelation.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
@@ -154,7 +155,6 @@ class ApiService {
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
-      print('ok');
     } else {
       print('Failed to create resource: ${response.statusCode}');
       print('Reason: ${response.body}');
@@ -224,8 +224,9 @@ class ApiService {
   }
 
   deleteUtilisateur(int userId) async {
+    print('$baseUrl/utilisateur/delete/$userId');
     final response = await http.delete(
-      Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
+      Uri.parse('$baseUrl/utilisateur/delete/$userId'),
     );
 
     if (response.statusCode == 200) {
@@ -456,5 +457,59 @@ class ApiService {
     print(response.statusCode);
     return response.statusCode == 200;
   }
+
+  // Check if a relation exists
+  Future<bool> checkRelation(int currentUserID, int otherUserID) async {
+    final response = await http.get(Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'));
+    if (response.statusCode == 200) {
+      return response.body.toLowerCase() == 'true';  // Assuming API returns 'true' or 'false'
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> createRelation(int currentUserID, int otherUserID, int relationTypeID) async {
+    print(currentUserID);
+    print(otherUserID);
+    print(relationTypeID);
+    final response = await http.post(
+      Uri.parse('$baseUrl/relation'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'id_utilisateur1': currentUserID,
+        'id_utilisateur2': otherUserID,
+        'id_type_relation': relationTypeID,
+      }),
+    );
+print(response.statusCode);
+    return response.statusCode == 200;
+  }
+
+  // In ApiService.dart
+  Future<bool> checkRelationExists(int userId1, int userId2) async {
+    final response = await http.get(Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'));
+    if (response.statusCode == 200) {
+      print("relation entre ${userId1} et ${userId2}");
+      print(json.decode(response.body));
+      return json.decode(response.body) as bool;
+    } else {
+      throw Exception('Failed to check relation existence');
+    }
+  }
+// Add to ApiService.dart
+  Future<List<TypesRelation>> fetchRelationTypes() async {
+    final response = await http.get(Uri.parse('$baseUrl/typesrelation'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      return jsonResponse.map((type) => TypesRelation.fromJson(type)).toList();
+    } else {
+      throw Exception('Failed to load relation types from API');
+    }
+  }
+
+
 
 }
