@@ -45,7 +45,7 @@ class ApiService {
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       List<int> ids =
-      jsonResponse.map((u) => u['id_ressource'] as int).toList();
+          jsonResponse.map((u) => u['id_ressource'] as int).toList();
       return ids;
     } else {
       throw Exception('Failed to load favorite resource IDs from API');
@@ -269,7 +269,7 @@ class ApiService {
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
     final response =
-    await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -381,7 +381,8 @@ class ApiService {
     final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      List<int> ids =
+          jsonResponse.map((u) => u['id_ressource'] as int).toList();
       return ids;
     } else {
       throw Exception('Failed to load favorite resource IDs from API');
@@ -411,7 +412,7 @@ class ApiService {
 
   Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
     final response =
-    await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+        await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -460,15 +461,18 @@ class ApiService {
 
   // Check if a relation exists
   Future<bool> checkRelation(int currentUserID, int otherUserID) async {
-    final response = await http.get(Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'));
     if (response.statusCode == 200) {
-      return response.body.toLowerCase() == 'true';  // Assuming API returns 'true' or 'false'
+      return response.body.toLowerCase() ==
+          'true'; // Assuming API returns 'true' or 'false'
     } else {
       return false;
     }
   }
 
-  Future<bool> createRelation(int currentUserID, int otherUserID, int relationTypeID) async {
+  Future<bool> createRelation(
+      int currentUserID, int otherUserID, int relationTypeID) async {
     print(currentUserID);
     print(otherUserID);
     print(relationTypeID);
@@ -483,13 +487,14 @@ class ApiService {
         'id_type_relation': relationTypeID,
       }),
     );
-print(response.statusCode);
+    print(response.statusCode);
     return response.statusCode == 200;
   }
 
   // In ApiService.dart
   Future<bool> checkRelationExists(int userId1, int userId2) async {
-    final response = await http.get(Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'));
     if (response.statusCode == 200) {
       print("relation entre ${userId1} et ${userId2}");
       print(json.decode(response.body));
@@ -498,6 +503,7 @@ print(response.statusCode);
       throw Exception('Failed to check relation existence');
     }
   }
+
 // Add to ApiService.dart
   Future<List<TypesRelation>> fetchRelationTypes() async {
     final response = await http.get(Uri.parse('$baseUrl/typesrelation'));
@@ -510,6 +516,20 @@ print(response.statusCode);
     }
   }
 
+  Future<void> updateUserStatus(int userId, String newStatus) async {
+    print("here update user status");
+    final response = await http.put(
+      Uri.parse('$baseUrl/utilisateur/$userId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'etat_utilisateur': newStatus,
+      }),
+    );
 
-
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user status');
+    }
+  }
 }
