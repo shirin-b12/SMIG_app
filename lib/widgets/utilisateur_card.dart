@@ -33,14 +33,12 @@ class _UtilisateurCardState extends State<UtilisateurCard> {
                 icon: Icon(widget.utilisateur.etat == "bloque"
                     ? Icons.check
                     : Icons.block),
-                onPressed: () async {
-                  print('Button pressed');
-                  String newStatus =
-                      widget.utilisateur.etat == "bloque" ? "normal" : "bloque";
-                  await widget.api
-                      .updateUserStatus(widget.utilisateur.id, newStatus);
+                onPressed: () {
                   setState(() {
-                    widget.utilisateur.etat = newStatus;
+                    widget.utilisateur.etat =
+                        widget.utilisateur.etat == "bloque"
+                            ? "normal"
+                            : "bloque";
                   });
                 },
               ),
