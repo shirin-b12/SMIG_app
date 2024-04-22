@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/utilisateur.dart';
 import '../../services/auth_service.dart';
+import '../../services/api_service.dart';
 
 class UtilisateurCard extends StatefulWidget {
   final Utilisateur utilisateur;
-
+  final ApiService api = ApiService();
   UtilisateurCard({required this.utilisateur});
 
   @override
@@ -32,12 +33,14 @@ class _UtilisateurCardState extends State<UtilisateurCard> {
                 icon: Icon(widget.utilisateur.etat == "bloque"
                     ? Icons.check
                     : Icons.block),
-                onPressed: () {
+                onPressed: () async {
+                  print('Button pressed');
+                  String newStatus =
+                      widget.utilisateur.etat == "bloque" ? "normal" : "bloque";
+                  await widget.api
+                      .updateUserStatus(widget.utilisateur.id, newStatus);
                   setState(() {
-                    widget.utilisateur.etat =
-                        widget.utilisateur.etat == "bloque"
-                            ? "normal"
-                            : "bloque";
+                    widget.utilisateur.etat = newStatus;
                   });
                 },
               ),
@@ -46,7 +49,8 @@ class _UtilisateurCardState extends State<UtilisateurCard> {
         } else {
           return Card(
             child: ListTile(
-              title: Text(widget.utilisateur.nom + " " + widget.utilisateur.prenom),
+              title: Text(
+                  widget.utilisateur.nom + " " + widget.utilisateur.prenom),
               subtitle: Text(widget.utilisateur.email),
             ),
           );
