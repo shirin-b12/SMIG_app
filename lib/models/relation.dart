@@ -17,10 +17,10 @@ class Relation {
 
   factory Relation.fromJson(Map<String, dynamic> json) {
     return Relation(
-        id: json['id_relation'] as int,
-        idUtilisateur1: Utilisateur.fromJson(json['id_utilisateur1'] as Map<String, dynamic>),
-        idUtilisateur2: Utilisateur.fromJson(json['id_utilisateur2'] as Map<String, dynamic>),
-        idTypeRelation: TypesRelation.fromJson(json['id_type_relation'] as Map<String, dynamic>)
+        id: json['idRelation'] as int,
+        idUtilisateur1: Utilisateur.fromJson(json['utilisateur1'] as Map<String, dynamic>),
+        idUtilisateur2: Utilisateur.fromJson(json['utilisateur2'] as Map<String, dynamic>),
+        idTypeRelation: TypesRelation.fromJson(json['typeRelation'] as Map<String, dynamic>)
     );
   }
 

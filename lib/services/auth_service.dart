@@ -147,10 +147,8 @@ class AuthService {
     if (accessToken != null) {
       Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
       int userId = int.parse(payload['upn']);
-      print(userId);
       final response =
           await http.get(Uri.parse('$baseUrl/utilisateur/$userId'));
-      print(response.body);
       if (response.statusCode == 200) {
         return Utilisateur.fromJson(json.decode(response.body));
       }

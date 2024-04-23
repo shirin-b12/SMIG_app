@@ -17,9 +17,7 @@ class ApiService {
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    print("here");
     final response = await http.get(Uri.parse('$baseUrl/utilisateur'));
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -56,7 +54,6 @@ class ApiService {
   // Fetch a single resource by its ID
   Future<TinyRessource> fetchTinyRessource(int id) async {
     final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
-    print(response.body);
     if (response.statusCode == 200) {
       return TinyRessource.fromJson(json.decode(response.body));
     } else {
@@ -132,7 +129,6 @@ class ApiService {
 
   Future<Ressource?> createRessource(String titre, String description,
       int idCat, int idType, int idTag) async {
-    print('first');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     int idCreateur = await AuthService().getCurrentUser();
@@ -152,7 +148,6 @@ class ApiService {
         "dateDeCreation": formattedDate,
       }),
     );
-    print('here');
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
@@ -261,7 +256,6 @@ class ApiService {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
@@ -284,9 +278,6 @@ class ApiService {
       String texteCommentaire, int idUtilisateur, int idRessource) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
-    print(texteCommentaire);
-    print(idRessource);
-    print(idUtilisateur);
     final response = await http.post(
       Uri.parse('$baseUrl/commentaire'),
       headers: <String, String>{
@@ -456,7 +447,6 @@ class ApiService {
         'id_ressource': resourceId,
       }),
     );
-    print(response.statusCode);
     return response.statusCode == 200;
   }
 
@@ -474,9 +464,6 @@ class ApiService {
 
   Future<bool> createRelation(
       int currentUserID, int otherUserID, int relationTypeID) async {
-    print(currentUserID);
-    print(otherUserID);
-    print(relationTypeID);
     final response = await http.post(
       Uri.parse('$baseUrl/relation'),
       headers: <String, String>{
@@ -488,7 +475,6 @@ class ApiService {
         'id_type_relation': relationTypeID,
       }),
     );
-    print(response.statusCode);
     return response.statusCode == 200;
   }
 
@@ -510,7 +496,6 @@ class ApiService {
     final response = await http.get(Uri.parse('$baseUrl/typesrelation'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       return jsonResponse.map((type) => TypesRelation.fromJson(type)).toList();
     } else {
       throw Exception('Failed to load relation types from API');
@@ -518,7 +503,6 @@ class ApiService {
   }
 
   Future<void> updateUserStatus(int userId, String newStatus) async {
-    print("here update user status");
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/$userId'),
       headers: <String, String>{
@@ -535,7 +519,7 @@ class ApiService {
   }
 
   Future<List<Relation>> fetchRelationsByUserId(int userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/user/$userId'));
+    final response = await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Relation.fromJson(data)).toList();

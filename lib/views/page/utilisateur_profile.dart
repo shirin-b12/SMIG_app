@@ -16,27 +16,25 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   Utilisateur? user;
   List<TinyRessource>? resources;
-  List<Utilisateur>? allUsers;  // List to store all users
+  List<Utilisateur>? allUsers;
   bool isLoading = true;
   String? role;
   int? userId;
-
-  List<Relation>? relations; // Add this to store relations
-  int relationsCount = 0; // Add this to store relations count
+  List<Relation>? relations;
+  int relationsCount = 0;
 
   Future<void> _determineDisplay() async {
     role = await AuthService().getCurrentUserRole();
-    print(role);
     if (role != null && role != "Utilisateur" && role != '') {
-      await _loadAllUsers(); // Load all users if the role is admin or mod
+      await _loadAllUsers();
     } else {
-      await _loadUserProfile(); // Load user profile if the role is 'Utilisateur' or none
+      await _loadUserProfile();
     }
   }
 
   Future<void> _loadAllUsers() async {
     try {
-      allUsers = await ApiService().fetchUtilisateurs(); // Assuming such a method exists
+      allUsers = await ApiService().fetchUtilisateurs();
       setState(() => isLoading = false);
     } catch (e) {
       print('Error loading all users: $e');
@@ -50,16 +48,14 @@ class _UserProfileState extends State<UserProfile> {
     _determineDisplay();
     _fetchRelations();
   }
+
   Future<void> _fetchRelations() async {
-    if (userId != null) {
-      try {
-        relations = await ApiService().fetchRelationsByUserId(userId!);
-        relationsCount = relations?.length ?? 0;
-        setState(() {});
-      } catch (e) {
-        print('Error fetching relations: $e');
-      }
-    }
+
+    userId = await AuthService().getCurrentUser();
+    relations = await ApiService().fetchRelationsByUserId(userId!);
+    print(relations);
+    relationsCount = relations?.length ?? 0;
+    setState(() {});
   }
 
   Future<void> _loadUserProfile() async {
@@ -225,9 +221,6 @@ class _UserProfileState extends State<UserProfile> {
         Expanded(
           child: _buildResourcesList(),
         ),
-        Expanded(
-          child: _buildResourcesList(),
-        ),
       ],
     );
   }
@@ -261,7 +254,6 @@ class _UserProfileState extends State<UserProfile> {
                   IconButton(
                     icon: Icon(Icons.gavel, color: Colors.orange),
                     onPressed: () {
-                      print('Moderation action for ${currentUser.nom}');
                       showStatusDialog(
                           context, currentUser.id, currentUser.etat);
                       print('Moderation action for ${currentUser.nom}');
