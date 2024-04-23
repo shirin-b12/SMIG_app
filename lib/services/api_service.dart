@@ -7,6 +7,7 @@ import 'package:smig_app/models/typesRelation.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
+import '../models/relation.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
@@ -530,6 +531,16 @@ class ApiService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to update user status');
+    }
+  }
+
+  Future<List<Relation>> fetchRelationsByUserId(int userId) async {
+    final response = await http.get(Uri.parse('$baseUrl/user/$userId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => Relation.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load relations: ${response.statusCode}');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../models/relation.dart';
 import '../../models/tiny_ressource.dart';
 import '../../models/utilisateur.dart';
 import '../../services/api_service.dart';
@@ -18,6 +19,10 @@ class _UserProfileState extends State<UserProfile> {
   List<Utilisateur>? allUsers;  // List to store all users
   bool isLoading = true;
   String? role;
+  int? userId;
+
+  List<Relation>? relations; // Add this to store relations
+  int relationsCount = 0; // Add this to store relations count
 
   Future<void> _determineDisplay() async {
     role = await AuthService().getCurrentUserRole();
@@ -43,14 +48,26 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
     _determineDisplay();
+    _fetchRelations();
+  }
+  Future<void> _fetchRelations() async {
+    if (userId != null) {
+      try {
+        relations = await ApiService().fetchRelationsByUserId(userId!);
+        relationsCount = relations?.length ?? 0;
+        setState(() {});
+      } catch (e) {
+        print('Error fetching relations: $e');
+      }
+    }
   }
 
   Future<void> _loadUserProfile() async {
-    int? userId = await AuthService().getCurrentUser();
+    userId = await AuthService().getCurrentUser();
     if (userId != null) {
       try {
-        Utilisateur userDetails = await ApiService().getUtilisateur(userId);
-        List<TinyRessource> userResources = await ApiService().fetchRessourcesByCreateur(userId);
+        Utilisateur userDetails = await ApiService().getUtilisateur(userId!);
+        List<TinyRessource> userResources = await ApiService().fetchRessourcesByCreateur(userId!);
         setState(() {
           user = userDetails;
           resources = userResources;
@@ -201,6 +218,13 @@ class _UserProfileState extends State<UserProfile> {
             ],
           ),
         ),
+        ElevatedButton(
+          onPressed: () => _showRelationsDialog(),
+          child: Text('$relationsCount Relations'),
+        ),
+        Expanded(
+          child: _buildResourcesList(),
+        ),
         Expanded(
           child: _buildResourcesList(),
         ),
@@ -255,6 +279,34 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-
-
+  void _showRelationsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Relations"),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: relationsCount,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(relations![index].idUtilisateur2.nom + " " + relations![index].idUtilisateur2.prenom),
+                  subtitle: Text('Type: ' + relations![index].idTypeRelation.intitule),
+                );
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
