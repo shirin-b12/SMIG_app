@@ -503,18 +503,22 @@ class ApiService {
   }
 
   Future<void> updateUserStatus(int userId, String newStatus) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/utilisateur/$userId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'etat_utilisateur': newStatus,
-      }),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update user status');
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/utilisateur/statu/$userId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'statu': newStatus,
+        }),
+      );
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update user status');
+      }
+    } catch (e) {
+      print('Failed to update user status: $e');
     }
   }
 

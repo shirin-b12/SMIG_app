@@ -214,9 +214,13 @@ class _UserProfileState extends State<UserProfile> {
             ],
           ),
         ),
-        ElevatedButton(
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: const TextStyle(fontSize: 15),
+            foregroundColor: Color(0xFF03989E),
+          ),
           onPressed: () => _showRelationsDialog(),
-          child: Text('$relationsCount Relations'),
+          child: Text('$relationsCount relations'),
         ),
         Expanded(
           child: _buildResourcesList(),
@@ -279,19 +283,6 @@ class _UserProfileState extends State<UserProfile> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Relations"),
-          content: Container(
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: relationsCount,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(relations![index].idUtilisateur2.nom + " " + relations![index].idUtilisateur2.prenom),
-                  subtitle: Text('Type: ' + relations![index].idTypeRelation.intitule),
-                );
-              },
-            ),
-          ),
           actions: <Widget>[
             TextButton(
               child: Text('Close'),
@@ -300,6 +291,22 @@ class _UserProfileState extends State<UserProfile> {
               },
             ),
           ],
+          title: Text("Relations"),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: relationsCount,
+              itemBuilder: (context, index) {
+                bool isUser1 = relations![index].idUtilisateur1.id == userId;
+                Utilisateur otherUser = isUser1 ? relations![index].idUtilisateur2 : relations![index].idUtilisateur1;
+
+                return ListTile(
+                  title: Text('${otherUser.nom} ${otherUser.prenom}'),
+                  subtitle: Text('Type: ${relations![index].idTypeRelation.intitule}'),
+                );
+              },
+            ),
+          ),
         );
       },
     );
