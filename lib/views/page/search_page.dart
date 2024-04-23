@@ -162,7 +162,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     _loadItems();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,50 +256,57 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
                           leadingWidget = user.pic != null
                               ? CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(user.getProfileImageUrl()),
-                          )
+                                  radius: 20,
+                                  backgroundImage:
+                                      NetworkImage(user.getProfileImageUrl()),
+                                )
                               : CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 30,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Color(0xFF03989E),
-                                    width: 2.0,
-                                  )
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Color(0xFF03989E),
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          );
+                                  backgroundColor: Colors.transparent,
+                                  radius: 30,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Color(0xFF03989E),
+                                          width: 2.0,
+                                        )),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Color(0xFF03989E),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                );
 
                           titleText = "${user.nom} ${user.prenom}";
                           trailingWidget = FutureBuilder<bool>(
-                            future: api.checkRelationExists(currentUserId!, user.id),
-                            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
+                            future: api.checkRelationExists(
+                                currentUserId!, user.id),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<bool> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
                                 // Optionally, show a small circular progress indicator while loading
                                 return SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF03989E)),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xFF03989E)),
                                   ),
                                 );
-                              } else if (snapshot.hasData && snapshot.data == false) {
+                              } else if (snapshot.hasData &&
+                                  snapshot.data == false) {
                                 // Only show the add relation button if there is no existing relation
                                 return IconButton(
-                                  icon: Icon(Icons.add_circle_outline, color: Color(0xFF03989E)),
-                                  onPressed: () => _showRelationTypeDialog(user.id),
+                                  icon: Icon(Icons.add_circle_outline,
+                                      color: Color(0xFF03989E)),
+                                  onPressed: () =>
+                                      _showRelationTypeDialog(user.id),
                                 );
                               } else {
                                 // If there is a relation, or data is not available, do not show the button
@@ -320,8 +326,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -345,8 +350,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -370,8 +374,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -395,8 +398,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -412,20 +414,19 @@ class _UserSearchPageState extends State<UserSearchPage> {
                       }
 
                       return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 8.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFFFBD59), width: 0.8),
+                          border:
+                              Border.all(color: Color(0xFFFFBD59), width: 0.8),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: ListTile(
-                          leading: leadingWidget,
-                          title: Text(titleText),
-                          trailing: trailingWidget
-                        ),
+                            leading: leadingWidget,
+                            title: Text(titleText),
+                            trailing: trailingWidget),
                       );
                     },
-
-
                   ),
                 ),
         ],
@@ -462,7 +463,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     );
   }
 
-
   void _showRelationTypeDialog(int otherUserID) async {
     TypesRelation? localSelectedRelationType = _selectedRelationType;
 
@@ -491,7 +491,9 @@ class _UserSearchPageState extends State<UserSearchPage> {
                           localSelectedRelationType = newValue;
                         });
                       },
-                      items: _relationTypes.map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
+                      items: _relationTypes
+                          .map<DropdownMenuItem<TypesRelation>>(
+                              (TypesRelation value) {
                         return DropdownMenuItem<TypesRelation>(
                           value: value,
                           child: Text(value.intitule),
@@ -502,7 +504,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
                 ),
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20)), // Applique des coins arrondis
+                borderRadius: BorderRadius.all(
+                    Radius.circular(20)), // Applique des coins arrondis
               ),
               actions: <Widget>[
                 TextButton(
@@ -511,7 +514,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                   },
                   child: const Text('Cancel'),
                   style: TextButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.error,
+                    foregroundColor: Theme.of(context).colorScheme.error,
                   ),
                 ),
                 TextButton(
@@ -520,7 +523,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
                       setState(() {
                         _selectedRelationType = localSelectedRelationType;
                       });
-                      api.createRelation(currentUserId!, otherUserID, _selectedRelationType!.id);
+                      api.createRelation(currentUserId!, otherUserID,
+                          _selectedRelationType!.id);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -529,7 +533,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                   },
                   child: const Text('Confirm'),
                   style: TextButton.styleFrom(
-                    primary: const Color(0xFF03989E),
+                    foregroundColor: const Color(0xFF03989E),
                   ),
                 ),
               ],
@@ -540,7 +544,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     );
   }
 
-
   Widget _relationTypeDropdown() {
     return DropdownButton<TypesRelation>(
       value: _selectedRelationType,
@@ -549,7 +552,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
           _selectedRelationType = newValue;
         });
       },
-      items: _relationTypes.map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
+      items: _relationTypes
+          .map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
         return DropdownMenuItem<TypesRelation>(
           value: value,
           child: Text(value.intitule),
@@ -557,6 +561,4 @@ class _UserSearchPageState extends State<UserSearchPage> {
       }).toList(),
     );
   }
-
-
 }
