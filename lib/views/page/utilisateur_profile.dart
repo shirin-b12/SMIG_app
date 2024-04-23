@@ -262,6 +262,9 @@ class _UserProfileState extends State<UserProfile> {
                     icon: Icon(Icons.gavel, color: Colors.orange),
                     onPressed: () {
                       print('Moderation action for ${currentUser.nom}');
+                      showStatusDialog(
+                          context, currentUser.id, currentUser.etat);
+                      print('Moderation action for ${currentUser.nom}');
                     },
                   ),
                 if (role == "Administrateur" || role == "SuperAdmin")
@@ -301,6 +304,34 @@ class _UserProfileState extends State<UserProfile> {
             TextButton(
               child: Text('Close'),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showStatusDialog(BuildContext context, int userId, String currentStatus) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('L\'état actuel est : $currentStatus'),
+          content: Text('Voulez-vous changer l\'état ?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Bloquer'),
+              onPressed: () async {
+                await ApiService().updateUserStatus(userId, 'bloque');
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Débloquer'),
+              onPressed: () async {
+                await ApiService().updateUserStatus(userId, 'normal');
                 Navigator.of(context).pop();
               },
             ),
