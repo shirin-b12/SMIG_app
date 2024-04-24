@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import '../../models/relation.dart';
 import '../../models/tiny_ressource.dart';
 import '../../models/utilisateur.dart';
@@ -6,6 +7,7 @@ import '../../services/api_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
+import '../../widgets/tiny_ressource_card.dart';
 import '../../widgets/utilisateur_card.dart';
 
 class UserProfile extends StatefulWidget {
@@ -53,7 +55,6 @@ class _UserProfileState extends State<UserProfile> {
 
     userId = await AuthService().getCurrentUser();
     relations = await ApiService().fetchRelationsByUserId(userId!);
-    print(relations);
     relationsCount = relations?.length ?? 0;
     setState(() {});
   }
@@ -108,16 +109,12 @@ class _UserProfileState extends State<UserProfile> {
         itemCount: resources!.length,
         itemBuilder: (context, index) {
           TinyRessource ressource = resources![index];
-          return ListTile(
-            title: Text(ressource.titre),
-            onTap: () {
-              print('Tapped on resource: ${ressource.titre}');
-            },
-          );
+          return TinyRessourceCard(ressource: ressource); // Using TinyRessourceCard here
         },
       );
     }
   }
+
 
   Widget _buildUserProfile() {
     return Column(
@@ -129,7 +126,7 @@ class _UserProfileState extends State<UserProfile> {
             IconButton(
               icon: Icon(Icons.edit, color: Color(0xFF03989E)),
               onPressed: () {
-                print("Modif");
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserModificationPage(user: user as Utilisateur)));
               },
             ),
             IconButton(
@@ -196,7 +193,7 @@ class _UserProfileState extends State<UserProfile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  '${user?.nom} ',
+                  '\n${user?.nom} \n',
                   style: const TextStyle(
                     color: Color(0xFF03989E),
                     fontSize: 20,
@@ -204,7 +201,7 @@ class _UserProfileState extends State<UserProfile> {
                   )
               ),
               Text(
-                  '${user?.prenom}',
+                  '\n${user?.prenom}\n',
                   style: const TextStyle(
                     color: Color(0xFF03989E),
                     fontSize: 20,
@@ -214,14 +211,47 @@ class _UserProfileState extends State<UserProfile> {
             ],
           ),
         ),
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: const TextStyle(fontSize: 15),
-            foregroundColor: Color(0xFF03989E),
-          ),
-          onPressed: () => _showRelationsDialog(),
-          child: Text('$relationsCount relations'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 15),
+                foregroundColor: Color(0xFF03989E),
+              ),
+              onPressed: () => _showRelationsDialog(),
+              child: Text('$relationsCount relations\n'),
+            ),
+            Text(
+                '${resources?.length ?? 0} ressources\n',
+                style: const TextStyle(
+                  color: Color(0xFF03989E),
+                  fontSize: 15,
+                )
+            ),
+          ],
         ),
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.3,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color(0xFF03989E),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Text(
+            "Vos ressources ",
+            style: TextStyle(
+              color: Color(0xFF03989E),
+              fontSize: 15,
+            ),
+          ),
+        ),
+
         Expanded(
           child: _buildResourcesList(),
         ),

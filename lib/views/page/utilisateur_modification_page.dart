@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
+import 'package:smig_app/views/page/utilisateur_profile.dart';
 
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
@@ -17,11 +18,14 @@ class UserModificationPage extends StatefulWidget {
 class _UserModificationPageState extends State<UserModificationPage> {
   final _formKey = GlobalKey<FormState>();
   late String nom, prenom, email;
+  late int id;
   final ApiService api = ApiService();
 
   @override
   void initState() {
     super.initState();
+    id = widget.user.id;
+    print('prout${widget.user.id}');
     nom = widget.user.nom;
     prenom = widget.user.prenom;
     email = widget.user.email;
@@ -30,13 +34,8 @@ class _UserModificationPageState extends State<UserModificationPage> {
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      bool updated = await api.updateUser(/*widget.user.id*/5, nom, prenom, email);
-      print("is clicked");
-      if (updated) {
-        Navigator.pop(context, true);
-      } else {
-        //TODO : Handle update error
-      }
+      bool updated = await api.updateUser(id, nom, prenom, email);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserProfile()));
     }
   }
 

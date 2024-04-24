@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
@@ -9,6 +10,7 @@ import 'package:smig_app/views/page/utilisateur_profile.dart';
 import 'package:smig_app/views/page/search_page.dart';
 import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
+import '../models/utilisateur.dart';
 import '../services/auth_service.dart';
 import '../views/page/commentaire_page.dart';
 import '../views/page/create_tag_cat_type.dart';
@@ -143,7 +145,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 _controller
                   ..reset()
                   ..forward();

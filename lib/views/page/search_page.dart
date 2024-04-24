@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
-import 'package:smig_app/models/typesRelation.dart';
+import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
 import 'package:smig_app/models/type.dart';

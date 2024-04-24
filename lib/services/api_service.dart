@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/models/type.dart';
-import 'package:smig_app/models/typesRelation.dart';
+import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
@@ -234,8 +234,7 @@ class ApiService {
     }
   }
 
-  Future<bool> updateUser(
-      int id, String nom, String prenom, String email) async {
+  Future<bool> updateUser(int id, String nom, String prenom, String email) async {
     final response = await http.put(
       Uri.parse('$baseUrl/utilisateur/update/$id'),
       headers: <String, String>{
@@ -274,40 +273,39 @@ class ApiService {
     }
   }
 
-  Future<Commentaire?> createComment(
-      String texteCommentaire, int idUtilisateur, int idRessource) async {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
-    final response = await http.post(
-      Uri.parse('$baseUrl/commentaire'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'commentaire': texteCommentaire,
-        'id_utilisateur_redacteur': idUtilisateur,
-        'id_ressource': idRessource,
-        'date_de_creation': formattedDate
-      }),
-    );
-
+  void createComment(String texteCommentaire, int idUtilisateur, int idRessource, int commentaireResponse) async {
     try {
-      if (response.statusCode == 200) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+      var requestBody = jsonEncode({
+        'commentaire': texteCommentaire,
+        'idCreateur': idUtilisateur,
+        'idRessource': idRessource,
+        'dateDeCreation': formattedDate,
+        'idCommentaireRep': commentaireResponse
+      });
+
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/commentaire'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
         final data = json.decode(response.body);
-        if (data != null) {
-          return Commentaire.fromJson(data);
-        } else {
-          throw Exception('Le corps de la réponse est null.');
-        }
       } else {
-        throw Exception(
-            'Failed to post comment. Status code: ${response.statusCode}');
+        print('Failed to post comment. Status code: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (e) {
-      print('Erreur lors de la conversion de la réponse en Commentaire: $e');
-      return null;
+      print('Error during comment creation: $e');
     }
   }
+
+
+
 
   Future<Categorie?> createCat(String nom) async {
     final response = await http.post(

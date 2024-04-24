@@ -1,5 +1,5 @@
 import 'package:smig_app/models/ressource.dart';
-import 'package:smig_app/models/typesRelation.dart';
+import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/models/utilisateur.dart';
 
 class Relation {
