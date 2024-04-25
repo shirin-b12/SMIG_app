@@ -11,6 +11,7 @@ import '../models/relation.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String baseUrl = 'http://localhost:8081';
@@ -40,7 +41,14 @@ class ApiService {
   }
 
   Future<List<int>> fetchFavorie(int? id) async {
-    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(Uri.parse('$baseUrl/favori/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      });
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       List<int> ids =
@@ -84,6 +92,7 @@ class ApiService {
   }
 
   Future<List<Tag>> fetchTags() async {
+
     final response = await http.get(Uri.parse('$baseUrl/tags/all'));
 
     if (response.statusCode == 200) {
@@ -95,7 +104,14 @@ class ApiService {
   }
 
   Future<Ressource> getRessource(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'),
+      headers: <String, String>{
+      'Authorization': 'Bearer $accessToken',
+    },);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -127,14 +143,18 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description,
-      int idCat, int idType, int idTag) async {
+  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     int idCreateur = await AuthService().getCurrentUser();
     final response = await http.post(
       Uri.parse('$baseUrl/ressources'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -158,13 +178,17 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(
-      int ressourceId, String titre, String description) async {
+  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     final response = await http.put(
-      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -188,9 +212,14 @@ class ApiService {
   }
 
   Future<bool> updateValidationRessource(int ressourceId, bool resultat) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.put(
-      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{'validate_Ressource': resultat}),
@@ -206,8 +235,15 @@ class ApiService {
   }
 
   deleteRessource(int ressourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.delete(
-      Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+        }
     );
 
     if (response.statusCode == 200) {
@@ -220,9 +256,15 @@ class ApiService {
   }
 
   deleteUtilisateur(int userId) async {
-    print('$baseUrl/utilisateur/delete/$userId');
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.delete(
-      Uri.parse('$baseUrl/utilisateur/delete/$userId'),
+      Uri.parse('$baseUrl/utilisateur/$userId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      }
     );
 
     if (response.statusCode == 200) {
@@ -235,9 +277,14 @@ class ApiService {
   }
 
   Future<bool> updateUser(int id, String nom, String prenom, String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.put(
-      Uri.parse('$baseUrl/utilisateur/update/$id'),
+      Uri.parse('$baseUrl/utilisateur/$id'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
@@ -251,7 +298,16 @@ class ApiService {
   }
 
   Future<Utilisateur> getUtilisateur(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/utilisateur/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(
+      Uri.parse('$baseUrl/utilisateur/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -262,8 +318,9 @@ class ApiService {
   }
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/commentaire/$ressourceId'),
+    );
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -273,7 +330,12 @@ class ApiService {
     }
   }
 
-  void createComment(String texteCommentaire, int idUtilisateur, int idRessource, int commentaireResponse) async {
+  void createComment(String texteCommentaire, int idUtilisateur,
+      int idRessource, int commentaireResponse) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     try {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
@@ -285,10 +347,10 @@ class ApiService {
         'idCommentaireRep': commentaireResponse
       });
 
-
       final response = await http.post(
         Uri.parse('$baseUrl/commentaire'),
         headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: requestBody,
@@ -297,20 +359,23 @@ class ApiService {
       if (response.statusCode == 200 && response.body.isNotEmpty) {
         final data = json.decode(response.body);
       } else {
-        print('Failed to post comment. Status code: ${response.statusCode}, Body: ${response.body}');
+        print(
+            'Failed to post comment. Status code: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (e) {
       print('Error during comment creation: $e');
     }
   }
 
-
-
-
   Future<Categorie?> createCat(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/categories'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -328,9 +393,14 @@ class ApiService {
   }
 
   Future<Tag?> createTag(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/tags'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -348,9 +418,14 @@ class ApiService {
   }
 
   Future<Type?> createType(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/types'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -368,7 +443,17 @@ class ApiService {
   }
 
   Future<List<int>> fetchFavoris(int? id) async {
-    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(
+      Uri.parse('$baseUrl/favori/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       List<int> ids =
@@ -380,9 +465,14 @@ class ApiService {
   }
 
   Future<bool> createFavorite(int userId, int resourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/favori'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -435,9 +525,14 @@ class ApiService {
   }
 
   Future<bool> deleteFavorite(int userId, int resourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.delete(
       Uri.parse('$baseUrl/favori'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -460,11 +555,13 @@ class ApiService {
     }
   }
 
-  Future<bool> createRelation(
-      int currentUserID, int otherUserID, int relationTypeID) async {
+  Future<bool> createRelation(int currentUserID, int otherUserID, int relationTypeID) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
     final response = await http.post(
       Uri.parse('$baseUrl/relation'),
       headers: <String, String>{
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
@@ -502,9 +599,14 @@ class ApiService {
 
   Future<void> updateUserStatus(int userId, String newStatus) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('userToken');
+      Map<String, dynamic> user = jsonDecode(token!);
+      String accessToken = user['accessToken'];
       final response = await http.put(
         Uri.parse('$baseUrl/utilisateur/statu/$userId'),
         headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
@@ -521,7 +623,8 @@ class ApiService {
   }
 
   Future<List<Relation>> fetchRelationsByUserId(int userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Relation.fromJson(data)).toList();

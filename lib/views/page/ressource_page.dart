@@ -49,8 +49,7 @@ class RessourcePage extends StatelessWidget {
                     SizedBox(height: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: primaryColor, // Background color
-                        onPrimary: Colors.white, // Text color
+                        foregroundColor: Colors.white, backgroundColor: primaryColor, // Text color
                       ),
                       child: Text('Envoyer'),
                       onPressed: () async {
