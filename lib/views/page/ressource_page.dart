@@ -88,7 +88,7 @@ class RessourcePage extends StatelessWidget {
                                     title: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${comment.idUtilisateurRedacteur.nom} ${comment.idUtilisateurRedacteur.prenom}",
+                                        Text("${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}",
                                             style: TextStyle(color: secondaryColor)),
                                         Text(comment.commentaire),
                                       ],

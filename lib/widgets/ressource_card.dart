@@ -95,7 +95,7 @@ class _RessourceCardState extends State<RessourceCard> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Catégorie: ${widget.ressource.category.nom}",
+                        "Catégorie: ${widget.ressource.category}",
                         style: const TextStyle(
                           color: Color(0xFF015E62),
                           fontWeight: FontWeight.bold,
@@ -106,7 +106,7 @@ class _RessourceCardState extends State<RessourceCard> {
                     ),
                     Expanded(
                       child: Text(
-                        "Type: ${widget.ressource.type.nom}",
+                        "Type: ${widget.ressource.type}",
                         style: const TextStyle(
                           color: Color(0xFF015E62),
                           fontWeight: FontWeight.bold,
@@ -232,7 +232,7 @@ class _RessourceCardState extends State<RessourceCard> {
           ),
         ),
         Text(
-          'Tags: ${widget.ressource.tags.nom}',
+          'Tags: ${widget.ressource.tags}',
           style: const TextStyle(
             color: Color(0xFF015E62),
             fontWeight: FontWeight.bold,

@@ -6,8 +6,8 @@ class TinyRessource {
 
   factory TinyRessource.fromJson(Map<String, dynamic> json) {
     return TinyRessource(
-      id: json['id_ressource'] as int,
-      titre: json['titre'] as String,
+      id: json['id'] ,
+      titre: json['titre'],
     );
   }
 }

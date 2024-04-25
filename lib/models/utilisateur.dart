@@ -23,7 +23,7 @@ class Utilisateur {
       nom: json['nom'],
       prenom: json['prenom'],
       email: json['email'],
-      pic: json['imageProfil'] != null ? json['imageProfil']['id_image'] : null,
+      pic: json['image'] != null ? json['image']['id_image'] : null,
       etat: json['etat_utilisateur'],
       role : json['role'] != null ? json['role']['nom_role'] : null,
     );
@@ -35,7 +35,7 @@ class Utilisateur {
       'nom': nom,
       'prenom': prenom,
       'email': email,
-      'imageProfil': pic,
+      'image': pic,
       'etat_utilisateur': etat,
       'role': role
     };

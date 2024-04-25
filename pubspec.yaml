@@ -77,7 +77,6 @@ flutter:
   assets:
     - assets/animations/splashScreen/data.json
     - assets/animations/splashScreen/images/img_0.png
-    - assets/animations/splashScreen/images/img_1.png
     - assets/gouv/marianne.png
     - assets/gouv/ministere.png
     - assets/smig/logo.png
