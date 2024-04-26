@@ -7,6 +7,7 @@ import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
+import '../models/role.dart';
 import '../models/relation.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
@@ -39,7 +40,6 @@ class ApiService {
       throw Exception('Failed to load ressources from API');
     }
   }
-
   Future<List<int>> fetchFavorie(int? id) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
@@ -122,8 +122,8 @@ class ApiService {
   }
 
   //creation compte
-  Future<Utilisateur?> createAccount(
-      String nom, String prenom, String email, String password) async {
+  Future<Utilisateur?> createAccount(String nom, String prenom, String email,
+      String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/utilisateur'),
       headers: <String, String>{
@@ -178,13 +178,14 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+  Future<bool> updateRessource(int ressourceId, String titre, String description,  int idCat, int idType, int idTag) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
     Map<String, dynamic> user = jsonDecode(token!);
     String accessToken = user['accessToken'];
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    int idCreateur = await AuthService().getCurrentUser();
     final response = await http.put(
       Uri.parse('$baseUrl/ressources/$ressourceId'),
       headers: <String, String>{
@@ -192,10 +193,10 @@ class ApiService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        "idCat": 1,
-        "idType": 1,
-        "idTag": 1,
-        "idCreateur": 5,
+        "idCat": idCat,
+        "idType": idType,
+        "idTag": idTag,
+        "idCreateur": idCreateur,
         "titre": titre,
         "description": description,
         "dateDeCreation": formattedDate,
@@ -585,7 +586,36 @@ class ApiService {
       throw Exception('Failed to check relation existence');
     }
   }
+  Future<List<Role>> fetchRoles() async {
+    final response = await http.get(Uri.parse('$baseUrl/roles'));
 
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((u) => Role.fromJson(u)).toList();
+    } else {
+      throw Exception('Failed to load roles from API');
+    }
+  }
+
+  //creation compte
+  Future<bool> creerUtilisateurAvecRole(String nom, String prenom,
+      String email, String password, String tel, Role role) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/utilisateur'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'nom': nom,
+        'prenom': prenom,
+        'email': email,
+        'mot_de_passe': password,
+        'role' : role.toJson(),
+      }),
+    );
+
+    return response.statusCode == 200;
+  }
 // Add to ApiService.dart
   Future<List<TypesRelation>> fetchRelationTypes() async {
     final response = await http.get(Uri.parse('$baseUrl/typesrelation'));
@@ -624,7 +654,7 @@ class ApiService {
 
   Future<List<Relation>> fetchRelationsByUserId(int userId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
+    await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Relation.fromJson(data)).toList();

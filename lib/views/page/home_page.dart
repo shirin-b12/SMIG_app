@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
                       return InkWell(
                         onTap: () {
                           Navigator.of(context).pushReplacement(CustomMaterialPageRoute(
-                            builder: (context) => RessourcePage(resourceId: ressource.id),
+                            builder: (context) => RessourcePage(ressourceId: ressource.id),
                           ));
                         },
                         child: RessourceCard(ressource: ressource),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/auth_service.dart';
+import 'package:smig_app/views/page/ressource_modification_page.dart';
 import '../../models/commentaire.dart';
 import '../../models/ressource.dart';
 import '../../services/api_service.dart';
@@ -9,9 +10,9 @@ import '../../widgets/ressource_card.dart';
 
 class RessourcePage extends StatelessWidget {
   final ApiService api = ApiService();
-  final int resourceId;
+  final int ressourceId;
 
-  RessourcePage({required this.resourceId});
+  RessourcePage({required this.ressourceId});
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +104,14 @@ class RessourcePage extends StatelessWidget {
                             return Center(child: CircularProgressIndicator());
                           },
                         ),
+                        SizedBox(height: 50),
+                        Container(
+                          width: 250,
+                          height: 30,
+                          child: Center(
+                            child: _buildModifyButton(context, snapshotRessource.data!),
+                          ),
+                        ),
                       ],
                     );
                   } else if (snapshotRessource.hasError) {
@@ -115,6 +124,41 @@ class RessourcePage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildModifyButton(BuildContext context, Ressource ressource) {
+    return FutureBuilder<int>(
+      future: AuthService().getCurrentUser(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            final int currentUserId = snapshot.data!;
+            // Vérifie si l'utilisateur actuel est le créateur de la ressource
+            bool isCreator = currentUserId == ressource.createur.id;
+
+            // Si l'utilisateur actuel est le créateur de la ressource, affichez le bouton de modification
+            if (isCreator) {
+              return ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RessourceUpdatePage(ressource: ressource),
+                    ),
+                  );
+                },
+                child: Text('Modifier la ressource'),
+              );
+            }
+          } else if (snapshot.hasError) {
+            // Gestion de l'erreur s'il y a eu un problème lors de la récupération de l'ID de l'utilisateur
+            print("Erreur lors de la récupération de l'ID de l'utilisateur: ${snapshot.error}");
+          }
+        }
+        // Si le Future n'est pas encore résolu, ou s'il n'y a pas de données, retournez un conteneur vide
+        return Container();
+      },
     );
   }
 }

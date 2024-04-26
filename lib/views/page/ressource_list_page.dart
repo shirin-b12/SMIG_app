@@ -32,7 +32,7 @@ class RessourceListPage extends StatelessWidget {
                   return GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => RessourcePage(resourceId: ressource.id),
+                        builder: (context) => RessourcePage(ressourceId: ressource.id),
                       ),
                     ),
                     child: Card(
