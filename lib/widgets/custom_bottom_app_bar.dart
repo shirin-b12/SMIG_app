@@ -4,6 +4,7 @@ import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/ressource_modification_page.dart';
 import 'package:smig_app/views/page/ressource_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'package:smig_app/views/page/utilisateur_profile.dart';

@@ -70,7 +70,6 @@ class AuthService {
         if (accessToken.isNotEmpty) {
           Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
           int userId = int.parse(payload['upn']);
-          print("L'ID de l'utilisateur est : $userId");
           return userId;
         } else {
           print("AccessToken is empty or not found.");
@@ -100,7 +99,6 @@ class AuthService {
           List<dynamic> userRoles = payload['groups'];
           if (userRoles.isNotEmpty) {
             String userRole = userRoles[0];
-            print("Le rôle de l'utilisateur est : $userRole");
             return userRole;
           } else {
             print("No roles found for the user.");

@@ -546,11 +546,20 @@ class ApiService {
 
   // Check if a relation exists
   Future<bool> checkRelation(int currentUserID, int otherUserID) async {
-    final response = await http
-        .get(Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(
+      Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
     if (response.statusCode == 200) {
       return response.body.toLowerCase() ==
-          'true'; // Assuming API returns 'true' or 'false'
+          'true';
     } else {
       return false;
     }
@@ -559,10 +568,12 @@ class ApiService {
   Future<bool> createRelation(int currentUserID, int otherUserID, int relationTypeID) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/relation'),
       headers: <String, String>{
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
@@ -571,16 +582,24 @@ class ApiService {
         'id_type_relation': relationTypeID,
       }),
     );
+    print(response.statusCode);
     return response.statusCode == 200;
   }
 
-  // In ApiService.dart
   Future<bool> checkRelationExists(int userId1, int userId2) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'));
+    print("je suis la");
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(
+        Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
     if (response.statusCode == 200) {
-      print("relation entre ${userId1} et ${userId2}");
-      print(json.decode(response.body));
       return json.decode(response.body) as bool;
     } else {
       throw Exception('Failed to check relation existence');
@@ -643,7 +662,6 @@ class ApiService {
           'statu': newStatus,
         }),
       );
-      print(response.statusCode);
       if (response.statusCode != 200) {
         throw Exception('Failed to update user status');
       }
@@ -653,8 +671,15 @@ class ApiService {
   }
 
   Future<List<Relation>> fetchRelationsByUserId(int userId) async {
-    final response =
-    await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(Uri.parse('$baseUrl/relation/user/$userId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Relation.fromJson(data)).toList();

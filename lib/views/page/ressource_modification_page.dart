@@ -9,9 +9,9 @@ import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 
 class RessourceUpdatePage extends StatefulWidget {
-  final Ressource ressource;
+  final int ressourceId;
 
-  RessourceUpdatePage({required this.ressource});
+  RessourceUpdatePage({required this.ressourceId});
 
   @override
   _RessourceUpdatePageState createState() => _RessourceUpdatePageState();
@@ -27,25 +27,25 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
   List<Type>? types = [];
   List<Tag>? tags = [];
   List<Categorie>? categories = [];
+  Ressource? ressource;
+
+  final Color primaryColor = Color(0xFF03989E);
 
   @override
   void initState() {
     super.initState();
-
-    titleController.text = widget.ressource.titre;
-    descriptionController.text = widget.ressource.description;
-
-    selectedTypeId = widget.ressource.type.id;
-    selectedTagId = widget.ressource.tags.id;
-    selectedCatId = widget.ressource.category.id;
-
     _fetchMetadata();
+
   }
 
+
   _fetchMetadata() async {
+    ressource = await ApiService().getRessource(widget.ressourceId);
     types = await ApiService().fetchTypes();
     tags = await ApiService().fetchTags();
     categories = await ApiService().fetchCategories();
+    titleController.text = ressource!.titre;
+    descriptionController.text = ressource!.description;
     setState(() {});
   }
 
@@ -58,12 +58,19 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Center(
+
           child: Container(
             width: 300,
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Image.asset('assets/gouv/marianne.png',
+                        width: 40, height: 40),
+                ),
                 SizedBox(height: 50),
                 _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
                 SizedBox(height: 16),
@@ -129,16 +136,13 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
                     }
                     try {
                       final bool = await ApiService().updateRessource(
-                        widget.ressource.id,
+                        widget.ressourceId,
                         titleController.text.trim(),
                         descriptionController.text.trim(),
                         selectedCatId!,
                         selectedTypeId!,
                         selectedTagId!,
                       );
-
-
-
                       if (bool) {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
                       } else {
@@ -252,25 +256,37 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     required String Function(T) getName,
   }) {
     return Container(
-      width: 250,
-      child: DropdownButtonFormField<int>(
-        decoration: InputDecoration(
-          labelText: label,
-          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+      width: double.infinity, // Ensures the dropdown takes the full width available
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: primaryColor, width: 0.5),
+        color: Colors.white,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: label,
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            border: InputBorder.none,
+          ),
+          value: selectedValue,
+          isExpanded: true,
+          onChanged: onChanged,
+          items: items?.map((item) {
+            return DropdownMenuItem<int>(
+              value: getId(item),
+              child: Text(
+                getName(item),
+                style: TextStyle(color: primaryColor, fontSize: 16),
+              ),
+            );
+          }).toList(),
+          icon: Icon(Icons.arrow_drop_down, color: primaryColor),
+          style: TextStyle(color: primaryColor, fontSize: 16),
         ),
-        value: selectedValue,
-        onChanged: onChanged,
-        items: items?.map((item) {
-          return DropdownMenuItem<int>(
-            value: getId(item),
-            child: Text(
-              getName(item),
-              style: TextStyle(fontSize: 16),
-            ),
-          );
-        }).toList(),
       ),
     );
   }
+
 }

@@ -62,7 +62,7 @@ class _FavorisListPageState extends State<FavorisListPage> {
             title: Text(ressource.titre),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => RessourcePage(ressourceId: ressource.id),
+                builder: (context) => RessourcePage(resourceId: ressource.id),
               ),
             ),
           );

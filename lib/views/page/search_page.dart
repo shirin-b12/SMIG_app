@@ -77,10 +77,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       switch (_selectedCategory) {
         case SearchCategory.Users:
-          print("before");
           _allUsers = await api.fetchUtilisateurs();
-          print(_allUsers);
-          print("jjjj");
           break;
         case SearchCategory.Resources:
           _allRessources = await api.fetchRessources();
@@ -116,8 +113,9 @@ class _UserSearchPageState extends State<UserSearchPage> {
     switch (_selectedCategory) {
       case SearchCategory.Users:
         tempFilteredItems = _allUsers.where((user) {
-          return user.nom.toLowerCase().contains(query.toLowerCase()) ||
-              user.prenom.toLowerCase().contains(query.toLowerCase());
+          return (user.id != currentUserId) && // Exclude the current user from the results
+              (user.nom.toLowerCase().contains(query.toLowerCase()) ||
+                  user.prenom.toLowerCase().contains(query.toLowerCase()));
         }).toList();
         break;
 
@@ -151,6 +149,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
       _filteredItems = tempFilteredItems;
     });
   }
+
 
   void _changeSearchCategory(SearchCategory category) {
     setState(() {
@@ -283,14 +282,11 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
                           titleText = "${user.nom} ${user.prenom}";
                           trailingWidget = FutureBuilder<bool>(
-                            future: api.checkRelationExists(
-                                currentUserId!, user.id),
+                            future: api.checkRelationExists(currentUserId!, user.id),
                             builder: (BuildContext context,
                                 AsyncSnapshot<bool> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // Optionally, show a small circular progress indicator while loading
-                                return SizedBox(
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
@@ -299,9 +295,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                         Color(0xFF03989E)),
                                   ),
                                 );
-                              } else if (snapshot.hasData &&
-                                  snapshot.data == false) {
-                                // Only show the add relation button if there is no existing relation
+                              } else if (snapshot.hasData && snapshot.data == false) {
                                 return IconButton(
                                   icon: Icon(Icons.add_circle_outline,
                                       color: Color(0xFF03989E)),
@@ -309,7 +303,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                       _showRelationTypeDialog(user.id),
                                 );
                               } else {
-                                // If there is a relation, or data is not available, do not show the button
                                 return SizedBox.shrink();
                               }
                             },
@@ -523,8 +516,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                       setState(() {
                         _selectedRelationType = localSelectedRelationType;
                       });
-                      api.createRelation(currentUserId!, otherUserID,
-                          _selectedRelationType!.id);
+                      api.createRelation(currentUserId!, otherUserID, _selectedRelationType!.id);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

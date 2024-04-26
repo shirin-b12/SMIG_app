@@ -24,6 +24,8 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
   List<Tag>? tags = [];
   List<Categorie>? categories = [];
 
+  final Color primaryColor = Color(0xFF03989E);
+
   @override
   void initState() {
     super.initState();
@@ -45,114 +47,122 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       bottomNavigationBar: CustomBottomAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
-        child: Container(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const SizedBox(height: 50),
-              _buildTextFieldWithShadow(
-                  controller: titleController,
-                  icon: Icons.title,
-                  label: 'Titre'),
-              const SizedBox(height: 16),
-              _buildTextFieldWithShadow(
-                  controller: descriptionController,
-                  icon: Icons.description,
-                  label: 'Description'),
-              const SizedBox(height: 16),
-              _buildDropdown<Type>(
-                label: 'Types',
-                selectedValue: selectedTypeId,
-                items: types,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTypeId = newValue;
-                  });
-                },
-                getId: (type) => type.id,
-                getName: (type) => type.nom,
-              ),
-              _buildDropdown<Tag>(
-                label: 'Tags',
-                selectedValue: selectedTagId,
-                items: tags,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedTagId = newValue;
-                  });
-                },
-                getId: (tag) => tag.id,
-                getName: (tag) => tag.nom,
-              ),
-              _buildDropdown<Categorie>(
-                label: 'Catégories',
-                selectedValue: selectedCatId,
-                items: categories,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCatId = newValue;
-                  });
-                },
-                getId: (category) => category.id,
-                getName: (category) => category.nom,
-              ),
-              const SizedBox(height: 50),
-              _buildRoundedButton(
-                context: context,
-                buttonColor: Color(0xFF000091),
-                textColor: Colors.white,
-                buttonText: 'Créer une ressource',
-                onPressed: () async {
-                  if (titleController.text.trim().isEmpty ||
-                      descriptionController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Tous les champs sont obligatoires"),
-                        backgroundColor: Color(0xFFFFBD59),
-                        duration: Duration(seconds: 2),
-                        shape: StadiumBorder(),
-                        behavior: SnackBarBehavior.floating));
-                    return;
-                  }
-                  try {
-                    final ressource = await ApiService().createRessource(
-                      titleController.text.trim(),
-                      descriptionController.text.trim(),
-                      selectedCatId ?? 1,
-                      selectedTypeId ?? 1,
-                      selectedTagId ?? 1,
-                    );
-                    if (ressource != null) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => RessourceListPage()));
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content:
-                              Text("Échec lors de la création de la ressource"),
-                          backgroundColor: Color(0xFFFFBD59),
-                          duration: Duration(seconds: 2),
-                          shape: StadiumBorder(),
-                          behavior: SnackBarBehavior.floating));
+        child: Center(
+          child: Container(
+            width: 300,
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+                ),
+                SizedBox(height: 50),
+                _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
+                SizedBox(height: 16),
+                _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
+                SizedBox(height: 16),
+                _buildDropdown<Type>(
+                  label: 'Types',
+                  selectedValue: selectedTypeId,
+                  items: types,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTypeId = newValue;
+                    });
+                  },
+                  getId: (type) => type.id,
+                  getName: (type) => type.nom,
+                ),
+                SizedBox(height: 16),
+                _buildDropdown<Tag>(
+                  label: 'Tags',
+                  selectedValue: selectedTagId,
+                  items: tags,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTagId = newValue;
+                    });
+                  },
+                  getId: (tag) => tag.id,
+                  getName: (tag) => tag.nom,
+                ),
+                SizedBox(height: 16),
+                _buildDropdown<Categorie>(
+                  label: 'Catégories',
+                  selectedValue: selectedCatId,
+                  items: categories,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedCatId = newValue;
+                    });
+                  },
+                  getId: (category) => category.id,
+                  getName: (category) => category.nom,
+                ),
+                SizedBox(height: 50),
+                _buildRoundedButton(
+                  context: context,
+                  buttonColor: Color(0xFF000091),
+                  textColor: Colors.white,
+                  buttonText: 'Créer une ressource',
+                  onPressed: () async {
+                    if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Tous les champs sont obligatoires"),
+                              backgroundColor: Color(0xFFFFBD59),
+                              duration: Duration(seconds: 2),
+                              shape: StadiumBorder(),
+                              behavior: SnackBarBehavior.floating
+                          )
+                      );
+                      return;
                     }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content:
-                            Text("Échec lors de la création de la ressource"),
-                        backgroundColor: Color(0xFFFFBD59),
-                        duration: Duration(seconds: 2),
-                        shape: StadiumBorder(),
-                        behavior: SnackBarBehavior.floating));
-                  }
-                },
-              ),
-            ],
+                    try {
+                      final ressource = await ApiService().createRessource(
+                        titleController.text.trim(),
+                        descriptionController.text.trim(),
+                        selectedCatId ?? 1,
+                        selectedTypeId ?? 1,
+                        selectedTagId ?? 1,
+                      );
+                      if (ressource != null) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Échec lors de la création de la ressource"),
+                                backgroundColor: Color(0xFFFFBD59),
+                                duration: Duration(seconds: 2),
+                                shape: StadiumBorder(),
+                                behavior: SnackBarBehavior.floating
+                            )
+                        );
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Échec lors de la création de la ressource"),
+                              backgroundColor: Color(0xFFFFBD59),
+                              duration: Duration(seconds: 2),
+                              shape: StadiumBorder(),
+                              behavior: SnackBarBehavior.floating
+                          )
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildTextFieldWithShadow({
     required TextEditingController controller,
@@ -164,35 +174,32 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
     Color cursorColor = Color(0xFF03989E);
     Color borderColor = Color(0xFF03989E);
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 120.0),
-      child: TextField(
-        controller: controller,
-        cursorColor: cursorColor,
-        style: TextStyle(color: Colors.black54),
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: labelColor),
-          labelText: label,
-          labelStyle: TextStyle(
-            color: labelColor,
-            height: 0.5,
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding: EdgeInsets.only(top: 20.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
-          ),
+    return TextField(
+      controller: controller,
+      cursorColor: cursorColor,
+      style: TextStyle(color: Colors.black54),
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: labelColor),
+        labelText: label,
+        labelStyle: TextStyle(
+          color: labelColor,
+          height: 0.5,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.only(top: 20.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
         ),
       ),
     );
@@ -227,20 +234,37 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
     required int Function(T) getId,
     required String Function(T) getName,
   }) {
-    return DropdownButtonFormField<int>(
-      decoration: InputDecoration(
-        labelText: label,
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+    return Container(
+      width: double.infinity, // Ensures the dropdown takes the full width available
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: primaryColor, width: 0.5),
+        color: Colors.white,
       ),
-      value: selectedValue,
-      onChanged: onChanged,
-      items: items?.map((item) {
-        return DropdownMenuItem<int>(
-          value: getId(item),
-          child: Text(getName(item)),
-        );
-      }).toList(),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: label,
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            border: InputBorder.none,
+          ),
+          value: selectedValue,
+          isExpanded: true,
+          onChanged: onChanged,
+          items: items?.map((item) {
+            return DropdownMenuItem<int>(
+              value: getId(item),
+              child: Text(
+                getName(item),
+                style: TextStyle(color: primaryColor, fontSize: 16),
+              ),
+            );
+          }).toList(),
+          icon: Icon(Icons.arrow_drop_down, color: primaryColor),
+          style: TextStyle(color: primaryColor, fontSize: 16),
+        ),
+      ),
     );
   }
 }
