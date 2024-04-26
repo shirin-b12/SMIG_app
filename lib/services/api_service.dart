@@ -15,7 +15,7 @@ class ApiService {
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    final response = await http.get(Uri.parse('$baseUrl/utilisateur'));
+    final response = await http.get(Uri.parse('$baseUrl'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -36,11 +36,13 @@ class ApiService {
       throw Exception('Failed to load ressources from API');
     }
   }
+
   Future<List<int>> fetchFavorie(int? id) async {
     final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      List<int> ids = jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      List<int> ids =
+          jsonResponse.map((u) => u['id_ressource'] as int).toList();
       return ids;
     } else {
       throw Exception('Failed to load favorite resource IDs from API');
@@ -187,6 +189,24 @@ class ApiService {
     }
   }
 
+  Future<bool> updateValidationRessource(int ressourceId, bool resultat) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{'validate_Ressource': resultat}),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to update resource validation: ${response.statusCode}');
+      print('Reason: ${response.body.toString()}');
+      return false;
+    }
+  }
+
   deleteRessource(int ressourceId) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
@@ -246,7 +266,7 @@ class ApiService {
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
     final response =
-    await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -354,16 +374,67 @@ class ApiService {
     }
   }
 
+  Future<List<Ressource>> fetchFavoritesByUser(String userId) async {
+    final response = await http.get(
+      Uri.parse(
+          'https://your-api-url/favorites/$userId'), // Remplacez par l'URL de votre API
+    );
+
+    if (response.statusCode == 200) {
+      List<Ressource> favorites = (json.decode(response.body) as List)
+          .map((data) => Ressource.fromJson(data))
+          .toList();
+      return favorites;
+    } else {
+      throw Exception('Failed to load favorites');
+    }
+  }
+
+  Future<bool> createFavorite(int userId, int resourceId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/favori'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id_utilisateur': userId,
+        'id_ressource': resourceId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Error status code: ${response.statusCode}');
+      print('Error body: ${response.body}');
+      return false;
+    }
+  }
+
   Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
-    final response = await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => TinyRessource.fromJson(data)).toList();
     } else {
-      throw Exception('Failed to load resources for creator ID $createurId from API');
+      throw Exception(
+          'Failed to load resources for creator ID $createurId from API');
     }
   }
 
+  Future<bool> isFavorite(String ressourceId, String userId) async {
+    List<Ressource> favorites = await fetchFavoritesByUser(
+        userId); // Replace 'userId' with the actual user ID
+    print(favorites);
+    for (Ressource ressource in favorites) {
+      if (ressource.id == ressourceId) {
+        print("la ressource est favorie");
+        return true;
+      }
+    }
 
+    return false;
+  }
 }
