@@ -284,7 +284,7 @@ class _UserProfileState extends State<UserProfile> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (role == "Modérateur")
+                if (role == "Moderateur")
                   IconButton(
                     icon: Icon(Icons.gavel, color: Colors.orange),
                     onPressed: () {
@@ -293,7 +293,7 @@ class _UserProfileState extends State<UserProfile> {
                       print('Moderation action for ${currentUser.nom}');
                     },
                   ),
-                if (role == "Administrateur" || role == "SuperAdmin")
+                if (role == "Admin" || role == "SuperAdmin")
                   IconButton(
                     icon: Icon(Icons.delete, color: Colors.red),
                     onPressed: () {

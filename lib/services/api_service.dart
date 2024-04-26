@@ -70,7 +70,7 @@ class ApiService {
   }
 
   Future<List<Categorie>> fetchCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl/categories/all'));
+    final response = await http.get(Uri.parse('$baseUrl/categories'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);

@@ -129,6 +129,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
+                AuthService().logout();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
               child: SizedBox(
                 child: Lottie.asset(
