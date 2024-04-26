@@ -56,20 +56,20 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
       appBar: CustomTopAppBar(),
       bottomNavigationBar: CustomBottomAppBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(8.0),
         child: Center(
-
           child: Container(
-            width: 300,
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Image.asset('assets/gouv/marianne.png',
-                        width: 40, height: 40),
+                Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+                const Text('Modification de votre ressource',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF015E62),
+                  ),
                 ),
                 SizedBox(height: 50),
                 _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),

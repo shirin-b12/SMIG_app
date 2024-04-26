@@ -110,7 +110,7 @@ class _UserProfileState extends State<UserProfile> {
         itemCount: resources!.length,
         itemBuilder: (context, index) {
           TinyRessource ressource = resources![index];
-          return TinyRessourceCard(ressource: ressource); // Using TinyRessourceCard here
+          return TinyRessourceCard(ressource: ressource);
         },
       );
     }
