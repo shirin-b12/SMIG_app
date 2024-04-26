@@ -9,6 +9,7 @@ import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 import '../../widgets/tiny_ressource_card.dart';
 import '../../widgets/utilisateur_card.dart';
+import '../screen/signup_or_login/signup_or_login.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -130,9 +131,10 @@ class _UserProfileState extends State<UserProfile> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.menu, color: Color(0xFF03989E)),
+              icon: Icon(Icons.logout_outlined, color: Color(0xFF03989E)),
               onPressed: () {
-                print("param");
+                AuthService().logout();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
             ),
           ],
