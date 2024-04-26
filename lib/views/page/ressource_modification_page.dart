@@ -228,8 +228,7 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor, backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),

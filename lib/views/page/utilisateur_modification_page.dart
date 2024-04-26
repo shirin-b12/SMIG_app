@@ -153,8 +153,7 @@ class _UserModificationPageState extends State<UserModificationPage> {
                       const SizedBox(height: 50),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF000091),
-                          onPrimary: Colors.white,
+                          foregroundColor: Colors.white, backgroundColor: Color(0xFF000091),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -174,5 +173,4 @@ class _UserModificationPageState extends State<UserModificationPage> {
       ),
     );
   }
-
 }

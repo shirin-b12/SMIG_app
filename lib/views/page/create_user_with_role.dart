@@ -194,8 +194,8 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: buttonColor,
-        onPrimary: textColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
