@@ -81,7 +81,7 @@ class ApiService {
   }
 
   Future<List<Type>> fetchTypes() async {
-    final response = await http.get(Uri.parse('$baseUrl/types/all'));
+    final response = await http.get(Uri.parse('$baseUrl/types'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -93,7 +93,7 @@ class ApiService {
 
   Future<List<Tag>> fetchTags() async {
 
-    final response = await http.get(Uri.parse('$baseUrl/tags/all'));
+    final response = await http.get(Uri.parse('$baseUrl/tags'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
