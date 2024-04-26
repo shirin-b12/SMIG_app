@@ -3,19 +3,22 @@ import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
 import 'package:smig_app/models/type.dart';
+import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'dart:convert';
 import '../models/commentaire.dart';
+import '../models/relation.dart';
 import '../models/tag.dart';
 import '../models/tiny_ressource.dart';
 import '../models/utilisateur.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String baseUrl = 'http://localhost:8081';
 
   //recup la liste des utilsateurs
   Future<List<Utilisateur>> fetchUtilisateurs() async {
-    final response = await http.get(Uri.parse('$baseUrl'));
+    final response = await http.get(Uri.parse('$baseUrl/utilisateur'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -38,7 +41,14 @@ class ApiService {
   }
 
   Future<List<int>> fetchFavorie(int? id) async {
-    final response = await http.get(Uri.parse('$baseUrl/favori/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(Uri.parse('$baseUrl/favori/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      });
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       List<int> ids =
@@ -52,7 +62,6 @@ class ApiService {
   // Fetch a single resource by its ID
   Future<TinyRessource> fetchTinyRessource(int id) async {
     final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
-    print(response.body);
     if (response.statusCode == 200) {
       return TinyRessource.fromJson(json.decode(response.body));
     } else {
@@ -61,7 +70,7 @@ class ApiService {
   }
 
   Future<List<Categorie>> fetchCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl/categories/all'));
+    final response = await http.get(Uri.parse('$baseUrl/categories'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -72,7 +81,7 @@ class ApiService {
   }
 
   Future<List<Type>> fetchTypes() async {
-    final response = await http.get(Uri.parse('$baseUrl/types/all'));
+    final response = await http.get(Uri.parse('$baseUrl/types'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -83,7 +92,8 @@ class ApiService {
   }
 
   Future<List<Tag>> fetchTags() async {
-    final response = await http.get(Uri.parse('$baseUrl/tags/all'));
+
+    final response = await http.get(Uri.parse('$baseUrl/tags'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -94,7 +104,14 @@ class ApiService {
   }
 
   Future<Ressource> getRessource(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(Uri.parse('$baseUrl/ressources/$id'),
+      headers: <String, String>{
+      'Authorization': 'Bearer $accessToken',
+    },);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -126,15 +143,18 @@ class ApiService {
     return null;
   }
 
-  Future<Ressource?> createRessource(String titre, String description,
-      int idCat, int idType, int idTag) async {
-    print('first');
+  Future<Ressource?> createRessource(String titre, String description, int idCat, int idType, int idTag) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     int idCreateur = await AuthService().getCurrentUser();
     final response = await http.post(
       Uri.parse('$baseUrl/ressources'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -148,11 +168,9 @@ class ApiService {
         "dateDeCreation": formattedDate,
       }),
     );
-    print('here');
 
     if (response.statusCode == 200) {
       return Ressource.fromJson(json.decode(response.body));
-      print('ok');
     } else {
       print('Failed to create resource: ${response.statusCode}');
       print('Reason: ${response.body}');
@@ -160,13 +178,17 @@ class ApiService {
     }
   }
 
-  Future<bool> updateRessource(
-      int ressourceId, String titre, String description) async {
+  Future<bool> updateRessource(int ressourceId, String titre, String description) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     DateTime now = DateTime.now();
     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
     final response = await http.put(
-      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -190,9 +212,14 @@ class ApiService {
   }
 
   Future<bool> updateValidationRessource(int ressourceId, bool resultat) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.put(
-      Uri.parse('$baseUrl/ressources/update/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{'validate_Ressource': resultat}),
@@ -208,8 +235,15 @@ class ApiService {
   }
 
   deleteRessource(int ressourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.delete(
-      Uri.parse('$baseUrl/ressources/delete/$ressourceId'),
+      Uri.parse('$baseUrl/ressources/$ressourceId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+        }
     );
 
     if (response.statusCode == 200) {
@@ -222,8 +256,15 @@ class ApiService {
   }
 
   deleteUtilisateur(int userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.delete(
-      Uri.parse('$baseUrl/utilisateurs/delete/$userId'),
+      Uri.parse('$baseUrl/utilisateur/$userId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      }
     );
 
     if (response.statusCode == 200) {
@@ -235,11 +276,15 @@ class ApiService {
     }
   }
 
-  Future<bool> updateUser(
-      int id, String nom, String prenom, String email) async {
+  Future<bool> updateUser(int id, String nom, String prenom, String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.put(
-      Uri.parse('$baseUrl/utilisateur/update/$id'),
+      Uri.parse('$baseUrl/utilisateur/$id'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
@@ -253,11 +298,19 @@ class ApiService {
   }
 
   Future<Utilisateur> getUtilisateur(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/utilisateur/$id'));
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.get(
+      Uri.parse('$baseUrl/utilisateur/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       return Utilisateur.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load user from API');
@@ -265,8 +318,9 @@ class ApiService {
   }
 
   Future<List<Commentaire>> fetchComments(int ressourceId) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/commentaire/$ressourceId'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/commentaire/$ressourceId'),
+    );
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -276,48 +330,52 @@ class ApiService {
     }
   }
 
-  Future<Commentaire?> createComment(
-      String texteCommentaire, int idUtilisateur, int idRessource) async {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
-    print(texteCommentaire);
-    print(idRessource);
-    print(idUtilisateur);
-    final response = await http.post(
-      Uri.parse('$baseUrl/commentaire'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'commentaire': texteCommentaire,
-        'id_utilisateur_redacteur': idUtilisateur,
-        'id_ressource': idRessource,
-        'date_de_creation': formattedDate
-      }),
-    );
-
+  void createComment(String texteCommentaire, int idUtilisateur,
+      int idRessource, int commentaireResponse) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     try {
-      if (response.statusCode == 200) {
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+      var requestBody = jsonEncode({
+        'commentaire': texteCommentaire,
+        'idCreateur': idUtilisateur,
+        'idRessource': idRessource,
+        'dateDeCreation': formattedDate,
+        'idCommentaireRep': commentaireResponse
+      });
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/commentaire'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
         final data = json.decode(response.body);
-        if (data != null) {
-          return Commentaire.fromJson(data);
-        } else {
-          throw Exception('Le corps de la réponse est null.');
-        }
       } else {
-        throw Exception(
-            'Failed to post comment. Status code: ${response.statusCode}');
+        print(
+            'Failed to post comment. Status code: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (e) {
-      print('Erreur lors de la conversion de la réponse en Commentaire: $e');
-      return null;
+      print('Error during comment creation: $e');
     }
   }
 
   Future<Categorie?> createCat(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/categories'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -335,9 +393,14 @@ class ApiService {
   }
 
   Future<Tag?> createTag(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/tags'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -355,9 +418,14 @@ class ApiService {
   }
 
   Future<Type?> createType(String nom) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/types'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -374,26 +442,37 @@ class ApiService {
     }
   }
 
-  Future<List<Ressource>> fetchFavoritesByUser(String userId) async {
+  Future<List<int>> fetchFavoris(int? id) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.get(
-      Uri.parse(
-          'https://your-api-url/favorites/$userId'), // Remplacez par l'URL de votre API
+      Uri.parse('$baseUrl/favori/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
     );
 
     if (response.statusCode == 200) {
-      List<Ressource> favorites = (json.decode(response.body) as List)
-          .map((data) => Ressource.fromJson(data))
-          .toList();
-      return favorites;
+      List jsonResponse = json.decode(response.body);
+      List<int> ids =
+          jsonResponse.map((u) => u['id_ressource'] as int).toList();
+      return ids;
     } else {
-      throw Exception('Failed to load favorites');
+      throw Exception('Failed to load favorite resource IDs from API');
     }
   }
 
   Future<bool> createFavorite(int userId, int resourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
     final response = await http.post(
       Uri.parse('$baseUrl/favori'),
       headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
@@ -424,17 +503,133 @@ class ApiService {
     }
   }
 
-  Future<bool> isFavorite(String ressourceId, String userId) async {
-    List<Ressource> favorites = await fetchFavoritesByUser(
-        userId); // Replace 'userId' with the actual user ID
-    print(favorites);
-    for (Ressource ressource in favorites) {
-      if (ressource.id == ressourceId) {
-        print("la ressource est favorie");
-        return true;
-      }
+  Future<bool> isFavorite(int resourceId, int userId) async {
+    try {
+      List<int> favoriteIds = await fetchFavorie(userId);
+      return favoriteIds.contains(resourceId);
+    } catch (e) {
+      print('Error checking favorite status: $e');
+      return false;
     }
+  }
 
-    return false;
+  Future<bool> toggleFavorite(int userId, int resourceId) async {
+    bool isCurrentlyFavorite = await isFavorite(resourceId, userId);
+    if (isCurrentlyFavorite) {
+      // If it is currently a favorite, call delete favorite
+      return await deleteFavorite(userId, resourceId);
+    } else {
+      // If it is not a favorite, call create favorite
+      return await createFavorite(userId, resourceId);
+    }
+  }
+
+  Future<bool> deleteFavorite(int userId, int resourceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    final response = await http.delete(
+      Uri.parse('$baseUrl/favori'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id_utilisateur': userId,
+        'id_ressource': resourceId,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
+  // Check if a relation exists
+  Future<bool> checkRelation(int currentUserID, int otherUserID) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/relation/check/$currentUserID/$otherUserID'));
+    if (response.statusCode == 200) {
+      return response.body.toLowerCase() ==
+          'true'; // Assuming API returns 'true' or 'false'
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> createRelation(int currentUserID, int otherUserID, int relationTypeID) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    final response = await http.post(
+      Uri.parse('$baseUrl/relation'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'id_utilisateur1': currentUserID,
+        'id_utilisateur2': otherUserID,
+        'id_type_relation': relationTypeID,
+      }),
+    );
+    return response.statusCode == 200;
+  }
+
+  // In ApiService.dart
+  Future<bool> checkRelationExists(int userId1, int userId2) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/relation/exists/$userId1/$userId2'));
+    if (response.statusCode == 200) {
+      print("relation entre ${userId1} et ${userId2}");
+      print(json.decode(response.body));
+      return json.decode(response.body) as bool;
+    } else {
+      throw Exception('Failed to check relation existence');
+    }
+  }
+
+// Add to ApiService.dart
+  Future<List<TypesRelation>> fetchRelationTypes() async {
+    final response = await http.get(Uri.parse('$baseUrl/typesrelation'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((type) => TypesRelation.fromJson(type)).toList();
+    } else {
+      throw Exception('Failed to load relation types from API');
+    }
+  }
+
+  Future<void> updateUserStatus(int userId, String newStatus) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('userToken');
+      Map<String, dynamic> user = jsonDecode(token!);
+      String accessToken = user['accessToken'];
+      final response = await http.put(
+        Uri.parse('$baseUrl/utilisateur/statu/$userId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'statu': newStatus,
+        }),
+      );
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update user status');
+      }
+    } catch (e) {
+      print('Failed to update user status: $e');
+    }
+  }
+
+  Future<List<Relation>> fetchRelationsByUserId(int userId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/relation/user/$userId'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => Relation.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load relations: ${response.statusCode}');
+    }
   }
 }

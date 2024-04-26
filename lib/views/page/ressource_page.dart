@@ -15,11 +15,16 @@ class RessourcePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Define the theme colors
+    final Color primaryColor = Color(0xFF03989E);
+    final Color secondaryColor = Color(0xFF015E62);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomTopAppBar(),
       bottomNavigationBar: CustomBottomAppBar(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor, // Use primary color here
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -32,17 +37,25 @@ class RessourcePage extends StatelessWidget {
                   children: <Widget>[
                     TextField(
                       controller: commentController,
-                      decoration: InputDecoration(labelText: 'Votre commentaire'),
+                      decoration: InputDecoration(
+                        labelText: 'Votre commentaire',
+                        labelStyle: TextStyle(color: secondaryColor), // Use secondary color for label
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor), // Use primary color for focus
+                        ),
+                      ),
                     ),
+                    SizedBox(height: 10),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: primaryColor, // Text color
+                      ),
                       child: Text('Envoyer'),
                       onPressed: () async {
                         int userId = await AuthService().getCurrentUser();
-                        print(userId);
-                        print(resourceId);
-                        print(commentController.text);
-                        await api.createComment(commentController.text, userId, resourceId);
-                        Navigator.pop(context);
+                        api.createComment(commentController.text, userId, resourceId, 0);
+                        api.fetchComments(resourceId);
                       },
                     ),
                   ],
@@ -71,20 +84,16 @@ class RessourcePage extends StatelessWidget {
                               if (snapshotComments.hasData) {
                                 return Column(
                                   children: snapshotComments.data!.map((comment) => ListTile(
-                                    title:
-                                    Column(
+                                    title: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${comment.idUtilisateurRedacteur.nom} ${comment.idUtilisateurRedacteur.prenom}"),
+                                        Text("${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}",
+                                            style: TextStyle(color: secondaryColor)),
                                         Text(comment.commentaire),
                                       ],
                                     ),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Posted on: ${comment.dateDeCreation}"),
-                                      ],
-                                    ),
+                                    subtitle: Text("Posted on: ${comment.dateDeCreation}",
+                                        style: TextStyle(fontSize: 10)),
                                   )).toList(),
                                 );
                               } else if (snapshotComments.hasError) {

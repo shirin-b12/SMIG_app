@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
 import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
@@ -9,6 +10,7 @@ import 'package:smig_app/views/page/utilisateur_profile.dart';
 import 'package:smig_app/views/page/search_page.dart';
 import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
+import '../models/utilisateur.dart';
 import '../services/auth_service.dart';
 import '../views/page/commentaire_page.dart';
 import '../views/page/create_tag_cat_type.dart';
@@ -25,8 +27,7 @@ class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(35.0);
 }
 
-class _CustomBottomAppBarState extends State<CustomBottomAppBar>
-    with TickerProviderStateMixin {
+class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -48,7 +49,9 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
       elevation: 0,
       child: Container(
         height: widget.preferredSize.height,
-        decoration: const BoxDecoration(color: Color(0xFF03989E)),
+        decoration: const BoxDecoration(
+          color: Color(0xFF03989E)
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -57,8 +60,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -73,13 +75,12 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
               ),
             ),
             GestureDetector(
-              onTap: () async {
+              onTap: () async{
                 _controller
                   ..reset()
                   ..forward();
                 //await AuthService().logout();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => UserSearchPage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserSearchPage()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -98,8 +99,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => RessourceCreationPage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -129,9 +129,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
                 _controller
                   ..reset()
                   ..forward();
-                AuthService().logout();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -146,12 +143,11 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar>
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => UserProfile()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserProfile()));
               },
               child: SizedBox(
                 child: Lottie.asset(

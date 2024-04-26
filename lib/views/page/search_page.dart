@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
+import 'package:smig_app/models/types_relation.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
 import 'package:smig_app/models/type.dart';
 
 import '../../models/tag.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 
@@ -27,8 +29,25 @@ class _UserSearchPageState extends State<UserSearchPage> {
   List<dynamic> _filteredItems = [];
   bool _isLoading = true;
   SearchCategory _selectedCategory = SearchCategory.Users;
+  int? currentUserId;
+  List<TypesRelation> _relationTypes = [];
+  TypesRelation? _selectedRelationType;
 
   final ApiService api = ApiService();
+
+  Future<void> _loadRelationTypes() async {
+    currentUserId = await AuthService().getCurrentUser();
+    print("hhhhh");
+    print(currentUserId);
+    try {
+      _relationTypes = await api.fetchRelationTypes();
+      if (_relationTypes.isNotEmpty) {
+        _selectedRelationType = _relationTypes.first;
+      }
+    } catch (e) {
+      print('Failed to load relation types: $e');
+    }
+  }
 
   @override
   void initState() {
@@ -42,6 +61,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
         _filterItems(_controller.text);
       }
     });
+    _loadRelationTypes();
     _loadItems();
   }
 
@@ -57,7 +77,10 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       switch (_selectedCategory) {
         case SearchCategory.Users:
+          print("before");
           _allUsers = await api.fetchUtilisateurs();
+          print(_allUsers);
+          print("jjjj");
           break;
         case SearchCategory.Resources:
           _allRessources = await api.fetchRessources();
@@ -138,7 +161,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
     });
     _loadItems();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -222,43 +244,76 @@ class _UserSearchPageState extends State<UserSearchPage> {
               : Expanded(
                   child: ListView.builder(
                     itemCount: _filteredItems.length,
-                    // À l'intérieur de ListView.builder
                     itemBuilder: (context, index) {
                       final item = _filteredItems[index];
                       Widget leadingWidget;
                       String titleText;
+                      Widget trailingWidget = SizedBox.shrink();
 
                       switch (_selectedCategory) {
                         case SearchCategory.Users:
                           Utilisateur user = item as Utilisateur;
+
                           leadingWidget = user.pic != null
                               ? CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(user.getProfileImageUrl()),
-                          )
+                                  radius: 20,
+                                  backgroundImage:
+                                      NetworkImage(user.getProfileImageUrl()),
+                                )
                               : CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 30,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Color(0xFF03989E),
-                                    width: 2.0,
-                                  )
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Color(0xFF03989E),
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          );
+                                  backgroundColor: Colors.transparent,
+                                  radius: 30,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Color(0xFF03989E),
+                                          width: 2.0,
+                                        )),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Color(0xFF03989E),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                );
 
                           titleText = "${user.nom} ${user.prenom}";
+                          trailingWidget = FutureBuilder<bool>(
+                            future: api.checkRelationExists(
+                                currentUserId!, user.id),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<bool> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // Optionally, show a small circular progress indicator while loading
+                                return SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.0,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xFF03989E)),
+                                  ),
+                                );
+                              } else if (snapshot.hasData &&
+                                  snapshot.data == false) {
+                                // Only show the add relation button if there is no existing relation
+                                return IconButton(
+                                  icon: Icon(Icons.add_circle_outline,
+                                      color: Color(0xFF03989E)),
+                                  onPressed: () =>
+                                      _showRelationTypeDialog(user.id),
+                                );
+                              } else {
+                                // If there is a relation, or data is not available, do not show the button
+                                return SizedBox.shrink();
+                              }
+                            },
+                          );
                           break;
                         case SearchCategory.Resources:
                           Ressource resource = item as Ressource;
@@ -271,8 +326,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -296,8 +350,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -321,8 +374,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -346,8 +398,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                   border: Border.all(
                                     color: Color(0xFF03989E),
                                     width: 2.0,
-                                  )
-                              ),
+                                  )),
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),
                                 child: Icon(
@@ -363,20 +414,19 @@ class _UserSearchPageState extends State<UserSearchPage> {
                       }
 
                       return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 8.0),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFFFBD59), width: 0.8),
+                          border:
+                              Border.all(color: Color(0xFFFFBD59), width: 0.8),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: ListTile(
-                          leading: leadingWidget,
-                          title: Text(titleText),
-                          onTap: () {},
-                        ),
+                            leading: leadingWidget,
+                            title: Text(titleText),
+                            trailing: trailingWidget),
                       );
                     },
-
-
                   ),
                 ),
         ],
@@ -413,4 +463,102 @@ class _UserSearchPageState extends State<UserSearchPage> {
     );
   }
 
+  void _showRelationTypeDialog(int otherUserID) async {
+    TypesRelation? localSelectedRelationType = _selectedRelationType;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setDialogState) {
+            return AlertDialog(
+              title: const Text("Type de relation"),
+              titleTextStyle: const TextStyle(
+                color: Color(0xFF015E62),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              content: Container(
+                width: double.maxFinite,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    DropdownButton<TypesRelation>(
+                      isExpanded: true,
+                      value: localSelectedRelationType,
+                      onChanged: (TypesRelation? newValue) {
+                        setDialogState(() {
+                          localSelectedRelationType = newValue;
+                        });
+                      },
+                      items: _relationTypes
+                          .map<DropdownMenuItem<TypesRelation>>(
+                              (TypesRelation value) {
+                        return DropdownMenuItem<TypesRelation>(
+                          value: value,
+                          child: Text(value.intitule),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(20)), // Applique des coins arrondis
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  },
+                  child: const Text('Cancel'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (localSelectedRelationType != null) {
+                      setState(() {
+                        _selectedRelationType = localSelectedRelationType;
+                      });
+                      api.createRelation(currentUserId!, otherUserID,
+                          _selectedRelationType!.id);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => super.widget));
+                    }
+                  },
+                  child: const Text('Confirm'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF03989E),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _relationTypeDropdown() {
+    return DropdownButton<TypesRelation>(
+      value: _selectedRelationType,
+      onChanged: (TypesRelation? newValue) {
+        setState(() {
+          _selectedRelationType = newValue;
+        });
+      },
+      items: _relationTypes
+          .map<DropdownMenuItem<TypesRelation>>((TypesRelation value) {
+        return DropdownMenuItem<TypesRelation>(
+          value: value,
+          child: Text(value.intitule),
+        );
+      }).toList(),
+    );
+  }
 }

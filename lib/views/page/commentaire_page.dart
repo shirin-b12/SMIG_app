@@ -30,7 +30,7 @@ class CommentsPage extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${comment.idUtilisateurRedacteur.nom} ${comment.idUtilisateurRedacteur.prenom}"),
+                        Text("${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}"),
                         Text(comment.commentaire),
                       ],
                     ),

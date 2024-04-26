@@ -27,7 +27,7 @@ class _FavorisListPageState extends State<FavorisListPage> {
   Future<void> _loadUserProfileAndFavorites() async {
     int? id = await AuthService().getCurrentUser();
     if (id != null) {
-      List<int> favoriteIds = await ApiService().fetchFavorie(id);
+      List<int> favoriteIds = await ApiService().fetchFavoris(id);
       List<TinyRessource> fetchedRessources = [];
       for (var resourceId in favoriteIds) {
         TinyRessource ressource = await ApiService().fetchTinyRessource(resourceId);
