@@ -19,7 +19,9 @@ class Commentaire {
     return Commentaire(
       id: json['id_commentaire'] as int,
       commentaire: json['commentaire'] as String,
-      utilisateurRedacteur: json['createur'] == null ? null : Utilisateur.fromJson(json['createur'] as Map<String, dynamic>),
+      utilisateurRedacteur: json['createur'] == null
+          ? null
+          : Utilisateur.fromJson(json['createur'] as Map<String, dynamic>),
       dateDeCreation: json['date_de_creation'] as String,
       idRessource: json['id_ressource'] as int,
     );

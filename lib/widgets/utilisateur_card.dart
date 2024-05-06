@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/utilisateur.dart';
-import '../../services/auth_service.dart';
+
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
+import '../models/utilisateur.dart';
 
 class UtilisateurCard extends StatefulWidget {
   final Utilisateur utilisateur;
   final ApiService api = ApiService();
+
   UtilisateurCard({required this.utilisateur});
 
   @override
@@ -15,7 +17,7 @@ class UtilisateurCard extends StatefulWidget {
 class _UtilisateurCardState extends State<UtilisateurCard> {
   Future<String> fetchUserRole() async {
     String? role = await AuthService().getCurrentUserRole();
-    return role ?? '';
+    return role;
   }
 
   @override

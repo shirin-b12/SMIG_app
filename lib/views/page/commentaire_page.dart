@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/commentaire.dart';
 import '../../services/api_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
@@ -17,7 +18,7 @@ class CommentsPage extends StatelessWidget {
       appBar: CustomTopAppBar(),
       bottomNavigationBar: CustomBottomAppBar(),
       body: FutureBuilder<List<Commentaire>>(
-        future: api.fetchComments(28),//ressourceId
+        future: api.fetchComments(28), //ressourceId
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
@@ -26,11 +27,11 @@ class CommentsPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final comment = snapshot.data![index];
                   return ListTile(
-                    title:
-                    Column(
+                    title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}"),
+                        Text(
+                            "${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}"),
                         Text(comment.commentaire),
                       ],
                     ),
@@ -40,7 +41,7 @@ class CommentsPage extends StatelessWidget {
                         Text("Posted on: ${comment.dateDeCreation}"),
                       ],
                     ),
-                   // isThreeLine: true,
+                    // isThreeLine: true,
                   );
                 },
               );

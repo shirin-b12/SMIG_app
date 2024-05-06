@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/models/utilisateur.dart';
+import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/utilisateur_profile.dart';
+
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 
@@ -62,7 +63,8 @@ class _UserModificationPageState extends State<UserModificationPage> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor.withOpacity(0.5), width: 1.5),
+          borderSide:
+              BorderSide(color: borderColor.withOpacity(0.5), width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -78,7 +80,6 @@ class _UserModificationPageState extends State<UserModificationPage> {
       style: TextStyle(color: Colors.black54),
     );
   }
-
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
@@ -119,7 +120,8 @@ class _UserModificationPageState extends State<UserModificationPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
-                      const Text('Modification de votre profil',
+                      const Text(
+                        'Modification de votre profil',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -132,7 +134,8 @@ class _UserModificationPageState extends State<UserModificationPage> {
                         label: "Nom",
                         icon: Icons.account_circle,
                         onSaved: (value) => nom = value,
-                        validator: (value) => value!.isEmpty ? "Veuillez entrer votre nom" : null,
+                        validator: (value) =>
+                            value!.isEmpty ? "Veuillez entrer votre nom" : null,
                       ),
                       const SizedBox(height: 16),
                       _buildTextField(
@@ -140,7 +143,9 @@ class _UserModificationPageState extends State<UserModificationPage> {
                         label: "Prénom",
                         icon: Icons.account_circle,
                         onSaved: (value) => prenom = value,
-                        validator: (value) => value!.isEmpty ? "Veuillez entrer votre prénom" : null,
+                        validator: (value) => value!.isEmpty
+                            ? "Veuillez entrer votre prénom"
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       _buildTextField(
@@ -148,16 +153,20 @@ class _UserModificationPageState extends State<UserModificationPage> {
                         label: "Email",
                         icon: Icons.email,
                         onSaved: (value) => email = value,
-                        validator: (value) => value!.isEmpty ? "Veuillez entrer votre adresse e-mail" : null,
+                        validator: (value) => value!.isEmpty
+                            ? "Veuillez entrer votre adresse e-mail"
+                            : null,
                       ),
                       const SizedBox(height: 50),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white, backgroundColor: Color(0xFF000091),
+                          foregroundColor: Colors.white,
+                          backgroundColor: Color(0xFF000091),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 15),
                         ),
                         icon: Icon(Icons.mode, size: 24),
                         label: Text('Soumettre'),

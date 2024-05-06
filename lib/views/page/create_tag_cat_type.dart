@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
-import 'package:smig_app/views/page/ressource_list_page.dart';
-import '../../services/auth_service.dart';
+
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
-import 'login_page.dart';
 
 class CatCreationPage extends StatefulWidget {
   @override
@@ -14,6 +12,7 @@ class CatCreationPage extends StatefulWidget {
 class _CatCreationPageState extends State<CatCreationPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+
   /*final Image imageController = */
   final TextEditingController visibiliteController = TextEditingController();
 

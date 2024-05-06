@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/ressource.dart';
-import 'package:smig_app/models/types_relation.dart';
-import 'package:smig_app/services/api_service.dart';
-import 'package:smig_app/models/utilisateur.dart';
 import 'package:smig_app/models/type.dart';
+import 'package:smig_app/models/types_relation.dart';
+import 'package:smig_app/models/utilisateur.dart';
+import 'package:smig_app/services/api_service.dart';
 
 import '../../models/tag.dart';
 import '../../services/auth_service.dart';
@@ -113,7 +112,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
     switch (_selectedCategory) {
       case SearchCategory.Users:
         tempFilteredItems = _allUsers.where((user) {
-          return (user.id != currentUserId) && // Exclude the current user from the results
+          return (user.id !=
+                  currentUserId) && // Exclude the current user from the results
               (user.nom.toLowerCase().contains(query.toLowerCase()) ||
                   user.prenom.toLowerCase().contains(query.toLowerCase()));
         }).toList();
@@ -149,7 +149,6 @@ class _UserSearchPageState extends State<UserSearchPage> {
       _filteredItems = tempFilteredItems;
     });
   }
-
 
   void _changeSearchCategory(SearchCategory category) {
     setState(() {
@@ -282,10 +281,12 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
                           titleText = "${user.nom} ${user.prenom}";
                           trailingWidget = FutureBuilder<bool>(
-                            future: api.checkRelationExists(currentUserId!, user.id),
+                            future: api.checkRelationExists(
+                                currentUserId!, user.id),
                             builder: (BuildContext context,
                                 AsyncSnapshot<bool> snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
                                 return const SizedBox(
                                   width: 20,
                                   height: 20,
@@ -295,7 +296,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
                                         Color(0xFF03989E)),
                                   ),
                                 );
-                              } else if (snapshot.hasData && snapshot.data == false) {
+                              } else if (snapshot.hasData &&
+                                  snapshot.data == false) {
                                 return IconButton(
                                   icon: Icon(Icons.add_circle_outline,
                                       color: Color(0xFF03989E)),
@@ -516,7 +518,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
                       setState(() {
                         _selectedRelationType = localSelectedRelationType;
                       });
-                      api.createRelation(currentUserId!, otherUserID, _selectedRelationType!.id);
+                      api.createRelation(currentUserId!, otherUserID,
+                          _selectedRelationType!.id);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

@@ -4,6 +4,7 @@ import 'package:smig_app/models/tag.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
+
 import '../../models/ressource.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
@@ -35,9 +36,7 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
   void initState() {
     super.initState();
     _fetchMetadata();
-
   }
-
 
   _fetchMetadata() async {
     ressource = await ApiService().getRessource(widget.ressourceId);
@@ -64,7 +63,8 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
-                const Text('Modification de votre ressource',
+                const Text(
+                  'Modification de votre ressource',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -72,9 +72,15 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
                   ),
                 ),
                 SizedBox(height: 50),
-                _buildTextFieldWithShadow(controller: titleController, icon: Icons.title, label: 'Titre'),
+                _buildTextFieldWithShadow(
+                    controller: titleController,
+                    icon: Icons.title,
+                    label: 'Titre'),
                 SizedBox(height: 16),
-                _buildTextFieldWithShadow(controller: descriptionController, icon: Icons.description, label: 'Description'),
+                _buildTextFieldWithShadow(
+                    controller: descriptionController,
+                    icon: Icons.description,
+                    label: 'Description'),
                 SizedBox(height: 16),
                 _buildDropdown<Type>(
                   label: 'Types',
@@ -122,16 +128,14 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
                   buttonText: 'Modifier la ressource',
                   iconData: Icons.mode,
                   onPressed: () async {
-                    if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Tous les champs sont obligatoires"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
+                    if (titleController.text.trim().isEmpty ||
+                        descriptionController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Tous les champs sont obligatoires"),
+                          backgroundColor: Color(0xFFFFBD59),
+                          duration: Duration(seconds: 2),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating));
                       return;
                     }
                     try {
@@ -144,28 +148,26 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
                         selectedTagId!,
                       );
                       if (bool) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomePage()));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text("Échec lors de la création de la ressource"),
+                                content: Text(
+                                    "Échec lors de la création de la ressource"),
                                 backgroundColor: Color(0xFFFFBD59),
                                 duration: Duration(seconds: 2),
                                 shape: StadiumBorder(),
-                                behavior: SnackBarBehavior.floating
-                            )
-                        );
+                                behavior: SnackBarBehavior.floating));
                       }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Échec lors de la création de la ressource"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text("Échec lors de la création de la ressource"),
+                          backgroundColor: Color(0xFFFFBD59),
+                          duration: Duration(seconds: 2),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating));
                     }
                   },
                 ),
@@ -228,7 +230,8 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
   }) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: textColor, backgroundColor: buttonColor,
+        foregroundColor: textColor,
+        backgroundColor: buttonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -255,7 +258,8 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
     required String Function(T) getName,
   }) {
     return Container(
-      width: double.infinity, // Ensures the dropdown takes the full width available
+      width: double.infinity,
+      // Ensures the dropdown takes the full width available
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -266,7 +270,8 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: label,
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
             border: InputBorder.none,
           ),
           value: selectedValue,
@@ -287,5 +292,4 @@ class _RessourceUpdatePageState extends State<RessourceUpdatePage> {
       ),
     );
   }
-
 }

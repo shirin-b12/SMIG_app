@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/auth_service.dart';
 import 'package:smig_app/views/page/ressource_modification_page.dart';
+
 import '../../models/commentaire.dart';
 import '../../models/ressource.dart';
 import '../../services/api_service.dart';
@@ -30,7 +31,8 @@ class RessourcePage extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              final TextEditingController commentController = TextEditingController();
+              final TextEditingController commentController =
+                  TextEditingController();
               return Container(
                 padding: EdgeInsets.all(20),
                 child: Column(
@@ -40,22 +42,27 @@ class RessourcePage extends StatelessWidget {
                       controller: commentController,
                       decoration: InputDecoration(
                         labelText: 'Votre commentaire',
-                        labelStyle: TextStyle(color: secondaryColor), // Use secondary color for label
+                        labelStyle: TextStyle(color: secondaryColor),
+                        // Use secondary color for label
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor), // Use primary color for focus
+                          borderSide: BorderSide(
+                              color:
+                                  primaryColor), // Use primary color for focus
                         ),
                       ),
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: primaryColor, // Text color
+                        foregroundColor: Colors.white,
+                        backgroundColor: primaryColor, // Text color
                       ),
                       child: Text('Envoyer'),
                       onPressed: () async {
                         int userId = await AuthService().getCurrentUser();
-                        api.createComment(commentController.text, userId, resourceId, 0);
+                        api.createComment(
+                            commentController.text, userId, resourceId, 0);
                         api.fetchComments(resourceId);
                       },
                     ),
@@ -81,30 +88,42 @@ class RessourcePage extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.edit, color: Color(0xFF03989E)),
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceUpdatePage(ressourceId: resourceId,)));
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                                    builder: (context) => RessourceUpdatePage(
+                                          ressourceId: resourceId,
+                                        )));
                           },
                         ),
                         FutureBuilder<List<Commentaire>>(
                           future: api.fetchComments(resourceId),
                           builder: (context, snapshotComments) {
-                            if (snapshotComments.connectionState == ConnectionState.done) {
+                            if (snapshotComments.connectionState ==
+                                ConnectionState.done) {
                               if (snapshotComments.hasData) {
                                 return Column(
-                                  children: snapshotComments.data!.map((comment) => ListTile(
-                                    title: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}",
-                                            style: TextStyle(color: secondaryColor)),
-                                        Text(comment.commentaire),
-                                      ],
-                                    ),
-                                    subtitle: Text("Posted on: ${comment.dateDeCreation}",
-                                        style: TextStyle(fontSize: 10)),
-                                  )).toList(),
+                                  children: snapshotComments.data!
+                                      .map((comment) => ListTile(
+                                            title: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    "${comment.utilisateurRedacteur?.nom} ${comment.utilisateurRedacteur?.prenom}",
+                                                    style: TextStyle(
+                                                        color: secondaryColor)),
+                                                Text(comment.commentaire),
+                                              ],
+                                            ),
+                                            subtitle: Text(
+                                                "Posted on: ${comment.dateDeCreation}",
+                                                style: TextStyle(fontSize: 10)),
+                                          ))
+                                      .toList(),
                                 );
                               } else if (snapshotComments.hasError) {
-                                return Text("Erreur: ${snapshotComments.error}");
+                                return Text(
+                                    "Erreur: ${snapshotComments.error}");
                               }
                             }
                             return Center(child: CircularProgressIndicator());

@@ -1,15 +1,14 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
-import '../../services/auth_service.dart';
+
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../models/ressource.dart';
 
 class RessourceCard extends StatefulWidget {
   final Ressource ressource;
   final ApiService api = ApiService();
+
   Future<int> fetchUserId() async {
     int? userId = await AuthService().getCurrentUser();
     return userId ?? 0; // return 0 or a default user ID if userId is null
@@ -21,6 +20,7 @@ class RessourceCard extends StatefulWidget {
     String? role = await AuthService().getCurrentUserRole();
     return role ?? '';
   }
+
   @override
   _RessourceCardState createState() => _RessourceCardState();
 }
@@ -30,7 +30,6 @@ class _RessourceCardState extends State<RessourceCard> {
   late int userId;
   bool showMore = false;
   final ApiService api = ApiService();
-
 
   @override
   void initState() {
@@ -47,7 +46,6 @@ class _RessourceCardState extends State<RessourceCard> {
       });
     }
   }
-
 
   String formatShortDate(String date) {
     final DateTime parsedDate = DateFormat('dd/MM/yyyy HH:mm:ss').parse(date);
@@ -134,13 +132,13 @@ class _RessourceCardState extends State<RessourceCard> {
       ),
     );
   }
+
   Widget buildTopRow() {
     // Similar to your existing code, with Row for the main content
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-
         CircleAvatar(
           backgroundColor: Colors.grey[200],
           // Assuming Ressource.createur.pic is a String or null
@@ -166,24 +164,25 @@ class _RessourceCardState extends State<RessourceCard> {
         IconButton(
           icon: Icon(
             isFavorite ? Icons.star : Icons.star_border,
-            color: isFavorite ? Color(0xFF03989E) : Colors.grey,
+            color: isFavorite ? const Color(0xFF03989E) : Colors.grey,
           ),
           onPressed: () async {
-            bool success = await api.toggleFavorite(userId, widget.ressource.id);
+            bool success =
+                await api.toggleFavorite(userId, widget.ressource.id);
             if (success) {
               setState(() {
                 isFavorite = !isFavorite;
               });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to update favorite status'))
-              );
+                  const SnackBar(content: Text('Failed to update favorite status')));
             }
           },
         )
       ],
     );
   }
+
   Widget buildToggleMoreButton() {
     return TextButton(
       onPressed: () {
@@ -191,14 +190,17 @@ class _RessourceCardState extends State<RessourceCard> {
           showMore = !showMore; // Toggle the state to show/hide details
         });
       },
-      child: Text(showMore ? "moins..." : "plus...",
+      child: Text(
+        showMore ? "moins..." : "plus...",
         style: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,
           color: Color(0xFF03989E),
-        ),), // Change text based on state
+        ),
+      ), // Change text based on state
     );
   }
+
   Widget buildImageContainer() {
     if (widget.ressource.image != null) {
       double screenWidth = MediaQuery.of(context).size.width;
@@ -216,7 +218,7 @@ class _RessourceCardState extends State<RessourceCard> {
         ),
       );
     } else {
-      return SizedBox();  // Return an empty box if no image
+      return const SizedBox(); // Return an empty box if no image
     }
   }
 
