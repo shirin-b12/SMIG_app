@@ -1,10 +1,8 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../models/utilisateur.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class AuthService {
   static String baseUrl = 'http://localhost:8081';

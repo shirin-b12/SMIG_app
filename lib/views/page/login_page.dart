@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../../services/auth_service.dart';
 import '../screen/signup_or_login/signup_or_login.dart';
+import '../screen/transition_page.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {

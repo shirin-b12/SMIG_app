@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
-
 import '../../models/relation.dart';
 import '../../models/tiny_ressource.dart';
 import '../../models/utilisateur.dart';
@@ -9,6 +8,7 @@ import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 import '../../widgets/tiny_ressource_card.dart';
+import '../../widgets/utilisateur_card.dart';
 import '../screen/signup_or_login/signup_or_login.dart';
 
 class UserProfile extends StatefulWidget {
@@ -53,6 +53,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _fetchRelations() async {
+
     userId = await AuthService().getCurrentUser();
     relations = await ApiService().fetchRelationsByUserId(userId!);
     relationsCount = relations?.length ?? 0;
@@ -64,8 +65,7 @@ class _UserProfileState extends State<UserProfile> {
     if (userId != null) {
       try {
         Utilisateur userDetails = await ApiService().getUtilisateur(userId!);
-        List<TinyRessource> userResources =
-            await ApiService().fetchRessourcesByCreateur(userId!);
+        List<TinyRessource> userResources = await ApiService().fetchRessourcesByCreateur(userId!);
         setState(() {
           user = userDetails;
           resources = userResources;
@@ -79,6 +79,7 @@ class _UserProfileState extends State<UserProfile> {
       setState(() => isLoading = false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +116,7 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+
   Widget _buildUserProfile() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,17 +127,14 @@ class _UserProfileState extends State<UserProfile> {
             IconButton(
               icon: Icon(Icons.edit, color: Color(0xFF03989E)),
               onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) =>
-                        UserModificationPage(user: user as Utilisateur)));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserModificationPage(user: user as Utilisateur)));
               },
             ),
             IconButton(
               icon: Icon(Icons.logout_outlined, color: Color(0xFF03989E)),
               onPressed: () {
                 AuthService().logout();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
               },
             ),
           ],
@@ -146,12 +145,10 @@ class _UserProfileState extends State<UserProfile> {
           decoration: BoxDecoration(
             color: Color(0xFF03989E),
             shape: BoxShape.circle,
-            image: user?.pic != null
-                ? DecorationImage(
-                    image: NetworkImage(user!.getProfileImageUrl()),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+            image: user?.pic != null ? DecorationImage(
+              image: NetworkImage(user!.getProfileImageUrl()),
+              fit: BoxFit.cover,
+            ) : null,
           ),
           alignment: Alignment.center,
           child: Stack(
@@ -163,6 +160,7 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                   color: Colors.white,
                 ),
+
               Align(
                 alignment: Alignment.bottomRight,
                 child: GestureDetector(
@@ -196,18 +194,22 @@ class _UserProfileState extends State<UserProfile> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('\n${user?.nom} \n',
+              Text(
+                  '\n${user?.nom} \n',
                   style: const TextStyle(
                     color: Color(0xFF03989E),
                     fontSize: 20,
                     fontWeight: FontWeight.bold, // Gras
-                  )),
-              Text('\n${user?.prenom}\n',
+                  )
+              ),
+              Text(
+                  '\n${user?.prenom}\n',
                   style: const TextStyle(
                     color: Color(0xFF03989E),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                  )),
+                  )
+              ),
             ],
           ),
         ),
@@ -222,11 +224,13 @@ class _UserProfileState extends State<UserProfile> {
               onPressed: () => _showRelationsDialog(),
               child: Text('$relationsCount relations\n'),
             ),
-            Text('${resources?.length ?? 0} ressources\n',
+            Text(
+                '${resources?.length ?? 0} ressources\n',
                 style: const TextStyle(
                   color: Color(0xFF03989E),
                   fontSize: 15,
-                )),
+                )
+            ),
           ],
         ),
         Container(
@@ -249,6 +253,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
         ),
+
         Expanded(
           child: _buildResourcesList(),
         ),
@@ -270,7 +275,7 @@ class _UserProfileState extends State<UserProfile> {
             leading: CircleAvatar(
               backgroundColor: Colors.grey[200],
               backgroundImage: currentUser.pic != null
-                  ? NetworkImage(currentUser.getProfileImageUrl())
+                  ? NetworkImage(currentUser!.getProfileImageUrl())
                   : null,
               child: currentUser.pic == null
                   ? const Icon(Icons.person, color: Color(0xFF03989E))
@@ -325,14 +330,11 @@ class _UserProfileState extends State<UserProfile> {
               itemCount: relationsCount,
               itemBuilder: (context, index) {
                 bool isUser1 = relations![index].idUtilisateur1.id == userId;
-                Utilisateur otherUser = isUser1
-                    ? relations![index].idUtilisateur2
-                    : relations![index].idUtilisateur1;
+                Utilisateur otherUser = isUser1 ? relations![index].idUtilisateur2 : relations![index].idUtilisateur1;
 
                 return ListTile(
                   title: Text('${otherUser.nom} ${otherUser.prenom}'),
-                  subtitle: Text(
-                      'Type: ${relations![index].idTypeRelation.intitule}'),
+                  subtitle: Text('Type: ${relations![index].idTypeRelation.intitule}'),
                 );
               },
             ),
@@ -342,8 +344,7 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  void showStatusDialog(
-      BuildContext context, int userId, String currentStatus) {
+  void showStatusDialog(BuildContext context, int userId, String currentStatus) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

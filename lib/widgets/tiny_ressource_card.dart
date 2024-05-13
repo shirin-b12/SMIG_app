@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../../services/api_service.dart';
-import '../../views/page/ressource_page.dart';
 import '../models/tiny_ressource.dart';
+import '../../views/page/ressource_page.dart';
 
 class TinyRessourceCard extends StatefulWidget {
   final TinyRessource ressource;
@@ -22,9 +21,7 @@ class _TinyRessourceCardState extends State<TinyRessourceCard> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  RessourcePage(resourceId: widget.ressource.id)),
+          MaterialPageRoute(builder: (context) => RessourcePage(resourceId: widget.ressource.id)),
         );
       },
       child: Container(
@@ -61,11 +58,13 @@ class _TinyRessourceCardState extends State<TinyRessourceCard> {
               onPressed: () async {
                 bool success = await api.deleteRessource(widget.ressource.id);
                 if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Resource deleted successfully')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Resource deleted successfully'))
+                  );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Failed to delete resource')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to delete resource'))
+                  );
                 }
               },
             ),

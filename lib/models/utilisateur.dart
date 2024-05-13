@@ -7,14 +7,15 @@ class Utilisateur {
   late final String etat;
   final String? role;
 
-  Utilisateur(
-      {required this.id,
-      required this.nom,
-      required this.prenom,
-      required this.email,
-      this.pic,
-      required this.etat,
-      required this.role});
+  Utilisateur({
+    required this.id,
+    required this.nom,
+    required this.prenom,
+    required this.email,
+    this.pic,
+    required this.etat,
+    required this.role
+  });
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
     return Utilisateur(
@@ -24,7 +25,7 @@ class Utilisateur {
       email: json['email'],
       pic: json['image'] != null ? json['image']['id_image'] : null,
       etat: json['etat_utilisateur'],
-      role: json['role'] != null ? json['role']['nom_role'] : null,
+      role : json['role'] != null ? json['role']['nom_role'] : null,
     );
   }
 
@@ -48,7 +49,7 @@ class Utilisateur {
     this.etat = newStatus;
   }
 
-  String? getRole() {
+  String? getRole(){
     return role;
   }
 }

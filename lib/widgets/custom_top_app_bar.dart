@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smig_app/services/auth_service.dart';
 import 'package:smig_app/views/page/favoris_page.dart';
+import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
 class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
+
   const CustomTopAppBar({Key? key}) : super(key: key);
 
   @override
@@ -11,9 +17,7 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(40.0);
 }
-
-class _CustomTopAppBarState extends State<CustomTopAppBar>
-    with TickerProviderStateMixin {
+class _CustomTopAppBarState extends State<CustomTopAppBar> with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -25,8 +29,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar>
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(40.0),
-      // Make sure this matches the AppBar's intended size
+      preferredSize: Size.fromHeight(40.0), // Make sure this matches the AppBar's intended size
       child: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -50,8 +53,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar>
                       onTap: () {
                         _controller.reset();
                         _controller.forward();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => FavorisListPage()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FavorisListPage()));
                       },
                       child: SizedBox(
                         child: Lottie.asset(

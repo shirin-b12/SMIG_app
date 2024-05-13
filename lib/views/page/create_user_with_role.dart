@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
-
 import '../../models/role.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 
 class CreateUserWithRolePage extends StatefulWidget {
+
   @override
   _CreateUserWithRolePageState createState() => _CreateUserWithRolePageState();
 }
@@ -43,36 +43,20 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
         child: Center(
           child: Container(
             width: 300,
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: 50),
-                _buildTextFieldWithShadow(
-                    controller: emailController,
-                    icon: Icons.email,
-                    label: 'Email'),
+                _buildTextFieldWithShadow(controller: emailController, icon: Icons.email, label: 'Email'),
                 SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                    controller: prenomController,
-                    icon: Icons.abc_rounded,
-                    label: 'Prénom'),
+                _buildTextFieldWithShadow(controller: prenomController, icon: Icons.abc_rounded, label: 'Prénom'),
                 SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                    controller: nomController,
-                    icon: Icons.abc_rounded,
-                    label: 'Nom'),
+                _buildTextFieldWithShadow(controller: nomController, icon: Icons.abc_rounded, label: 'Nom'),
                 SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                    controller: telController,
-                    icon: Icons.phone,
-                    label: 'Téléphone'),
+                _buildTextFieldWithShadow(controller: telController, icon: Icons.phone, label: 'Téléphone'),
                 SizedBox(height: 16),
-                _buildTextFieldWithShadow(
-                    controller: mdpController,
-                    icon: Icons.password_rounded,
-                    label: 'Mot de passe'),
+                _buildTextFieldWithShadow(controller: mdpController, icon: Icons.password_rounded, label: 'Mot de passe'),
                 SizedBox(height: 16),
                 _buildDropdown<Role>(
                   label: 'Roles',
@@ -94,18 +78,20 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
                   buttonText: 'Créer le compte',
                   iconData: Icons.person_add,
                   onPressed: () async {
-                    if (emailController.text.trim().isEmpty ||
-                        prenomController.text.trim().isEmpty ||
-                        nomController.text.trim().isEmpty ||
-                        mdpController.text.trim().isEmpty ||
-                        selectedRoleId == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text(
-                              "Les champs suivant L'Email, le Prenom, le Nom, le Mot de passe et le Role sont obligatoires"),
-                          backgroundColor: Color(0xFFFFBD59),
-                          duration: Duration(seconds: 2),
-                          shape: StadiumBorder(),
-                          behavior: SnackBarBehavior.floating));
+                    if (emailController.text.trim().isEmpty
+                        || prenomController.text.trim().isEmpty
+                        || nomController.text.trim().isEmpty
+                        || mdpController.text.trim().isEmpty
+                        || selectedRoleId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Les champs suivant L'Email, le Prenom, le Nom, le Mot de passe et le Role sont obligatoires"),
+                              backgroundColor: Color(0xFFFFBD59),
+                              duration: Duration(seconds: 2),
+                              shape: StadiumBorder(),
+                              behavior: SnackBarBehavior.floating
+                          )
+                      );
                       return;
                     }
                     try {
@@ -123,26 +109,28 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
                           selectedRole!);
 
                       if (bool) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => HomePage()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content:
-                                    Text("Échec lors de la création du compte"),
+                                content: Text("Échec lors de la création du compte"),
                                 backgroundColor: Color(0xFFFFBD59),
                                 duration: Duration(seconds: 2),
                                 shape: StadiumBorder(),
-                                behavior: SnackBarBehavior.floating));
+                                behavior: SnackBarBehavior.floating
+                            )
+                        );
                       }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content:
-                              Text("Échec lors de la création du compte 2"),
-                          backgroundColor: Color(0xFFFFBD59),
-                          duration: Duration(seconds: 2),
-                          shape: StadiumBorder(),
-                          behavior: SnackBarBehavior.floating));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Échec lors de la création du compte 2"),
+                              backgroundColor: Color(0xFFFFBD59),
+                              duration: Duration(seconds: 2),
+                              shape: StadiumBorder(),
+                              behavior: SnackBarBehavior.floating
+                          )
+                      );
                       print(e);
                     }
                   },
@@ -238,8 +226,7 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
           labelText: label,
-          contentPadding:
-              EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
         ),
         value: selectedValue,

@@ -13,4 +13,5 @@ class Categorie {
       nom: json['nom_cat'],
     );
   }
+
 }

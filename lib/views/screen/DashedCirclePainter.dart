@@ -12,10 +12,7 @@ class DashedCirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     double dashWidth = 10.0, dashSpace = 5.0, startPoint = 0.0;
-    final circlePath = Path()
-      ..addOval(Rect.fromCircle(
-          center: Offset(size.width / 2, size.height / 2),
-          radius: size.width / 2));
+    final circlePath = Path()..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2));
     final pathMetric = circlePath.computeMetrics().first;
 
     while (startPoint < pathMetric.length) {

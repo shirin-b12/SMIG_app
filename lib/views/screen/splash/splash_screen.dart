@@ -1,12 +1,17 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:smig_app/views/page/ressource_creation_page.dart';
+import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
-
+import 'dart:math' as math;
 import '../../../services/api_service.dart';
 import '../../../services/auth_service.dart';
+import '../../page/create_user_with_role.dart';
 import '../../page/home_page.dart';
+import 'package:lottie/lottie.dart';
+import '../../page/ressource_list_page.dart';
+import '../../page/ressource_page.dart';
+
+import '../../page/search_page.dart';
 import '../DashedCirclePainter.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,8 +19,7 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
   final ApiService api = ApiService();
 
@@ -39,14 +43,10 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 4));
     bool isLoggedIn = await AuthService.isLoggedIn();
     if (isLoggedIn) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } else {
       //var user = await api.getUtilisateur(5);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) =>
-              SignUpOrLogin() /*UserModificationPage(user: user)*/));
-    }
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()/*UserModificationPage(user: user)*/));    }
   }
 
   @override
@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: Offset(42.5, 25),
+              offset: Offset(42.5,25),
               child: Align(
                 alignment: Alignment.topRight,
                 child: AnimatedBuilder(
@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: Offset(-125, -5),
+              offset: Offset(-125,-5),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: AnimatedBuilder(
@@ -106,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: Offset(-150, -350),
+              offset: Offset(-150,-350),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: AnimatedBuilder(
@@ -125,7 +125,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: const Offset(150, -450),
+              offset: const Offset(150,-450),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -142,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: const Offset(150, 50),
+              offset: const Offset(150,50),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
@@ -159,7 +159,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Transform.translate(
-              offset: const Offset(60, 135),
+              offset: const Offset(60,135),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: AnimatedBuilder(
@@ -216,8 +216,8 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
-                      width: 100,
-                      height: 100,
+                    width: 100,
+                    height: 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
