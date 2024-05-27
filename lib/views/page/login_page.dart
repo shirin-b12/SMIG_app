@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Flexible(
             flex: 3,
-            child: SingleChildScrollView(
+            child: Container(
               child: Column(
                 children: <Widget>[
                   const SizedBox(height: 100),
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                     label: 'Mot de passe',
                     isPassword: true,
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 25),
                   _buildRoundedButton(
                     context: context,
                     buttonColor: const Color(0xFF000091),

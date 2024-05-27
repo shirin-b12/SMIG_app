@@ -57,6 +57,10 @@ class _TinyRessourceCardState extends State<TinyRessourceCard> {
               icon: const Icon(Icons.delete, color: Color(0xFF03989E)),
               onPressed: () async {
                 bool success = await api.deleteRessource(widget.ressource.id);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => super.widget));
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Resource deleted successfully'))

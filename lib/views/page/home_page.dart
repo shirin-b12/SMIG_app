@@ -21,21 +21,24 @@ class HomePage extends StatelessWidget {
       bottomNavigationBar: CustomBottomAppBar(),
       body: Column(
         children: <Widget>[
-          Row(
-            children: [
-              SizedBox(width: 10),
-              TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 15),
-                  foregroundColor: Color(0xFF03989E),
+          Container(
+            color : Colors.white,
+            child : Row(
+              children: [
+                SizedBox(width: 10),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 15),
+                    foregroundColor: Color(0xFF03989E),
+                  ),
+                  onPressed: () => print("la france tu l'aime ou tu la quitte "),
+                  child: const Text('Général ▼', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),
                 ),
-                onPressed: () => print("la france tu l'aime ou tu la quitte "),
-                child: const Text('Général ▼', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),
-              ),
-              Spacer(),
-              Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
-              SizedBox(width: 10),
-            ],
+                Spacer(),
+                Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+                SizedBox(width: 10),
+              ],
+            ),
           ),
           Expanded(
             child: FutureBuilder(

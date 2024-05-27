@@ -6,6 +6,7 @@ import 'package:smig_app/views/page/ressource_list_page.dart';
 import 'package:smig_app/views/page/ressource_creation_page.dart';
 import 'package:smig_app/views/page/ressource_modification_page.dart';
 import 'package:smig_app/views/page/ressource_page.dart';
+import 'package:smig_app/views/page/stat_page.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import 'package:smig_app/views/page/utilisateur_profile.dart';
 import 'package:smig_app/views/page/search_page.dart';
@@ -13,6 +14,7 @@ import 'package:smig_app/views/screen/signup_or_login/signup_or_login.dart';
 
 import '../models/utilisateur.dart';
 import '../services/auth_service.dart';
+import '../views/page/add_page.dart';
 import '../views/page/commentaire_page.dart';
 import '../views/page/create_tag_cat_type.dart';
 import '../views/page/login_page.dart';
@@ -25,7 +27,7 @@ class CustomBottomAppBar extends StatefulWidget implements PreferredSizeWidget {
   _CustomBottomAppBarState createState() => _CustomBottomAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(35.0);
+  Size get preferredSize => Size.fromHeight(40.0);
 }
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProviderStateMixin {
@@ -45,10 +47,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      color: Colors.transparent,
-      elevation: 0,
-      child: Container(
+    return Container(
+        width: MediaQuery.of(context).size.width,
         height: widget.preferredSize.height,
         decoration: const BoxDecoration(
           color: Color(0xFF03989E)
@@ -100,7 +100,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => RessourceCreationPage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AddPage()));
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -130,6 +130,8 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
                 _controller
                   ..reset()
                   ..forward();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => StatPage()));
+
               },
               child: SizedBox(
                 child: Lottie.asset(
@@ -164,7 +166,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> with TickerProv
             ),
           ],
         ),
-      ),
     );
   }
 }

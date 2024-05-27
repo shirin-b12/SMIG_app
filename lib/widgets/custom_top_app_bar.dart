@@ -30,46 +30,38 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> with TickerProviderSt
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(40.0), // Make sure this matches the AppBar's intended size
-      child: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        flexibleSpace: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Container(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(3),
-                    child: Lottie.asset(
-                      'assets/appBar/RE_green.json',
-                      repeat: false,
-                    ),
-                  ),
-                  Spacer(),
-                  Container(
-                    margin: const EdgeInsets.all(3),
-                    child: GestureDetector(
-                      onTap: () {
-                        _controller.reset();
-                        _controller.forward();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FavorisListPage()));
-                      },
-                      child: SizedBox(
-                        child: Lottie.asset(
-                          'assets/appBar/fav_green.json',
-                          controller: _controller,
-                          onLoaded: (composition) {
-                            _controller.duration = composition.duration;
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+      child: Container(
+        color : Colors.white,
+        child: Row(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.all(3),
+              child: Lottie.asset(
+                'assets/appBar/RE_green.json',
+                repeat: false,
               ),
-            );
-          },
+            ),
+            Spacer(),
+            Container(
+              margin: const EdgeInsets.all(3),
+              child: GestureDetector(
+                onTap: () {
+                  _controller.reset();
+                  _controller.forward();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FavorisListPage()));
+                },
+                child: SizedBox(
+                  child: Lottie.asset(
+                    'assets/appBar/fav_green.json',
+                    controller: _controller,
+                    onLoaded: (composition) {
+                      _controller.duration = composition.duration;
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

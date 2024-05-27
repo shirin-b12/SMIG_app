@@ -1,6 +1,11 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../services/auth_service.dart';
 import 'login_page.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -13,6 +18,21 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController surnameController = TextEditingController();
   bool _passwordVisible = false;
+  File? _image;
+
+  void pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      setState(() {
+        _image = file;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +57,30 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                 width: 120,
                 height: 120,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF03989E),
+                decoration: BoxDecoration(
+                  color: Color(0xFF03989E),  // Default background color
                   shape: BoxShape.circle,
+                  image: _image != null ? DecorationImage(
+                      image: FileImage(_image!),
+                      fit: BoxFit.cover
+                  ) : null,
                 ),
                 alignment: Alignment.center,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Icon(
-                      Icons.photo,
-                      size: 35.0,
-                      color: Colors.white,
-                    ),
+                    if (_image == null)
+                      const Icon(
+                        Icons.photo,
+                        size: 35.0,
+                        color: Colors.white,
+                      ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: GestureDetector(
-                        onTap: () => {print("kljkljkl")},
+                        onTap: () {
+                          pickImage();
+                        },
                         child: Container(
                           width: 50,
                           height: 50,
@@ -121,11 +148,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     return;
                   }
                   try {
-                    final utilisateur = await AuthService().createAccount(
+                    final utilisateur = await AuthService().createAcc(
                       nameController.text.trim(),
                       surnameController.text.trim(),
                       emailController.text.trim(),
                       passwordController.text.trim(),
+                      _image,
                     );
                     if (utilisateur) {
                       Navigator.of(context).pushReplacement(

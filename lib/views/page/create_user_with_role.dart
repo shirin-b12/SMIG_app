@@ -47,6 +47,16 @@ class _CreateUserWithRolePageState extends State<CreateUserWithRolePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
                 SizedBox(height: 50),
                 _buildTextFieldWithShadow(controller: emailController, icon: Icons.email, label: 'Email'),
                 SizedBox(height: 16),

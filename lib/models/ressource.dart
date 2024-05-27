@@ -18,6 +18,7 @@ class Ressource {
   final String category;
   final String type;
   final String tags;
+  final int vue;
 
   Ressource(
       {required this.id,
@@ -29,7 +30,8 @@ class Ressource {
       required this.createur,
       required this.category,
       required this.type,
-      required this.tags});
+      required this.tags,
+      required this.vue});
 
   factory Ressource.fromJson(Map<String, dynamic> json) {
     DateTime dateTime = DateTime.parse(json['dateDeCreation']);
@@ -47,6 +49,7 @@ class Ressource {
         category: json['nomCategorie'],
         type: json['nomType'],
         tags: json['nomTag'],
+      vue: json['vue'],
         );
   }
 

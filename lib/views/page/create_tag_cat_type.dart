@@ -1,35 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:smig_app/services/api_service.dart';
-import 'package:smig_app/views/page/ressource_list_page.dart';
-import '../../services/auth_service.dart';
+import 'package:smig_app/models/categorie.dart';
+import 'package:smig_app/models/type.dart';
+import '../../models/tag.dart';
+import '../../services/api_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
-import 'login_page.dart';
 
-class CatCreationPage extends StatefulWidget {
+class CreateCatTypeTag extends StatefulWidget {
+  const CreateCatTypeTag({super.key});
+
   @override
-  _CatCreationPageState createState() => _CatCreationPageState();
+  _CreateCatTypeTagState createState() => _CreateCatTypeTagState();
 }
 
-class _CatCreationPageState extends State<CatCreationPage> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  /*final Image imageController = */
-  final TextEditingController visibiliteController = TextEditingController();
+class _CreateCatTypeTagState extends State<CreateCatTypeTag> {
+  final ApiService api = ApiService();
+  final List<String> _categories = [];
+  final List<String> _types = [];
+  final List<String> _tags = [];
+
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _tagController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is disposed
+    _categoryController.dispose();
+    _typeController.dispose();
+    _tagController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomTopAppBar(),
-      bottomNavigationBar: CustomBottomAppBar(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(8.0),
+      appBar: const CustomTopAppBar(),
+      bottomNavigationBar: const CustomBottomAppBar(),
+      body: Center(
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          width: 300,
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Image.asset('assets/gouv/marianne.png', width: 40, height: 40),
+              ),
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
@@ -39,105 +64,53 @@ class _CatCreationPageState extends State<CatCreationPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 50),
-              Container(
-                width: 120,
-                height: 120,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF03989E),
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(
-                      Icons.photo,
-                      size: 35.0,
-                      color: Colors.white,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: GestureDetector(
-                        onTap: () => {print("kljkljkl")},
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Color(0xFFFFBD59),
-                              width: 3,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Color(0xFF03989E),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildTextFieldWithShadow(
-                controller: titleController,
-                icon: Icons.abc_rounded,
-                label: 'Nom',
-              ),
-              const SizedBox(height: 50),
-              _buildRoundedButton(
-                context: context,
-                buttonColor: Color(0xFF000091),
-                textColor: Colors.white,
-                buttonText: 'Créer',
+              buildInputField(
+                controller: _categoryController,
+                label: 'Catégorie',
+                hint: 'Entrez une catégorie',
                 onPressed: () async {
-                  String title = titleController.text.trim();
-                  if (title.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Le nom de la catégorie est obligatoire"),
-                        backgroundColor: Color(0xFFFFBD59),
-                        duration: Duration(seconds: 2),
-                        shape: StadiumBorder(),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                    return;
-                  }
-                  try {
-                    final ressource = await ApiService().createType(
-                      titleController.text.trim(),
-                    );
-                    if (ressource == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Échec lors de la création ee"),
-                          backgroundColor: Color(0xFFFFBD59),
-                          duration: Duration(seconds: 2),
-                          shape: StadiumBorder(),
-                          behavior: SnackBarBehavior.floating));
-                    }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Échec lors de la création"),
-                        backgroundColor: Color(0xFFFFBD59),
-                        duration: Duration(seconds: 2),
-                        shape: StadiumBorder(),
-                        behavior: SnackBarBehavior.floating));
-                  }
+                  await handleCreateItem(
+                    controller: _categoryController,
+                    onCreate: api.createCat,
+                    onAdd: (String value) {
+                      setState(() {
+                        _categories.add(value);
+                      });
+                    },
+                  );
                 },
               ),
-              Spacer(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.asset('assets/gouv/marianne.png'),
-                ),
+              buildInputField(
+                controller: _typeController,
+                label: 'Type',
+                hint: 'Entrez un type',
+                onPressed: () async {
+                  await handleCreateItem(
+                    controller: _typeController,
+                    onCreate: api.createType,
+                    onAdd: (String value) {
+                      setState(() {
+                        _types.add(value);
+                      });
+                    },
+                  );
+                },
+              ),
+              buildInputField(
+                controller: _tagController,
+                label: 'Tag',
+                hint: 'Entrez un tag',
+                onPressed: () async {
+                  await handleCreateItem(
+                    controller: _tagController,
+                    onCreate: api.createTag,
+                    onAdd: (String value) {
+                      setState(() {
+                        _tags.add(value);
+                      });
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -146,68 +119,104 @@ class _CatCreationPageState extends State<CatCreationPage> {
     );
   }
 
-  Widget _buildTextFieldWithShadow({
-    required TextEditingController controller,
-    required IconData icon,
-    required String label,
-    bool isPassword = false,
-  }) {
-    Color labelColor = Color(0xFF03989E);
-    Color cursorColor = Color(0xFF03989E);
-    Color borderColor = Color(0xFF03989E);
 
+  Future<void> handleCreateItem({
+    required TextEditingController controller,
+    required Future<void> Function(String) onCreate,
+    required Function(String) onAdd,
+  }) async {
+    String value = controller.text.trim();
+    if (value.isNotEmpty) {
+      try {
+        await onCreate(value);
+        setState(() {
+          onAdd(value);
+          controller.clear();
+        });
+      } catch (e) {
+        // Handle the error appropriately (e.g., show an error message)
+        print("Error: $e");
+        // Optional: Display an error message to the user or log the error
+      }
+    }
+  }
+
+  /// Creates an input field widget
+  Widget buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required Future<void> Function() onPressed,
+  }) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 120.0),
-      child: TextField(
-        controller: controller,
-        cursorColor: cursorColor,
-        style: TextStyle(color: Colors.black54),
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: labelColor),
-          labelText: label,
-          labelStyle: TextStyle(
-            color: labelColor,
-            height: 0.5,
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              cursorColor: Colors.teal,
+              decoration: InputDecoration(
+                labelText: label,
+                hintText: hint,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.teal),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.teal),
+                ),
+              ),
+            ),
           ),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding: EdgeInsets.only(top: 20.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
+          // Add an icon button with white icon, custom background color and rounded corners
+          Container(
+            margin: const EdgeInsets.only(left: 8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF000091), // Background color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: onPressed,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white, // Icon color set to white
+              ),
+            ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: borderColor.withOpacity(0.5)),
-          ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildRoundedButton({
-    required BuildContext context,
-    required Color buttonColor,
-    required Color textColor,
-    required String buttonText,
-    required VoidCallback onPressed,
-  }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: textColor,
-        backgroundColor: buttonColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+  /// Creates a list view to display categories, types, or tags
+  Widget buildListView(List<String> items, String emptyMessage) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      height: 100.0,
+      child: ListView.builder(
+        itemCount: items.isNotEmpty ? items.length : 1,
+        itemBuilder: (context, index) {
+          if (items.isEmpty) {
+            return ListTile(
+              title: Text(emptyMessage),
+            );
+          } else {
+            return ListTile(
+              title: Text(items[index]),
+            );
+          }
+        },
       ),
-      onPressed: onPressed,
-      child: Text(buttonText, style: TextStyle(fontSize: 16)),
     );
   }
 }

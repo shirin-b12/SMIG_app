@@ -83,39 +83,23 @@ class _RessourceCardState extends State<RessourceCard> {
                   child: Text(
                     widget.ressource.titre,
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF015E62),
                     ),
                   ),
                 ),
                 const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Catégorie: ${widget.ressource.category}",
+                Center(
+                    child: Text(
+                        "${widget.ressource.category}  ${widget.ressource.type}",
                         style: const TextStyle(
                           color: Color(0xFF015E62),
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 12,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "Type: ${widget.ressource.type}",
-                        style: const TextStyle(
-                          color: Color(0xFF015E62),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
                 ),
                 const SizedBox(height: 5),
                 Align(
@@ -135,7 +119,6 @@ class _RessourceCardState extends State<RessourceCard> {
     );
   }
   Widget buildTopRow() {
-    // Similar to your existing code, with Row for the main content
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,7 +126,6 @@ class _RessourceCardState extends State<RessourceCard> {
 
         CircleAvatar(
           backgroundColor: Colors.grey[200],
-          // Assuming Ressource.createur.pic is a String or null
           backgroundImage: widget.ressource.createur.pic != null
               ? NetworkImage(widget.ressource.createur!.getProfileImageUrl())
               : null,
@@ -188,7 +170,7 @@ class _RessourceCardState extends State<RessourceCard> {
     return TextButton(
       onPressed: () {
         setState(() {
-          showMore = !showMore; // Toggle the state to show/hide details
+          showMore = !showMore;
         });
       },
       child: Text(showMore ? "moins..." : "plus...",
@@ -196,7 +178,7 @@ class _RessourceCardState extends State<RessourceCard> {
           fontSize: 15,
           fontWeight: FontWeight.bold,
           color: Color(0xFF03989E),
-        ),), // Change text based on state
+        ),),
     );
   }
   Widget buildImageContainer() {
@@ -216,7 +198,7 @@ class _RessourceCardState extends State<RessourceCard> {
         ),
       );
     } else {
-      return SizedBox();  // Return an empty box if no image
+      return SizedBox();
     }
   }
 
@@ -232,22 +214,21 @@ class _RessourceCardState extends State<RessourceCard> {
           ),
         ),
         Text(
-          'Tags: ${widget.ressource.tags}',
+          '#${widget.ressource.tags}',
           style: const TextStyle(
-            color: Color(0xFF015E62),
+            color: Color(0x6F015E62),
             fontWeight: FontWeight.bold,
             fontSize: 10,
           ),
         ),
         Text(
-          'Date de publication: ${formatShortDate(widget.ressource.date_de_creation)}',
+          '${formatShortDate(widget.ressource.date_de_creation)}',
           style: const TextStyle(
-            color: Color(0xFF015E62),
+            color: Color(0x6F015E62),
             fontWeight: FontWeight.bold,
             fontSize: 10,
           ),
         ),
-        // Include other details as needed
       ],
     );
   }

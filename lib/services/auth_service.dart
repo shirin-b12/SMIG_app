@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/utilisateur.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'dart:io';
 
 class AuthService {
   static String baseUrl = 'http://localhost:8081';
@@ -152,5 +153,20 @@ class AuthService {
       }
     }
     return null;
+  }
+  Future<bool> createAcc(String nom, String prenom, String email, String password, File? imageFile) async {
+    var uri = Uri.parse('$baseUrl/utilisateur/create');
+    var request = http.MultipartRequest('POST', uri)
+      ..fields['nom'] = nom
+      ..fields['prenom'] = prenom
+      ..fields['email'] = email
+      ..fields['motDePasse'] = password;
+
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('profileImage', imageFile.path));
+    }
+
+    var response = await request.send();
+    return response.statusCode == 200;
   }
 }

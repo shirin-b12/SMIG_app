@@ -1,12 +1,15 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:smig_app/models/categorie.dart';
 import 'package:smig_app/models/tag.dart';
 import 'package:smig_app/models/type.dart';
 import 'package:smig_app/services/api_service.dart';
 import 'package:smig_app/views/page/home_page.dart';
-import 'package:smig_app/views/page/ressource_list_page.dart';
+import '../../models/ressource.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 class RessourceCreationPage extends StatefulWidget {
   @override
@@ -23,6 +26,7 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
   List<Type>? types = [];
   List<Tag>? tags = [];
   List<Categorie>? categories = [];
+  File? _image;
 
   final Color primaryColor = Color(0xFF03989E);
 
@@ -37,6 +41,19 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
     tags = await ApiService().fetchTags();
     categories = await ApiService().fetchCategories();
     setState(() {});
+  }
+
+  void pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      setState(() {
+        _image = file;
+      });
+    }
   }
 
   @override
@@ -104,39 +121,72 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                   getId: (category) => category.id,
                   getName: (category) => category.nom,
                 ),
+                SizedBox(height: 16),
+                GestureDetector(
+                  onTap: pickImage,
+                  child: Container(
+                    width: double.infinity,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.grey[400]!,
+                        width: 2,
+                      ),
+                    ),
+                    child: _image == null
+                        ? Icon(Icons.camera_alt, size: 50, color: Color(0x5F03989E))
+                        : Image.file(_image!, fit: BoxFit.cover),
+                  ),
+                ),
                 SizedBox(height: 50),
                 _buildRoundedButton(
                   context: context,
                   buttonColor: Color(0xFF000091),
                   textColor: Colors.white,
                   buttonText: 'Créer une ressource',
-                  onPressed: () async {
-                    if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Tous les champs sont obligatoires"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
-                      return;
-                    }
-                    try {
-                      final ressource = await ApiService().createRessource(
-                        titleController.text.trim(),
-                        descriptionController.text.trim(),
-                        selectedCatId ?? 1,
-                        selectedTypeId ?? 1,
-                        selectedTagId ?? 1,
-                      );
-                      if (ressource != null) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-                      } else {
+                    onPressed: () async {
+                      if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text("Échec lors de la création de la ressource"),
+                                content: Text("Tous les champs sont obligatoires"),
+                                backgroundColor: Color(0xFFFFBD59),
+                                duration: Duration(seconds: 2),
+                                shape: StadiumBorder(),
+                                behavior: SnackBarBehavior.floating
+                            )
+                        );
+                        return;
+                      }
+
+                      try {
+                        final ressource = await ApiService().newRessource(
+                            titleController.text.trim(),
+                            descriptionController.text.trim(),
+                            selectedCatId ?? 1,
+                            selectedTypeId ?? 1,
+                            selectedTagId ?? 1,
+                            _image
+                        );
+
+                        if (ressource) {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Échec lors de la création de la ressource else"),
+                                  backgroundColor: Color(0xFFFFBD59),
+                                  duration: Duration(seconds: 2),
+                                  shape: StadiumBorder(),
+                                  behavior: SnackBarBehavior.floating
+                              )
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Échec lors de la création de la ressource "),
                                 backgroundColor: Color(0xFFFFBD59),
                                 duration: Duration(seconds: 2),
                                 shape: StadiumBorder(),
@@ -144,18 +194,7 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
                             )
                         );
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Échec lors de la création de la ressource"),
-                              backgroundColor: Color(0xFFFFBD59),
-                              duration: Duration(seconds: 2),
-                              shape: StadiumBorder(),
-                              behavior: SnackBarBehavior.floating
-                          )
-                      );
-                    }
-                  },
+                    },
                 ),
               ],
             ),
@@ -164,6 +203,7 @@ class _RessourceCreationPageState extends State<RessourceCreationPage> {
       ),
     );
   }
+
 
 
   Widget _buildTextFieldWithShadow({

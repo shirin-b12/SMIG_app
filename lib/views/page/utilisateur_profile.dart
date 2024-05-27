@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smig_app/views/page/utilisateur_modification_page.dart';
 import '../../models/relation.dart';
@@ -8,7 +9,6 @@ import '../../services/auth_service.dart';
 import '../../widgets/custom_bottom_app_bar.dart';
 import '../../widgets/custom_top_app_bar.dart';
 import '../../widgets/tiny_ressource_card.dart';
-import '../../widgets/utilisateur_card.dart';
 import '../screen/signup_or_login/signup_or_login.dart';
 
 class UserProfile extends StatefulWidget {
@@ -55,6 +55,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _fetchRelations() async {
 
     userId = await AuthService().getCurrentUser();
+    print(userId);
     relations = await ApiService().fetchRelationsByUserId(userId!);
     relationsCount = relations?.length ?? 0;
     setState(() {});
@@ -65,7 +66,7 @@ class _UserProfileState extends State<UserProfile> {
     if (userId != null) {
       try {
         Utilisateur userDetails = await ApiService().getUtilisateur(userId!);
-        List<TinyRessource> userResources = await ApiService().fetchRessourcesByCreateur(userId!);
+        List<TinyRessource>? userResources = await ApiService().fetchRessourcesByCreateur(userId!);
         setState(() {
           user = userDetails;
           resources = userResources;
@@ -103,7 +104,15 @@ class _UserProfileState extends State<UserProfile> {
   Widget _buildResourcesList() {
     if (resources == null || resources!.isEmpty) {
       return const Center(
-        child: Text('No resources found for this user'),
+        child: Text('Aucune ressource créée',
+        textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Marianne',
+            fontSize: 15.0,
+              fontStyle: FontStyle.italic,
+            color: Color(0xFF03989E),
+          ),
+        ),
       );
     } else {
       return ListView.builder(
@@ -160,32 +169,6 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                   color: Colors.white,
                 ),
-
-              Align(
-                alignment: Alignment.bottomRight,
-                child: GestureDetector(
-                  onTap: () {
-                    print("Change photo tapped");
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Color(0xFFFFBD59),
-                        width: 2,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Color(0xFF03989E),
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -262,53 +245,73 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget _buildUserList() {
-    if (allUsers == null || allUsers!.isEmpty) {
-      return Center(child: Text('No users found'));
-    }
-
-    return ListView.builder(
-      itemCount: allUsers!.length,
-      itemBuilder: (context, index) {
-        Utilisateur currentUser = allUsers![index];
-        return Card(
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.grey[200],
-              backgroundImage: currentUser.pic != null
-                  ? NetworkImage(currentUser!.getProfileImageUrl())
-                  : null,
-              child: currentUser.pic == null
-                  ? const Icon(Icons.person, color: Color(0xFF03989E))
-                  : null,
-            ),
-            title: Text('${currentUser.nom} ${currentUser.prenom}'),
-            subtitle: Text('${currentUser.role} \n ${currentUser.email} '),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (role == "Moderateur")
-                  IconButton(
-                    icon: Icon(Icons.gavel, color: Colors.orange),
-                    onPressed: () {
-                      showStatusDialog(
-                          context, currentUser.id, currentUser.etat);
-                      print('Moderation action for ${currentUser.nom}');
-                    },
-                  ),
-                if (role == "Admin" || role == "SuperAdmin")
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      ApiService().deleteUtilisateur(currentUser.id);
-                    },
-                  ),
-              ],
+    return Column(
+      children: [
+        // Bouton de déconnexion
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.logout_outlined, color: Color(0xFF03989E)),
+              onPressed: () {
+                AuthService().logout();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUpOrLogin()));
+              },
             ),
           ),
-        );
-      },
+        ),
+        // Liste des utilisateurs
+        Expanded(
+          child: allUsers == null || allUsers!.isEmpty
+              ? Center(child: Text('Aucun utilisateur trouvé'))
+              : ListView.builder(
+            itemCount: allUsers!.length,
+            itemBuilder: (context, index) {
+              Utilisateur currentUser = allUsers![index];
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.grey[200],
+                    backgroundImage: currentUser.pic != null
+                        ? NetworkImage(currentUser.getProfileImageUrl())
+                        : null,
+                    child: currentUser.pic == null
+                        ? const Icon(Icons.person, color: Color(0xFF03989E))
+                        : null,
+                  ),
+                  title: Text('${currentUser.nom} ${currentUser.prenom}'),
+                  subtitle: Text('${currentUser.role} \n ${currentUser.email}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (role == "Moderateur")
+                        IconButton(
+                          icon: Icon(Icons.gavel, color: Colors.orange),
+                          onPressed: () {
+                            showStatusDialog(
+                                context, currentUser.id, currentUser.etat);
+                            print('Moderation action for ${currentUser.nom}');
+                          },
+                        ),
+                      if (role == "Admin" || role == "SuperAdmin")
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            ApiService().deleteUtilisateur(currentUser.id);
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
+
 
   void _showRelationsDialog() {
     showDialog(
@@ -335,6 +338,20 @@ class _UserProfileState extends State<UserProfile> {
                 return ListTile(
                   title: Text('${otherUser.nom} ${otherUser.prenom}'),
                   subtitle: Text('Type: ${relations![index].idTypeRelation.intitule}'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      // Confirm before deleting
+                      bool confirmed = await _confirmDeletion();
+                      if (confirmed) {
+                        await ApiService().deleteRelation(relations![index].id);
+                        setState(() {
+                          relations!.removeAt(index);
+                          relationsCount = relations!.length;
+                        });
+                      }
+                    },
+                  ),
                 );
               },
             ),
@@ -343,6 +360,29 @@ class _UserProfileState extends State<UserProfile> {
       },
     );
   }
+
+  Future<bool> _confirmDeletion() async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text('Êtes-vous sûr de vouloir supprimer cette relation ?'),
+          actions: [
+            TextButton(
+              child: Text('Non'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: Text('Oui'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
 
   void showStatusDialog(BuildContext context, int userId, String currentStatus) {
     showDialog(
