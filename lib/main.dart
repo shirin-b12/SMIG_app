@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpPage(),
         '/ressource_list': (context) => RessourceListPage(),
         '/ressource_creation': (context) => RessourceCreationPage(),
-        // Ajoutez les nouvelles routes ici
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {

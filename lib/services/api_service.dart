@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:smig_app/models/categorie.dart';
@@ -277,6 +279,29 @@ class ApiService {
     }
   }
 
+  deleteRelation(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+    print(id);
+    final response = await http.delete(
+        Uri.parse('$baseUrl/relation/$id'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+        }
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      print('Failed to delete relation'
+          ': ${response.statusCode}');
+      print('Reason: ${response.body}');
+      return null;
+    }
+  }
+
   Future<bool> updateUser(int id, String nom, String prenom, String email) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
@@ -491,7 +516,7 @@ class ApiService {
     }
   }
 
-  Future<List<TinyRessource>> fetchRessourcesByCreateur(int createurId) async {
+  Future<List<TinyRessource>?> fetchRessourcesByCreateur(int createurId) async {
     final response =
         await http.get(Uri.parse('$baseUrl/ressources/byCreateur/$createurId'));
 
@@ -499,8 +524,8 @@ class ApiService {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => TinyRessource.fromJson(data)).toList();
     } else {
-      throw Exception(
-          'Failed to load resources for creator ID $createurId from API');
+      print('Failed to load resources for creator ID $createurId from API');
+      return null;
     }
   }
 
@@ -670,7 +695,7 @@ class ApiService {
     }
   }
 
-  Future<List<Relation>> fetchRelationsByUserId(int userId) async {
+  Future<List<Relation>?> fetchRelationsByUserId(int userId) async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
     Map<String, dynamic> user = jsonDecode(token!);
@@ -684,7 +709,40 @@ class ApiService {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((data) => Relation.fromJson(data)).toList();
     } else {
-      throw Exception('Failed to load relations: ${response.statusCode}');
+      print('Failed to load relations: ${response.statusCode}');
+      return null;
     }
+  }
+
+  Future<bool> newRessource(String titre, String description, int idCat, int idType, int idTag, File? imageFile) async {
+
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('userToken');
+    Map<String, dynamic> user = jsonDecode(token!);
+    String accessToken = user['accessToken'];
+
+    int idCreateur = await AuthService().getCurrentUser();
+
+    var uri = Uri.parse('$baseUrl/ressources/create');
+    var request = http.MultipartRequest('POST', uri)
+      ..fields['titre'] = titre
+      ..fields['description'] = description
+      ..fields['idCat'] = idCat.toString()
+      ..fields['idType'] = idType.toString()
+      ..fields['idTag'] = idTag.toString()
+      ..fields['idCreateur'] = idCreateur.toString()
+      ..headers.addAll({
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+    if (imageFile != null) {
+      request.files.add(await http.MultipartFile.fromPath('img', imageFile.path));
+    }
+
+
+    var response = await request.send();
+
+    print(response.statusCode);
+    return response.statusCode == 200;
   }
 }
